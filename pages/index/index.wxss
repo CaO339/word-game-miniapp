@@ -232,6 +232,41 @@
   color: rgba(255, 255, 255, 0.7);
 }
 
+/* 收藏和错题区域 */
+.extra-row {
+  display: flex;
+  justify-content: space-around;
+}
+
+.extra-item {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 15rpx 30rpx;
+  border-radius: 20rpx;
+}
+
+.extra-icon {
+  font-size: 36rpx;
+  margin-right: 15rpx;
+}
+
+.extra-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.extra-count {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.extra-label {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.7);
+}
+
 /* 欢迎文字区域 */
 .welcome-section {
   display: flex;

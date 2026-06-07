@@ -3,12 +3,16 @@ const wordManager = require('../../utils/wordManager.js');
 const storageManager = require('../../utils/storageManager.js');
 const levelManager = require('../../utils/levelManager.js');
 const reviewManager = require('../../utils/reviewManager.js');
+const collectionManager = require('../../utils/collectionManager.js');
+const mistakeManager = require('../../utils/mistakeManager.js');
 
-// 获取词库管理器、存储管理器、等级管理器和复习管理器单例
+// 获取词库管理器、存储管理器、等级管理器、复习管理器、收藏管理器和错题本管理器单例
 const manager = wordManager.getWordManager();
 const storage = storageManager.getStorageManager();
 const level = levelManager.getLevelManager();
 const review = reviewManager.getReviewManager();
+const collection = collectionManager;
+const mistakes = mistakeManager;
 
 Page({
   data: {
@@ -22,7 +26,8 @@ Page({
     totalCount: 0,       // 累计学习数量
     currentLevel: 1,     // 当前等级
     currentXp: 0,        // 当前经验值
-    xpToNextLevel: 100   // 升级还需经验值
+    xpToNextLevel: 100,  // 升级还需经验值
+    isCollected: false   // 当前单词是否已收藏
   },
 
   onLoad: function() {
@@ -39,6 +44,9 @@ Page({
     // 获取第一个单词
     const firstWord = manager.getRandomWord();
     
+    // 检查当前单词是否已收藏
+    const isCollected = collection.isCollected(firstWord.id);
+    
     this.setData({
       currentWord: firstWord,
       totalWords: totalWords,
@@ -48,7 +56,8 @@ Page({
       totalCount: stats.totalCount,
       currentLevel: levelStats.level,
       currentXp: levelStats.xp,
-      xpToNextLevel: levelStats.remainingXp
+      xpToNextLevel: levelStats.remainingXp,
+      isCollected: isCollected
     });
   },
 
@@ -74,6 +83,11 @@ Page({
   processWord: function(isKnown) {
     const wordId = this.data.currentWord.id;
     
+    // 如果不认识，添加到错题本
+    if (!isKnown) {
+      mistakes.addMistake(wordId);
+    }
+    
     // 更新学习记录
     const record = storage.updateLearningRecord(wordId);
     
@@ -96,6 +110,9 @@ Page({
     // 获取下一个单词
     const nextWord = manager.getNextWord();
     
+    // 检查下一个单词是否已收藏
+    const isCollected = collection.isCollected(nextWord.id);
+    
     // 获取最新等级数据
     const levelStats = level.getHomeStats();
     
@@ -108,7 +125,25 @@ Page({
       totalCount: record.totalCount,
       currentLevel: levelStats.level,
       currentXp: levelStats.xp,
-      xpToNextLevel: levelStats.remainingXp
+      xpToNextLevel: levelStats.remainingXp,
+      isCollected: isCollected
+    });
+  },
+
+  // 切换收藏状态
+  toggleCollect: function() {
+    const wordId = this.data.currentWord.id;
+    const newCollected = collection.toggleCollect(wordId);
+    
+    this.setData({
+      isCollected: newCollected
+    });
+    
+    // 显示提示
+    wx.showToast({
+      title: newCollected ? '已收藏' : '已取消收藏',
+      icon: 'success',
+      duration: 1000
     });
   },
 

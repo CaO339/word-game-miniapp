@@ -2,11 +2,15 @@
 const storageManager = require('../../utils/storageManager.js');
 const levelManager = require('../../utils/levelManager.js');
 const reviewManager = require('../../utils/reviewManager.js');
+const collectionManager = require('../../utils/collectionManager.js');
+const mistakeManager = require('../../utils/mistakeManager.js');
 
-// 获取存储管理器、等级管理器和复习管理器单例
+// 获取存储管理器、等级管理器、复习管理器、收藏管理器和错题本管理器单例
 const storage = storageManager.getStorageManager();
 const level = levelManager.getLevelManager();
 const review = reviewManager.getReviewManager();
+const collection = collectionManager;
+const mistakes = mistakeManager;
 
 Page({
   data: {
@@ -17,7 +21,9 @@ Page({
     currentXp: 0,        // 当前经验值
     maxXp: 100,         // 当前等级最大经验值
     xpProgress: 0,       // 经验值进度百分比
-    pendingReviewCount: 0 // 待复习单词数量
+    pendingReviewCount: 0, // 待复习单词数量
+    collectedCount: 0,    // 收藏单词数量
+    mistakeCount: 0       // 错题数量
   },
 
   onLoad: function() {
@@ -41,6 +47,12 @@ Page({
     // 获取待复习单词数量
     const pendingReviewCount = review.getPendingReviewCount();
     
+    // 获取收藏单词数量
+    const collectedCount = collection.getCollectionCount();
+    
+    // 获取错题数量
+    const mistakeCount = mistakes.getMistakeCount();
+    
     // 更新页面数据
     this.setData({
       todayCount: studyStats.todayCount,
@@ -50,7 +62,9 @@ Page({
       currentXp: levelStats.currentXp,
       maxXp: levelStats.maxXp,
       xpProgress: levelStats.progress,
-      pendingReviewCount: pendingReviewCount
+      pendingReviewCount: pendingReviewCount,
+      collectedCount: collectedCount,
+      mistakeCount: mistakeCount
     });
   },
 
@@ -75,6 +89,22 @@ Page({
     // 跳转到统计页面
     wx.navigateTo({
       url: '/pages/statistics/statistics'
+    });
+  },
+
+  // 查看收藏按钮点击事件
+  viewCollection: function() {
+    // 跳转到收藏页面
+    wx.navigateTo({
+      url: '/pages/collection/collection'
+    });
+  },
+
+  // 查看错题本按钮点击事件
+  viewMistakes: function() {
+    // 跳转到错题本页面
+    wx.navigateTo({
+      url: '/pages/mistakes/mistakes'
     });
   }
 });

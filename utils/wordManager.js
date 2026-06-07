@@ -102,13 +102,22 @@ class WordManager {
   }
 
   /**
-   * 获取当前词库名称
+   * 获取单词名称
    */
   getWordListName() {
     if (this.currentWordList === cet4Data) {
       return 'CET-4 词汇';
     }
     return '基础词汇';
+  }
+
+  /**
+   * 根据ID获取单词详情
+   * @param {number} wordId 单词ID
+   * @returns {Object|null} 单词对象，如果未找到返回null
+   */
+  getWordById(wordId) {
+    return this.currentWordList.find(word => word.id === wordId) || null;
   }
 }
 

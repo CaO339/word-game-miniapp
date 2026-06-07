@@ -58,12 +58,32 @@
       <view class="stat-divider"></view>
       
       <!-- 待复习区域 -->
-      <view class="review-row">
+      <view class="review-row" bindtap="startReview">
         <view class="review-item">
           <view class="review-icon">🔄</view>
           <view class="review-content">
             <text class="review-count">{{pendingReviewCount}}</text>
             <text class="review-label">待复习单词</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="stat-divider"></view>
+      
+      <!-- 收藏和错题区域 -->
+      <view class="extra-row">
+        <view class="extra-item" bindtap="viewCollection">
+          <view class="extra-icon">❤️</view>
+          <view class="extra-content">
+            <text class="extra-count">{{collectedCount}}</text>
+            <text class="extra-label">收藏</text>
+          </view>
+        </view>
+        <view class="extra-item" bindtap="viewMistakes">
+          <view class="extra-icon">📝</view>
+          <view class="extra-content">
+            <text class="extra-count">{{mistakeCount}}</text>
+            <text class="extra-label">错题</text>
           </view>
         </view>
       </view>

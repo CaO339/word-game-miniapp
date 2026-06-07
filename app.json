@@ -2,8 +2,10 @@
   "pages": [
     "pages/index/index",
     "pages/study/study",
- "pages/review/review",
+    "pages/review/review",
     "pages/statistics/statistics",
+    "pages/collection/collection",
+    "pages/mistakes/mistakes",
     "pages/logs/logs"
   ],
   "window": {

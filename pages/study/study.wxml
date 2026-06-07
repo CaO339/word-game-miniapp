@@ -22,6 +22,11 @@
 
   <!-- 单词卡片 -->
   <view class="word-card">
+    <!-- 收藏按钮 -->
+    <view class="collect-btn" bindtap="toggleCollect">
+      <text class="{{isCollected ? 'collected' : ''}}">{{isCollected ? '❤️' : '🤍'}}</text>
+    </view>
+    
     <!-- 英文单词 -->
     <view class="word-english">{{currentWord.english}}</view>
 

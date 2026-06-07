@@ -90,6 +90,30 @@
   align-items: center;
   box-shadow: 0 20rpx 60rpx rgba(0, 0, 0, 0.15);
   margin-bottom: 60rpx;
+  position: relative;
+}
+
+/* 收藏按钮 */
+.collect-btn {
+  position: absolute;
+  top: 20rpx;
+  right: 20rpx;
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.collect-btn text {
+  font-size: 36rpx;
+}
+
+.collect-btn .collected {
+  color: #ff4757;
 }
 
 .word-english {
