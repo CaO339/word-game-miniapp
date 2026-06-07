@@ -14,7 +14,8 @@ Page({
     pendingCount: 0,      // 待复习单词总数
     currentIndex: 0,      // 当前复习索引
     reviewWords: [],      // 待复习单词列表
-    reviewCompleted: false // 是否完成复习
+    reviewCompleted: false, // 是否完成复习
+    hasPendingWords: true // 是否有待复习单词
   },
 
   onLoad: function() {
@@ -26,34 +27,51 @@ Page({
    * 加载待复习单词列表
    */
   loadReviewWords: function() {
+    console.log('[复习页面] 加载待复习单词列表');
+    
     // 获取所有单词列表
     const allWords = manager.getAllWords();
+    console.log('[复习页面] 所有单词数量:', allWords.length);
     
     // 获取今日待复习单词
     const pendingWords = review.getTodayReviewWords(allWords);
+    console.log('[复习页面] 待复习单词数量:', pendingWords.length);
     
     if (pendingWords.length === 0) {
       // 没有待复习单词
       this.setData({
-        reviewCompleted: true,
+        reviewCompleted: false,
+        hasPendingWords: false,
         pendingCount: 0,
-        reviewWords: []
+        reviewWords: [],
+        currentWord: {},
+        currentIndex: 0,
+        showAnswer: false,
+        showResultButtons: false
       });
+      console.log('[复习页面] 没有待复习单词');
       return;
     }
     
+    // 有待复习单词，开始复习
     this.setData({
+      reviewCompleted: false,
+      hasPendingWords: true,
       reviewWords: pendingWords,
       pendingCount: pendingWords.length,
       currentWord: pendingWords[0],
-      currentIndex: 0
+      currentIndex: 0,
+      showAnswer: false,
+      showResultButtons: false
     });
+    console.log('[复习页面] 开始复习，当前单词:', pendingWords[0]);
   },
 
   /**
    * 显示答案按钮点击事件
    */
   showAnswer: function() {
+    console.log('[复习页面] 显示答案');
     this.setData({
       showAnswer: true,
       showResultButtons: true
@@ -64,6 +82,7 @@ Page({
    * 认识按钮点击事件
    */
   markKnown: function() {
+    console.log('[复习页面] 点击"认识"');
     this.processReview(true);
   },
 
@@ -71,6 +90,7 @@ Page({
    * 不认识按钮点击事件
    */
   markUnknown: function() {
+    console.log('[复习页面] 点击"不认识"');
     this.processReview(false);
   },
 
@@ -79,6 +99,7 @@ Page({
    */
   processReview: function(isKnown) {
     const wordId = this.data.currentWord.id;
+    console.log('[复习页面] 处理复习结果: wordId =', wordId, ', isKnown =', isKnown);
     
     // 更新复习记录
     review.handleReviewResult(wordId, isKnown);
@@ -88,6 +109,7 @@ Page({
     
     if (nextIndex >= this.data.reviewWords.length) {
       // 复习完成
+      console.log('[复习页面] 复习完成');
       this.setData({
         reviewCompleted: true,
         showAnswer: false,
@@ -95,8 +117,10 @@ Page({
       });
     } else {
       // 继续下一个单词
+      const nextWord = this.data.reviewWords[nextIndex];
+      console.log('[复习页面] 继续下一个单词:', nextWord);
       this.setData({
-        currentWord: this.data.reviewWords[nextIndex],
+        currentWord: nextWord,
         currentIndex: nextIndex,
         showAnswer: false,
         showResultButtons: false
@@ -117,6 +141,7 @@ Page({
    * 继续复习按钮点击事件（完成后重新加载）
    */
   continueReview: function() {
+    console.log('[复习页面] 继续复习');
     this.loadReviewWords();
   }
 });

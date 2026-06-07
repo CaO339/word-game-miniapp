@@ -32,14 +32,19 @@ Page({
 
   // 加载统计数据
   loadStats: function() {
+    console.log('[首页] 加载统计数据');
+    
     // 获取学习记录统计
     const studyStats = storage.getHomeStats();
+    console.log('[首页] 学习统计数据:', studyStats);
     
     // 获取等级数据
     const levelStats = level.getHomeStats();
+    console.log('[首页] 等级数据:', levelStats);
     
     // 获取待复习单词数量
     const pendingReviewCount = review.getPendingReviewCount();
+    console.log('[首页] 待复习单词数量:', pendingReviewCount);
     
     this.setData({
       todayCount: studyStats.todayCount,

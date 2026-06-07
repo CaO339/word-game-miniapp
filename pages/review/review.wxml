@@ -7,15 +7,23 @@
   </view>
 
   <!-- 进度条 -->
-  <view class="progress-section">
+  <view class="progress-section" wx:if="{{hasPendingWords}}">
     <view class="progress-bar">
-      <view class="progress-fill" style="width: {{reviewWords.length > 0 ? (currentIndex / reviewWords.length) * 100 : 100}}%"></view>
+      <view class="progress-fill" style="width: {{reviewWords.length > 0 ? ((currentIndex + 1) / reviewWords.length) * 100 : 100}}%"></view>
     </view>
     <text class="progress-text">{{currentIndex + 1}} / {{reviewWords.length}}</text>
   </view>
 
+  <!-- 没有待复习单词 -->
+  <view class="no-pending-section" wx:if="{{!hasPendingWords}}">
+    <view class="no-pending-icon">📋</view>
+    <text class="no-pending-title">暂无待复习单词</text>
+    <text class="no-pending-desc">学习单词后会根据艾宾浩斯遗忘曲线安排复习</text>
+    <button class="home-btn" bindtap="goHome">返回首页</button>
+  </view>
+
   <!-- 复习完成提示 -->
-  <view class="completed-section" wx:if="{{reviewCompleted}}">
+  <view class="completed-section" wx:elif="{{reviewCompleted}}">
     <view class="completed-icon">🎉</view>
     <text class="completed-title">复习完成！</text>
     <text class="completed-desc">今天的复习任务已经全部完成</text>
@@ -54,7 +62,7 @@
   </view>
 
   <!-- 返回首页链接 -->
-  <view class="home-link" wx:if="{{!reviewCompleted}}" bindtap="goHome">
+  <view class="home-link" wx:if="{{hasPendingWords && !reviewCompleted}}" bindtap="goHome">
     <text>← 返回首页</text>
   </view>
 </view>

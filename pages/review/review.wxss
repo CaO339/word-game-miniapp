@@ -92,6 +92,34 @@
   border: none;
 }
 
+/* 没有待复习单词区域 */
+.no-pending-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 0;
+}
+
+.no-pending-icon {
+  font-size: 120rpx;
+  margin-bottom: 30rpx;
+}
+
+.no-pending-title {
+  font-size: 44rpx;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 20rpx;
+}
+
+.no-pending-desc {
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 50rpx;
+  text-align: center;
+}
+
 /* 单词卡片区域 */
 .card-section {
   display: flex;
