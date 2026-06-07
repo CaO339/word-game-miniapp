@@ -1,24 +1,31 @@
 // 学习页面逻辑
-const words = require('../../utils/words.js');
+const wordManager = require('../../utils/wordManager.js');
+
+// 获取词库管理器单例
+const manager = wordManager.getWordManager();
 
 Page({
   data: {
     currentWord: {},      // 当前单词对象
-    currentIndex: 0,     // 当前单词索引
-    showAnswer: false,   // 是否显示答案
-    isLastWord: false,   // 是否是最后一个单词
-    totalWords: 0        // 总单词数
+    showAnswer: false,    // 是否显示答案
+    learnedCount: 0,      // 已学习单词数
+    totalWords: 0,       // 总单词数
+    wordListName: ''      // 当前词库名称
   },
 
   onLoad: function() {
-    // 获取单词总数
-    const totalWords = words.words.length;
-    // 设置当前单词为第一个
+    // 获取词库信息
+    const totalWords = manager.getTotalCount();
+    const wordListName = manager.getWordListName();
+    
+    // 获取第一个单词
+    const firstWord = manager.getRandomWord();
+    
     this.setData({
-      currentWord: words.words[0],
-      currentIndex: 0,
+      currentWord: firstWord,
       totalWords: totalWords,
-      isLastWord: totalWords === 1
+      wordListName: wordListName,
+      learnedCount: manager.getLearnedCount()
     });
   },
 
@@ -29,20 +36,16 @@ Page({
     });
   },
 
-  // 下一个单词按钮点击事件
+  // 下一题按钮点击事件 - 随机抽取新单词
   nextWord: function() {
-    const { currentIndex, totalWords } = this.data;
-    const nextIndex = currentIndex + 1;
-
-    // 如果不是最后一个单词
-    if (nextIndex < totalWords) {
-      this.setData({
-        currentIndex: nextIndex,
-        currentWord: words.words[nextIndex],
-        showAnswer: false,
-        isLastWord: nextIndex === totalWords - 1
-      });
-    }
+    // 随机获取下一个单词
+    const nextWord = manager.getNextWord();
+    
+    this.setData({
+      currentWord: nextWord,
+      showAnswer: false,
+      learnedCount: manager.getLearnedCount()
+    });
   },
 
   // 返回首页按钮点击事件

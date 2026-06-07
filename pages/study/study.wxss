@@ -30,6 +30,13 @@
   display: block;
   font-size: 28rpx;
   color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 8rpx;
+}
+
+.progress {
+  display: block;
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.6);
 }
 
 /* 单词卡片 */
@@ -106,7 +113,7 @@
   opacity: 0.8;
 }
 
-/* 下一个单词按钮 - 成功色调 */
+/* 下一题按钮 - 成功色调 */
 .btn-success {
   background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
   color: #ffffff;
@@ -116,12 +123,17 @@
   opacity: 0.8;
 }
 
-/* 学习完成按钮 - 警告色调 */
-.btn-warning {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  color: #ffffff;
+/* 返回首页链接 */
+.home-link {
+  margin-top: 40rpx;
 }
 
-.btn-warning:active {
-  opacity: 0.8;
+.link-text {
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: underline;
+}
+
+.link-text:active {
+  opacity: 0.6;
 }
