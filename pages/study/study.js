@@ -31,7 +31,9 @@ Page({
     const wordListName = manager.getWordListName();
     
     // 获取学习统计数据
+    console.log('[学习页] onLoad - 调用 getHomeStats()');
     const stats = storage.getHomeStats();
+    console.log('[学习页] onLoad - getHomeStats 返回:', stats);
     
     // 获取等级数据
     const levelStats = level.getHomeStats();
@@ -50,6 +52,8 @@ Page({
       currentXp: levelStats.xp,
       xpToNextLevel: levelStats.remainingXp
     });
+    
+    console.log('[学习页] onLoad - setData todayCount:', stats.todayCount);
   },
 
   // 显示答案按钮点击事件
@@ -74,8 +78,11 @@ Page({
   processWord: function(isKnown) {
     const wordId = this.data.currentWord.id;
     
+    console.log('[学习页] processWord - 开始处理单词, wordId:', wordId);
+    
     // 更新学习记录
     const record = storage.updateLearningRecord(wordId);
+    console.log('[学习页] processWord - updateLearningRecord 返回:', record);
     
     // 更新复习记录（学习后计算下次复习时间）
     review.updateStudyRecord(wordId);
@@ -98,6 +105,8 @@ Page({
     
     // 获取最新等级数据
     const levelStats = level.getHomeStats();
+    
+    console.log('[学习页] processWord - 更新 setData todayCount:', record.todayCount);
     
     this.setData({
       currentWord: nextWord,
