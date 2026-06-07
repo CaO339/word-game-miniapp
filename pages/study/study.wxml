@@ -11,12 +11,12 @@
   <view class="stats-bar">
     <view class="stat-item">
       <text class="stat-value">{{todayCount}}</text>
-      <text class="stat-label">今日</text>
+      <text class="stat-label">今日练习</text>
     </view>
     <view class="stat-divider"></view>
     <view class="stat-item">
       <text class="stat-value">{{totalCount}}</text>
-      <text class="stat-label">累计</text>
+      <text class="stat-label">已学单词</text>
     </view>
   </view>
 
