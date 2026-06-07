@@ -78,6 +78,53 @@
   color: #8b6914;
 }
 
+/* 每日目标行 */
+.target-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10rpx;
+}
+
+.target-item {
+  display: flex;
+  align-items: center;
+  background-color: rgba(102, 126, 234, 0.2);
+  padding: 16rpx 30rpx;
+  border-radius: 25rpx;
+  transition: all 0.3s ease;
+}
+
+.target-item.completed {
+  background-color: rgba(17, 153, 142, 0.2);
+}
+
+.target-icon {
+  font-size: 36rpx;
+  margin-right: 16rpx;
+}
+
+.target-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.target-label {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 4rpx;
+}
+
+.target-value {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.target-item.completed .target-value {
+  color: #38ef7d;
+}
+
 /* 经验值行 */
 .xp-row {
   margin-bottom: 30rpx;

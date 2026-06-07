@@ -4,7 +4,8 @@
 // 存储键名常量
 const STORAGE_KEYS = {
   LEARNING_RECORD: 'wm_learning_record',  // 学习记录
-  CHECKIN_INFO: 'wm_checkin_info'         // 打卡信息
+  CHECKIN_INFO: 'wm_checkin_info',         // 打卡信息
+  DAILY_TARGET: 'wm_daily_target'           // 每日目标
 };
 
 /**
@@ -27,6 +28,15 @@ const STORAGE_KEYS = {
  */
 
 /**
+ * 每日目标数据结构：
+ * {
+ *   target: number,            // 每日目标数（默认20）
+ *   todayNewCount: number,     // 今日新单词数
+ *   lastTargetDate: string     // 最后更新目标日期
+ * }
+ */
+
+/**
  * 存储管理器类
  */
 class StorageManager {
@@ -34,11 +44,14 @@ class StorageManager {
     // 内存缓存
     this._learningRecordCache = null;
     this._checkinInfoCache = null;
+    this._dailyTargetCache = null;
     
     // 初始化学习记录
     this.initLearningRecord();
     // 初始化打卡信息
     this.initCheckinInfo();
+    // 初始化每日目标
+    this.initDailyTarget();
   }
 
   /**
@@ -218,6 +231,105 @@ class StorageManager {
    */
   checkin() {
     return this.autoCheckin();
+  }
+
+  /**
+   * 初始化每日目标（如果不存在则创建）
+   */
+  initDailyTarget() {
+    const target = this.getDailyTarget();
+    if (!target) {
+      const defaultTarget = {
+        target: 20,
+        todayNewCount: 0,
+        lastTargetDate: ''
+      };
+      this._dailyTargetCache = defaultTarget;
+      wx.setStorageSync(STORAGE_KEYS.DAILY_TARGET, defaultTarget);
+    }
+  }
+
+  /**
+   * 获取每日目标（优先从缓存读取）
+   */
+  getDailyTarget() {
+    if (this._dailyTargetCache) {
+      return this._dailyTargetCache;
+    }
+    try {
+      const target = wx.getStorageSync(STORAGE_KEYS.DAILY_TARGET);
+      this._dailyTargetCache = target;
+      return target;
+    } catch (e) {
+      console.error('获取每日目标失败:', e);
+      return null;
+    }
+  }
+
+  /**
+   * 保存每日目标（同时更新缓存和存储）
+   */
+  saveDailyTarget(targetData) {
+    this._dailyTargetCache = targetData;
+    wx.setStorageSync(STORAGE_KEYS.DAILY_TARGET, targetData);
+  }
+
+  /**
+   * 更新每日目标中的新单词计数
+   * @param {number} wordId - 单词ID
+   * @param {boolean} isNewWord - 是否是新单词
+   * @returns {Object} 更新后的目标数据
+   */
+  updateDailyTarget(wordId, isNewWord) {
+    const today = this.getTodayString();
+    const targetData = this.getDailyTarget() || { target: 20, todayNewCount: 0, lastTargetDate: '' };
+    
+    // 如果是新的一天，重置今日新单词计数
+    if (targetData.lastTargetDate !== today) {
+      targetData.todayNewCount = 0;
+      targetData.lastTargetDate = today;
+    }
+    
+    // 如果是新单词，增加计数
+    if (isNewWord) {
+      targetData.todayNewCount++;
+    }
+    
+    this.saveDailyTarget(targetData);
+    return targetData;
+  }
+
+  /**
+   * 获取每日目标数据（用于首页显示）
+   * @returns {Object} 包含target和todayNewCount
+   */
+  getHomeTargetStats() {
+    const today = this.getTodayString();
+    const targetData = this.getDailyTarget() || { target: 20, todayNewCount: 0, lastTargetDate: '' };
+    
+    // 如果是新的一天，重置计数
+    if (targetData.lastTargetDate !== today) {
+      targetData.todayNewCount = 0;
+      targetData.lastTargetDate = today;
+      this.saveDailyTarget(targetData);
+    }
+    
+    return {
+      target: targetData.target,
+      todayNewCount: targetData.todayNewCount,
+      isCompleted: targetData.todayNewCount >= targetData.target
+    };
+  }
+
+  /**
+   * 设置每日目标数
+   * @param {number} newTarget - 新的目标数
+   */
+  setDailyTarget(newTarget) {
+    const targetData = this.getDailyTarget() || { target: 20, todayNewCount: 0, lastTargetDate: '' };
+    targetData.target = newTarget;
+    this.saveDailyTarget(targetData);
+    return targetData;
   }
 
   /**

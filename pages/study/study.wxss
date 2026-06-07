@@ -38,6 +38,27 @@
   color: rgba(255, 255, 255, 0.6);
 }
 
+/* 每日目标横幅 */
+.target-banner {
+  width: 90%;
+  max-width: 400rpx;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 25rpx;
+  padding: 16rpx 30rpx;
+  margin-bottom: 30rpx;
+  text-align: center;
+}
+
+.target-banner.completed {
+  background-color: rgba(17, 153, 142, 0.3);
+}
+
+.target-text {
+  font-size: 28rpx;
+  color: #ffffff;
+  font-weight: 500;
+}
+
 /* 学习统计栏 */
 .stats-bar {
   display: flex;

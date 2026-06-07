@@ -7,6 +7,11 @@
     <text class="progress">已学习 {{learnedCount}}/{{totalWords}}</text>
   </view>
 
+  <!-- 每日目标显示 -->
+  <view class="target-banner {{targetIsCompleted ? 'completed' : ''}}">
+    <text class="target-text">{{targetIsCompleted ? '🎯 今日目标已完成' : '📍 今日目标: ' + targetTodayNewCount + '/' + target}}</text>
+  </view>
+
   <!-- 学习统计 -->
   <view class="stats-bar">
     <view class="stat-item">

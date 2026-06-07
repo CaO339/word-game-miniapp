@@ -9,6 +9,19 @@
   <!-- 统计卡片区域 -->
   <view class="stats-section">
     <view class="stats-card">
+      <!-- 每日目标区域 -->
+      <view class="target-row">
+        <view class="target-item {{targetIsCompleted ? 'completed' : ''}}">
+          <view class="target-icon">{{targetIsCompleted ? '🎯' : '📍'}}</view>
+          <view class="target-content">
+            <text class="target-label">今日目标</text>
+            <text class="target-value">{{targetIsCompleted ? '已完成' : targetTodayNewCount + '/' + target}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="stat-divider"></view>
+      
       <!-- 等级显示 -->
       <view class="level-row">
         <view class="level-badge">

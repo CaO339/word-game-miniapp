@@ -23,7 +23,10 @@ Page({
     xpProgress: 0,       // 经验值进度百分比
     pendingReviewCount: 0, // 待复习单词数量
     collectedCount: 0,    // 收藏单词数量
-    mistakeCount: 0       // 错题数量
+    mistakeCount: 0,       // 错题数量
+    target: 20,            // 每日目标
+    targetTodayNewCount: 0, // 今日新单词数
+    targetIsCompleted: false // 目标是否完成
   },
 
   onLoad: function() {
@@ -40,6 +43,9 @@ Page({
   loadStats: function() {
     // 获取学习记录统计
     const studyStats = storage.getHomeStats();
+    
+    // 获取每日目标统计
+    const targetStats = storage.getHomeTargetStats();
     
     // 获取等级数据
     const levelStats = level.getHomeStats();
@@ -64,7 +70,10 @@ Page({
       xpProgress: levelStats.progress,
       pendingReviewCount: pendingReviewCount,
       collectedCount: collectedCount,
-      mistakeCount: mistakeCount
+      mistakeCount: mistakeCount,
+      target: targetStats.target,
+      targetTodayNewCount: targetStats.todayNewCount,
+      targetIsCompleted: targetStats.isCompleted
     });
   },
 

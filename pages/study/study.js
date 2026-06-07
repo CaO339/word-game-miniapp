@@ -27,7 +27,10 @@ Page({
     currentLevel: 1,     // 当前等级
     currentXp: 0,        // 当前经验值
     xpToNextLevel: 100,  // 升级还需经验值
-    isCollected: false   // 当前单词是否已收藏
+    isCollected: false,   // 当前单词是否已收藏
+    target: 20,           // 每日目标
+    targetTodayNewCount: 0, // 今日新单词数
+    targetIsCompleted: false // 目标是否完成
   },
 
   onLoad: function() {
@@ -37,6 +40,9 @@ Page({
     
     // 获取学习统计数据
     const stats = storage.getHomeStats();
+    
+    // 获取每日目标统计
+    const targetStats = storage.getHomeTargetStats();
     
     // 获取等级数据
     const levelStats = level.getHomeStats();
@@ -57,7 +63,10 @@ Page({
       currentLevel: levelStats.level,
       currentXp: levelStats.xp,
       xpToNextLevel: levelStats.remainingXp,
-      isCollected: isCollected
+      isCollected: isCollected,
+      target: targetStats.target,
+      targetTodayNewCount: targetStats.todayNewCount,
+      targetIsCompleted: targetStats.isCompleted
     });
   },
 
@@ -88,8 +97,15 @@ Page({
       mistakes.addMistake(wordId);
     }
     
+    // 获取当前已学习的单词ID列表，检查是否是新单词
+    const learnedWordIds = storage.getLearnedWordIds();
+    const isNewWord = !learnedWordIds.includes(wordId);
+    
     // 更新学习记录
     const record = storage.updateLearningRecord(wordId);
+    
+    // 更新每日目标（仅新单词计入目标）
+    storage.updateDailyTarget(wordId, isNewWord);
     
     // 更新复习记录（学习后计算下次复习时间）
     review.updateStudyRecord(wordId);
@@ -116,6 +132,9 @@ Page({
     // 获取最新等级数据
     const levelStats = level.getHomeStats();
     
+    // 获取最新每日目标数据
+    const targetStats = storage.getHomeTargetStats();
+    
     this.setData({
       currentWord: nextWord,
       showAnswer: false,
@@ -126,7 +145,10 @@ Page({
       currentLevel: levelStats.level,
       currentXp: levelStats.xp,
       xpToNextLevel: levelStats.remainingXp,
-      isCollected: isCollected
+      isCollected: isCollected,
+      target: targetStats.target,
+      targetTodayNewCount: targetStats.todayNewCount,
+      targetIsCompleted: targetStats.isCompleted
     });
   },
 
