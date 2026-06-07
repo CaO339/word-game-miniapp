@@ -1,0 +1,127 @@
+<!-- 统计页面 WXML -->
+<view class="container">
+  <!-- 页面头部 -->
+  <view class="header">
+    <view class="header-content">
+      <text class="title">{{pageTitle}}</text>
+      <text class="subtitle">数据统计与分析</text>
+    </view>
+    <view class="header-decoration"></view>
+  </view>
+
+  <!-- 学习数据卡片 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">📚 学习数据</text>
+    </view>
+    <view class="stats-grid">
+      <view class="stat-card">
+        <text class="stat-value">{{todayCount}}</text>
+        <text class="stat-label">今日学习</text>
+      </view>
+      <view class="stat-card">
+        <text class="stat-value">{{totalCount}}</text>
+        <text class="stat-label">累计学习</text>
+      </view>
+      <view class="stat-card">
+        <text class="stat-value">{{masteredCount}}</text>
+        <text class="stat-label">已掌握</text>
+      </view>
+      <view class="stat-card highlight">
+        <text class="stat-value">{{masteryRate}}%</text>
+        <text class="stat-label">掌握率</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 打卡数据卡片 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">🔥 打卡数据</text>
+    </view>
+    <view class="stats-grid">
+      <view class="stat-card">
+        <text class="stat-value fire">{{continuousDays}}</text>
+        <text class="stat-label">连续打卡天数</text>
+      </view>
+      <view class="stat-card">
+        <text class="stat-value">{{totalCheckins}}</text>
+        <text class="stat-label">总打卡天数</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 等级数据卡片 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">⭐ 等级数据</text>
+    </view>
+    <view class="level-card">
+      <view class="level-info">
+        <text class="level-label">当前等级</text>
+        <text class="level-value">Lv{{currentLevel}}</text>
+      </view>
+      <view class="xp-info">
+        <text class="xp-label">经验值</text>
+        <view class="xp-bar-container">
+          <view class="xp-bar" style="width: {{(currentXp / nextLevelXp) * 100}}%"></view>
+        </view>
+        <text class="xp-text">{{currentXp}} / {{nextLevelXp}} XP</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 复习数据卡片 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">🔄 复习数据</text>
+    </view>
+    <view class="stats-grid">
+      <view class="stat-card">
+        <text class="stat-value pending">{{pendingReviewCount}}</text>
+        <text class="stat-label">待复习</text>
+      </view>
+      <view class="stat-card">
+        <text class="stat-value completed">{{completedReviewCount}}</text>
+        <text class="stat-label">已完成复习</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 学习趋势 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">📈 学习趋势</text>
+      <text class="section-subtitle">最近7天</text>
+    </view>
+    <view class="weekly-chart">
+      <view class="chart-bars">
+        <view 
+          class="chart-bar-item" 
+          wx:for="{{weeklyData}}" 
+          wx:key="date">
+          <view class="bar-container">
+            <view 
+              class="bar" 
+              style="height: {{(item.count / 20) * 100}}%">
+              <text class="bar-value">{{item.count}}</text>
+            </view>
+          </view>
+          <text class="bar-label">{{item.day}}</text>
+          <text class="bar-date">{{item.date}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-buttons">
+    <button class="action-btn primary" bindtap="goStudy">开始学习</button>
+    <button class="action-btn secondary" bindtap="goReview">开始复习</button>
+  </view>
+
+  <!-- 返回按钮 -->
+  <view class="footer">
+    <button class="back-btn" bindtap="goHome">返回首页</button>
+  </view>
+</view>

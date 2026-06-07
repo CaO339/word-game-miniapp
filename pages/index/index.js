@@ -72,5 +72,13 @@ Page({
     wx.navigateTo({
       url: '/pages/review/review'
     });
+  },
+
+  // 查看学习统计按钮点击事件
+  viewStats: function() {
+    // 跳转到统计页面
+    wx.navigateTo({
+      url: '/pages/statistics/statistics'
+    });
   }
 });

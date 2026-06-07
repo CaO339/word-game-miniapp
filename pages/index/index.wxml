@@ -80,5 +80,6 @@
   <view class="btn-section">
     <button class="start-btn" bindtap="startStudy">开始学习</button>
     <button class="review-btn" bindtap="startReview">开始复习</button>
+    <button class="stats-btn" bindtap="viewStats">学习统计</button>
   </view>
 </view>

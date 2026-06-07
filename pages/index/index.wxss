@@ -296,6 +296,22 @@
   border: 2rpx solid rgba(255, 255, 255, 0.5);
   /* 添加阴影效果 */
   box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.15);
+  margin-bottom: 20rpx;
+}
+
+/* 学习统计按钮 */
+.stats-btn {
+  width: 100%;
+  height: 100rpx;
+  line-height: 100rpx;
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  border-radius: 50rpx;
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #ffffff;
+  border: none;
+  /* 添加阴影效果 */
+  box-shadow: 0 10rpx 30rpx rgba(79, 172, 254, 0.3);
 }
 
 .review-btn:active {
