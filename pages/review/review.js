@@ -33,11 +33,25 @@ Page({
     const allWords = manager.getAllWords();
     console.log('[复习页面] 所有单词数量:', allWords.length);
     
-    // 获取今日待复习单词
-    const pendingWords = review.getTodayReviewWords(allWords);
-    console.log('[复习页面] 待复习单词数量:', pendingWords.length);
+    // 获取待复习单词ID列表（用于验证数量）
+    const pendingIds = review.getPendingReviewWordIds();
+    console.log('[复习页面] 待复习单词ID列表:', pendingIds);
     
-    if (pendingWords.length === 0) {
+    // 获取今日待复习单词详情
+    const pendingWords = review.getTodayReviewWords(allWords);
+    console.log('[复习页面] 待复习单词详情数量:', pendingWords.length);
+    
+    // 检查ID匹配问题
+    if (pendingIds.length !== pendingWords.length) {
+      console.log('[复习页面] 警告：ID数量与单词详情数量不一致！');
+      console.log('[复习页面] pendingIds:', pendingIds);
+      console.log('[复习页面] allWords[0]:', allWords[0] || '空');
+    }
+    
+    // 使用ID列表的数量作为待复习数量（更准确）
+    const actualPendingCount = pendingIds.length;
+    
+    if (actualPendingCount === 0) {
       // 没有待复习单词
       this.setData({
         reviewCompleted: false,
