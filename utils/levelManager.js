@@ -34,6 +34,9 @@ class LevelManager {
     // 学习一个单词获得的经验值
     this.XP_PER_WORD = 10;
     
+    // 内存缓存
+    this._levelDataCache = null;
+    
     // 初始化等级数据
     this.initLevelData();
   }
@@ -49,16 +52,22 @@ class LevelManager {
         level: 1,
         lastLevelUpXp: 0
       };
+      this._levelDataCache = defaultData;
       wx.setStorageSync(STORAGE_KEY, defaultData);
     }
   }
 
   /**
-   * 获取等级数据
+   * 获取等级数据（优先从缓存读取）
    */
   getLevelData() {
+    if (this._levelDataCache) {
+      return this._levelDataCache;
+    }
     try {
-      return wx.getStorageSync(STORAGE_KEY);
+      const data = wx.getStorageSync(STORAGE_KEY);
+      this._levelDataCache = data;
+      return data;
     } catch (e) {
       console.error('获取等级数据失败:', e);
       return null;
@@ -66,10 +75,11 @@ class LevelManager {
   }
 
   /**
-   * 保存等级数据
+   * 保存等级数据（同时更新缓存和存储）
    */
   saveLevelData(data) {
     try {
+      this._levelDataCache = data;
       wx.setStorageSync(STORAGE_KEY, data);
       return true;
     } catch (e) {
@@ -227,6 +237,7 @@ class LevelManager {
       level: 1,
       lastLevelUpXp: 0
     };
+    this._levelDataCache = defaultData;
     wx.setStorageSync(STORAGE_KEY, defaultData);
   }
 }

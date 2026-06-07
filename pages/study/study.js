@@ -114,8 +114,6 @@ Page({
 
   // 返回首页按钮点击事件
   goHome: function() {
-    wx.navigateTo({
-      url: '/pages/index/index'
-    });
+    wx.navigateBack();
   }
 });

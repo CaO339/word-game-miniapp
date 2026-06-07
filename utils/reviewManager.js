@@ -4,7 +4,7 @@
 const STORAGE_KEY = 'wm_review_records';
 
 // 开发测试模式标志（开发完成后设为 false）
-const DEV_MODE = true;
+const DEV_MODE = false;
 
 /**
  * 复习记录数据结构：
@@ -55,7 +55,6 @@ const DEV_INTERVALS = [
 // 如果是开发模式，使用测试间隔
 if (DEV_MODE) {
   REVIEW_INTERVALS = DEV_INTERVALS;
-  console.log('[复习系统] 开发测试模式已启用，复习间隔已缩短');
 }
 
 /**
@@ -63,6 +62,9 @@ if (DEV_MODE) {
  */
 class ReviewManager {
   constructor() {
+    // 内存缓存
+    this._reviewRecordsCache = null;
+    
     // 初始化复习记录
     this.initReviewRecords();
   }
@@ -73,21 +75,22 @@ class ReviewManager {
   initReviewRecords() {
     const records = this.getReviewRecords();
     if (!records) {
-      console.log('[复习系统] 初始化复习记录存储');
+      this._reviewRecordsCache = [];
       wx.setStorageSync(STORAGE_KEY, []);
-    } else {
-      console.log('[复习系统] 已找到复习记录，当前记录数:', records.length);
     }
   }
 
   /**
-   * 获取所有复习记录
+   * 获取所有复习记录（优先从缓存读取）
    */
   getReviewRecords() {
+    if (this._reviewRecordsCache) {
+      return this._reviewRecordsCache;
+    }
     try {
       const records = wx.getStorageSync(STORAGE_KEY);
-      console.log('[复习系统] 获取复习记录:', records);
-      return records;
+      this._reviewRecordsCache = records || [];
+      return this._reviewRecordsCache;
     } catch (e) {
       console.error('[复习系统] 获取复习记录失败:', e);
       return [];
@@ -95,12 +98,12 @@ class ReviewManager {
   }
 
   /**
-   * 保存复习记录
+   * 保存复习记录（同时更新缓存和存储）
    */
   saveReviewRecords(records) {
     try {
+      this._reviewRecordsCache = records;
       wx.setStorageSync(STORAGE_KEY, records);
-      console.log('[复习系统] 保存复习记录成功，记录数:', records.length);
       return true;
     } catch (e) {
       console.error('[复习系统] 保存复习记录失败:', e);
@@ -113,9 +116,7 @@ class ReviewManager {
    */
   getReviewRecord(wordId) {
     const records = this.getReviewRecords();
-    const record = records.find(record => record.wordId === wordId);
-    console.log('[复习系统] 获取单词', wordId, '的复习记录:', record);
-    return record;
+    return records.find(record => record.wordId === wordId);
   }
 
   /**
@@ -130,7 +131,6 @@ class ReviewManager {
     
     // 计算下次复习时间
     const nextTime = new Date(Date.now() + interval);
-    console.log('[复习系统] 计算下次复习时间: reviewCount =', reviewCount, ', interval =', interval, 'ms, nextTime =', nextTime.toISOString());
     return nextTime.toISOString();
   }
 
@@ -142,18 +142,14 @@ class ReviewManager {
     const records = this.getReviewRecords();
     const now = new Date().toISOString();
     
-    console.log('[复习系统] 更新学习记录: wordId =', wordId);
-    
     // 查找现有记录
     const existingRecord = records.find(record => record.wordId === wordId);
     
     if (existingRecord) {
-      console.log('[复习系统] 找到现有记录，更新');
       // 更新现有记录
       existingRecord.lastStudyTime = now;
       existingRecord.nextReviewTime = this.calculateNextReviewTime(existingRecord.reviewCount);
     } else {
-      console.log('[复习系统] 未找到记录，创建新记录');
       // 创建新记录
       records.push({
         wordId: wordId,
@@ -165,9 +161,6 @@ class ReviewManager {
     
     // 保存记录
     this.saveReviewRecords(records);
-    
-    // 调试输出当前所有记录
-    console.log('[复习系统] 当前所有复习记录:', this.getReviewRecords());
   }
 
   /**
@@ -179,8 +172,6 @@ class ReviewManager {
     const records = this.getReviewRecords();
     const now = new Date().toISOString();
     
-    console.log('[复习系统] 处理复习结果: wordId =', wordId, ', isKnown =', isKnown);
-    
     // 查找现有记录
     const index = records.findIndex(record => record.wordId === wordId);
     
@@ -190,19 +181,15 @@ class ReviewManager {
         records[index].reviewCount += 1;
         records[index].lastStudyTime = now;
         records[index].nextReviewTime = this.calculateNextReviewTime(records[index].reviewCount);
-        console.log('[复习系统] 认识，增加复习次数到', records[index].reviewCount);
       } else {
         // 不认识：重置复习次数，重新开始记忆周期
         records[index].reviewCount = 0;
         records[index].lastStudyTime = now;
         records[index].nextReviewTime = this.calculateNextReviewTime(0);
-        console.log('[复习系统] 不认识，重置复习次数');
       }
       
       // 保存记录
       this.saveReviewRecords(records);
-    } else {
-      console.log('[复习系统] 警告：未找到该单词的复习记录，wordId =', wordId);
     }
   }
 
@@ -214,20 +201,13 @@ class ReviewManager {
     const records = this.getReviewRecords();
     const now = new Date().getTime();
     
-    console.log('[复习系统] 获取待复习单词，当前时间:', new Date(now).toISOString());
-    
     // 筛选出需要复习的单词（下次复习时间 <= 当前时间）
     const pendingRecords = records.filter(record => {
       const nextReviewTime = new Date(record.nextReviewTime).getTime();
-      const isPending = nextReviewTime <= now;
-      console.log('[复习系统] 单词', record.wordId, ': nextReviewTime =', record.nextReviewTime, ', isPending =', isPending);
-      return isPending;
+      return nextReviewTime <= now;
     });
     
-    const pendingWordIds = pendingRecords.map(record => record.wordId);
-    console.log('[复习系统] 待复习单词ID列表:', pendingWordIds);
-    
-    return pendingWordIds;
+    return pendingRecords.map(record => record.wordId);
   }
 
   /**
@@ -235,9 +215,7 @@ class ReviewManager {
    * @returns {number} - 待复习单词数量
    */
   getPendingReviewCount() {
-    const count = this.getPendingReviewWordIds().length;
-    console.log('[复习系统] 待复习单词数量:', count);
-    return count;
+    return this.getPendingReviewWordIds().length;
   }
 
   /**
@@ -297,21 +275,18 @@ class ReviewManager {
    */
   getTodayReviewWords(wordList) {
     const pendingIds = this.getPendingReviewWordIds();
-    console.log('[复习系统] 获取待复习单词详情，wordList长度:', wordList.length, ', pendingIds:', pendingIds);
     
     // 修复类型不匹配问题：确保ID类型一致后再匹配
-    const reviewWords = wordList.filter(word => 
+    return wordList.filter(word => 
       pendingIds.some(id => Number(id) === Number(word.id))
     );
-    console.log('[复习系统] 待复习单词详情:', reviewWords);
-    return reviewWords;
   }
 
   /**
    * 重置所有复习记录（测试用）
    */
   reset() {
-    console.log('[复习系统] 重置所有复习记录');
+    this._reviewRecordsCache = [];
     wx.setStorageSync(STORAGE_KEY, []);
   }
 }

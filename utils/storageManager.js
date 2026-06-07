@@ -31,6 +31,10 @@ const STORAGE_KEYS = {
  */
 class StorageManager {
   constructor() {
+    // 内存缓存
+    this._learningRecordCache = null;
+    this._checkinInfoCache = null;
+    
     // 初始化学习记录
     this.initLearningRecord();
     // 初始化打卡信息
@@ -60,20 +64,34 @@ class StorageManager {
         learnedWordIds: [],
         lastStudyDate: ''
       };
+      this._learningRecordCache = defaultRecord;
       wx.setStorageSync(STORAGE_KEYS.LEARNING_RECORD, defaultRecord);
     }
   }
 
   /**
-   * 获取学习记录
+   * 获取学习记录（优先从缓存读取）
    */
   getLearningRecord() {
+    if (this._learningRecordCache) {
+      return this._learningRecordCache;
+    }
     try {
-      return wx.getStorageSync(STORAGE_KEYS.LEARNING_RECORD);
+      const record = wx.getStorageSync(STORAGE_KEYS.LEARNING_RECORD);
+      this._learningRecordCache = record;
+      return record;
     } catch (e) {
       console.error('获取学习记录失败:', e);
       return null;
     }
+  }
+
+  /**
+   * 保存学习记录（同时更新缓存和存储）
+   */
+  saveLearningRecord(record) {
+    this._learningRecordCache = record;
+    wx.setStorageSync(STORAGE_KEYS.LEARNING_RECORD, record);
   }
 
   /**
@@ -99,8 +117,8 @@ class StorageManager {
     // 今日学习数量+1
     record.todayCount++;
 
-    // 保存到存储
-    wx.setStorageSync(STORAGE_KEYS.LEARNING_RECORD, record);
+    // 保存到存储和缓存
+    this.saveLearningRecord(record);
     
     // 尝试打卡（每天第一次学习自动打卡）
     this.autoCheckin();
@@ -119,20 +137,34 @@ class StorageManager {
         continuousDays: 0,
         totalCheckins: 0
       };
+      this._checkinInfoCache = defaultInfo;
       wx.setStorageSync(STORAGE_KEYS.CHECKIN_INFO, defaultInfo);
     }
   }
 
   /**
-   * 获取打卡信息
+   * 获取打卡信息（优先从缓存读取）
    */
   getCheckinInfo() {
+    if (this._checkinInfoCache) {
+      return this._checkinInfoCache;
+    }
     try {
-      return wx.getStorageSync(STORAGE_KEYS.CHECKIN_INFO);
+      const info = wx.getStorageSync(STORAGE_KEYS.CHECKIN_INFO);
+      this._checkinInfoCache = info;
+      return info;
     } catch (e) {
       console.error('获取打卡信息失败:', e);
       return null;
     }
+  }
+
+  /**
+   * 保存打卡信息（同时更新缓存和存储）
+   */
+  saveCheckinInfo(info) {
+    this._checkinInfoCache = info;
+    wx.setStorageSync(STORAGE_KEYS.CHECKIN_INFO, info);
   }
 
   /**
@@ -170,8 +202,8 @@ class StorageManager {
     info.lastCheckinDate = today;
     info.totalCheckins++;
 
-    // 保存到存储
-    wx.setStorageSync(STORAGE_KEYS.CHECKIN_INFO, info);
+    // 保存到存储和缓存
+    this.saveCheckinInfo(info);
     
     return info;
   }
