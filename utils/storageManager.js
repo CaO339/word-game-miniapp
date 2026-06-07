@@ -224,14 +224,22 @@ class StorageManager {
     const checkin = this.getCheckinInfo();
     const today = this.getTodayString();
     
+    console.log('[getHomeStats] record.totalCount:', record.totalCount);
+    console.log('[getHomeStats] record.todayCount:', record.todayCount);
+    
     // 如果今天没有学习记录，今日学习数量为0
     let todayCount = 0;
     if (record.lastStudyDate === today) {
       todayCount = record.todayCount;
     }
     
+    console.log('[getHomeStats] todayCount (处理后):', todayCount);
+    
     // 确保累计学习 >= 今日学习（修正业务逻辑）
     const totalCount = Math.max(record.totalCount, todayCount);
+    
+    console.log('[getHomeStats] totalCount (Math.max后):', totalCount);
+    console.log('[getHomeStats] 返回值:', { todayCount, totalCount });
     
     return {
       todayCount: todayCount,
