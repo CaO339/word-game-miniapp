@@ -1,15 +1,12 @@
-/* 统计页面样式 */
-.page-container {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding-bottom: 120rpx;
-}
+/* 统计页面样式 - 统一风格 */
 
 .container {
   min-height: 100vh;
+  /* 统一主色调：紫色渐变 */
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 30rpx;
+  padding: 40rpx;
   padding-top: 80rpx;
+  box-sizing: border-box;
 }
 
 /* 页面头部 */
@@ -47,10 +44,11 @@
 /* 区块 */
 .section {
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 24rpx;
+  border-radius: 30rpx;
   padding: 30rpx;
   margin-bottom: 30rpx;
   backdrop-filter: blur(10px);
+  box-shadow: 0 10rpx 40rpx rgba(0, 0, 0, 0.1);
 }
 
 .section-header {
@@ -82,7 +80,7 @@
   flex: 1;
   min-width: calc(50% - 10rpx);
   background: rgba(255, 255, 255, 0.15);
-  border-radius: 16rpx;
+  border-radius: 20rpx;
   padding: 25rpx;
   text-align: center;
 }
@@ -119,7 +117,7 @@
 /* 等级卡片 */
 .level-card {
   background: rgba(255, 255, 255, 0.15);
-  border-radius: 16rpx;
+  border-radius: 20rpx;
   padding: 30rpx;
 }
 
@@ -176,7 +174,7 @@
 /* 周趋势图表 */
 .weekly-chart {
   background: rgba(255, 255, 255, 0.15);
-  border-radius: 16rpx;
+  border-radius: 20rpx;
   padding: 30rpx;
 }
 
@@ -207,7 +205,7 @@
 
 .bar {
   width: 100%;
-  background: linear-gradient(180deg, #4facfe, #00f2fe);
+  background: linear-gradient(180deg, #667eea, #764ba2);
   border-radius: 20rpx;
   display: flex;
   justify-content: center;
@@ -242,22 +240,29 @@
 
 .action-btn {
   flex: 1;
-  height: 88rpx;
-  line-height: 88rpx;
-  border-radius: 44rpx;
-  font-size: 30rpx;
+  height: 100rpx;
+  line-height: 100rpx;
+  border-radius: 50rpx;
+  font-size: 32rpx;
   font-weight: bold;
   border: none;
+  box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.15);
 }
 
 .action-btn.primary {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: #ffffff;
 }
 
 .action-btn.secondary {
   background: rgba(255, 255, 255, 0.2);
   color: #ffffff;
+  border: 2rpx solid rgba(255, 255, 255, 0.5);
+}
+
+.action-btn:active {
+  transform: scale(0.98);
+  opacity: 0.9;
 }
 
 /* 底部区域 */
@@ -267,11 +272,18 @@
 
 .back-btn {
   width: 300rpx;
-  height: 80rpx;
-  line-height: 80rpx;
+  height: 100rpx;
+  line-height: 100rpx;
   background: rgba(255, 255, 255, 0.15);
-  border-radius: 40rpx;
-  font-size: 28rpx;
+  border-radius: 50rpx;
+  font-size: 30rpx;
+  font-weight: bold;
   color: rgba(255, 255, 255, 0.9);
   border: none;
+  box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.1);
+}
+
+.back-btn:active {
+  transform: scale(0.98);
+  opacity: 0.9;
 }

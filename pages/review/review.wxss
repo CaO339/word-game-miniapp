@@ -1,10 +1,11 @@
-/* 复习页面样式 */
+/* 复习页面样式 - 统一风格 */
 
 .container {
   min-height: 100vh;
   padding: 40rpx;
   box-sizing: border-box;
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  /* 统一主色调：紫色渐变 */
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 /* 标题区域 */
@@ -33,16 +34,16 @@
 
 .progress-bar {
   width: 100%;
-  height: 12rpx;
-  background-color: rgba(255, 255, 255, 0.3);
-  border-radius: 6rpx;
+  height: 16rpx;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 8rpx;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background-color: #ffffff;
-  border-radius: 6rpx;
+  background: linear-gradient(90deg, #ffd700 0%, #ff6b6b 100%);
+  border-radius: 8rpx;
   transition: width 0.3s ease;
 }
 
@@ -83,13 +84,15 @@
 
 .home-btn {
   width: 300rpx;
-  height: 80rpx;
-  line-height: 80rpx;
+  height: 100rpx;
+  line-height: 100rpx;
   background: rgba(255, 255, 255, 0.2);
-  border-radius: 40rpx;
-  font-size: 30rpx;
+  border-radius: 50rpx;
+  font-size: 32rpx;
+  font-weight: bold;
   color: #ffffff;
-  border: none;
+  border: 2rpx solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.15);
 }
 
 /* 没有待复习单词区域 */
@@ -130,9 +133,9 @@
 .word-card {
   width: 90%;
   max-width: 600rpx;
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: #ffffff;
   border-radius: 30rpx;
-  padding: 60rpx 40rpx;
+  padding: 80rpx 40rpx;
   box-shadow: 0 20rpx 60rpx rgba(0, 0, 0, 0.15);
 }
 
@@ -143,11 +146,12 @@
 }
 
 .word {
-  font-size: 64rpx;
+  font-size: 72rpx;
   font-weight: bold;
   color: #333333;
   display: block;
   margin-bottom: 15rpx;
+  letter-spacing: 4rpx;
 }
 
 .phonetic {
@@ -160,7 +164,7 @@
   text-align: center;
   margin-bottom: 40rpx;
   padding: 30rpx;
-  background-color: rgba(79, 172, 254, 0.1);
+  background-color: rgba(102, 126, 234, 0.1);
   border-radius: 20rpx;
 }
 
@@ -172,50 +176,53 @@
 /* 显示答案按钮 */
 .show-answer-btn {
   width: 100%;
-  height: 88rpx;
-  line-height: 88rpx;
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  border-radius: 44rpx;
+  height: 100rpx;
+  line-height: 100rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50rpx;
   font-size: 32rpx;
   font-weight: bold;
   color: #ffffff;
   border: none;
+  box-shadow: 0 10rpx 30rpx rgba(102, 126, 234, 0.3);
 }
 
 .show-answer-btn:active {
   transform: scale(0.98);
+  opacity: 0.9;
 }
 
 /* 结果按钮区域 */
 .result-buttons {
   display: flex;
   justify-content: space-between;
+  gap: 30rpx;
 }
 
 .result-btn {
   flex: 1;
-  height: 88rpx;
-  line-height: 88rpx;
-  border-radius: 44rpx;
+  height: 100rpx;
+  line-height: 100rpx;
+  border-radius: 50rpx;
   font-size: 32rpx;
   font-weight: bold;
   border: none;
+  box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.15);
 }
 
 .result-btn:active {
   transform: scale(0.98);
+  opacity: 0.9;
 }
 
 .known-btn {
   background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
   color: #ffffff;
-  margin-right: 20rpx;
 }
 
 .unknown-btn {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
   color: #ffffff;
-  margin-left: 20rpx;
 }
 
 /* 返回首页链接 */
@@ -226,5 +233,10 @@
 
 .home-link text {
   font-size: 28rpx;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: underline;
+}
+
+.home-link text:active {
+  opacity: 0.6;
 }
