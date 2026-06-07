@@ -1,10 +1,12 @@
 // index.js - 首页逻辑
 const storageManager = require('../../utils/storageManager.js');
 const levelManager = require('../../utils/levelManager.js');
+const reviewManager = require('../../utils/reviewManager.js');
 
-// 获取存储管理器和等级管理器单例
+// 获取存储管理器、等级管理器和复习管理器单例
 const storage = storageManager.getStorageManager();
 const level = levelManager.getLevelManager();
+const review = reviewManager.getReviewManager();
 
 Page({
   data: {
@@ -14,7 +16,8 @@ Page({
     currentLevel: 1,     // 当前等级
     currentXp: 0,        // 当前经验值
     maxXp: 100,         // 当前等级最大经验值
-    xpProgress: 0        // 经验值进度百分比
+    xpProgress: 0,       // 经验值进度百分比
+    pendingReviewCount: 0 // 待复习单词数量
   },
 
   onLoad: function() {
@@ -35,6 +38,9 @@ Page({
     // 获取等级数据
     const levelStats = level.getHomeStats();
     
+    // 获取待复习单词数量
+    const pendingReviewCount = review.getPendingReviewCount();
+    
     this.setData({
       todayCount: studyStats.todayCount,
       totalCount: studyStats.totalCount,
@@ -42,7 +48,8 @@ Page({
       currentLevel: levelStats.level,
       currentXp: levelStats.currentXp,
       maxXp: levelStats.maxXp,
-      xpProgress: levelStats.progress
+      xpProgress: levelStats.progress,
+      pendingReviewCount: pendingReviewCount
     });
   },
 
@@ -51,6 +58,14 @@ Page({
     // 跳转到学习页面
     wx.navigateTo({
       url: '/pages/study/study'
+    });
+  },
+
+  // 开始复习按钮点击事件
+  startReview: function() {
+    // 跳转到复习页面
+    wx.navigateTo({
+      url: '/pages/review/review'
     });
   }
 });

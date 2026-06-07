@@ -2,6 +2,7 @@
   "pages": [
     "pages/index/index",
     "pages/study/study",
+    "pages/review/review",
     "pages/logs/logs"
   ],
   "window": {

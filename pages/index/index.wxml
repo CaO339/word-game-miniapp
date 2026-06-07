@@ -54,6 +54,19 @@
           </view>
         </view>
       </view>
+
+      <view class="stat-divider"></view>
+      
+      <!-- 待复习区域 -->
+      <view class="review-row">
+        <view class="review-item">
+          <view class="review-icon">🔄</view>
+          <view class="review-content">
+            <text class="review-count">{{pendingReviewCount}}</text>
+            <text class="review-label">待复习单词</text>
+          </view>
+        </view>
+      </view>
     </view>
   </view>
 
@@ -63,8 +76,9 @@
     <text class="description">开始你的英语单词学习之旅</text>
   </view>
 
-  <!-- 开始学习按钮 -->
+  <!-- 按钮区域 -->
   <view class="btn-section">
     <button class="start-btn" bindtap="startStudy">开始学习</button>
+    <button class="review-btn" bindtap="startReview">开始复习</button>
   </view>
 </view>

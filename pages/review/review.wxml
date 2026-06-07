@@ -1,0 +1,60 @@
+<!--复习页面 WXML-->
+<view class="container">
+  <!-- 标题区域 -->
+  <view class="header">
+    <text class="title">单词复习</text>
+    <text class="subtitle">今日待复习：{{pendingCount}}个</text>
+  </view>
+
+  <!-- 进度条 -->
+  <view class="progress-section">
+    <view class="progress-bar">
+      <view class="progress-fill" style="width: {{reviewWords.length > 0 ? (currentIndex / reviewWords.length) * 100 : 100}}%"></view>
+    </view>
+    <text class="progress-text">{{currentIndex + 1}} / {{reviewWords.length}}</text>
+  </view>
+
+  <!-- 复习完成提示 -->
+  <view class="completed-section" wx:if="{{reviewCompleted}}">
+    <view class="completed-icon">🎉</view>
+    <text class="completed-title">复习完成！</text>
+    <text class="completed-desc">今天的复习任务已经全部完成</text>
+    <button class="home-btn" bindtap="goHome">返回首页</button>
+  </view>
+
+  <!-- 单词卡片区域 -->
+  <view class="card-section" wx:else>
+    <view class="word-card">
+      <!-- 单词 -->
+      <view class="word-section">
+        <text class="word">{{currentWord.word}}</text>
+        <text class="phonetic">{{currentWord.phonetic}}</text>
+      </view>
+
+      <!-- 释义 -->
+      <view class="meaning-section" wx:if="{{showAnswer}}">
+        <text class="meaning">{{currentWord.meaning}}</text>
+      </view>
+
+      <!-- 显示答案按钮 -->
+      <button 
+        class="show-answer-btn" 
+        wx:if="{{!showAnswer}}" 
+        bindtap="showAnswer"
+      >
+        显示答案
+      </button>
+
+      <!-- 认识/不认识按钮 -->
+      <view class="result-buttons" wx:if="{{showResultButtons}}">
+        <button class="result-btn known-btn" bindtap="markKnown">认识</button>
+        <button class="result-btn unknown-btn" bindtap="markUnknown">不认识</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 返回首页链接 -->
+  <view class="home-link" wx:if="{{!reviewCompleted}}" bindtap="goHome">
+    <text>← 返回首页</text>
+  </view>
+</view>

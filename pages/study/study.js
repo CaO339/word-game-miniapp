@@ -2,11 +2,13 @@
 const wordManager = require('../../utils/wordManager.js');
 const storageManager = require('../../utils/storageManager.js');
 const levelManager = require('../../utils/levelManager.js');
+const reviewManager = require('../../utils/reviewManager.js');
 
-// 获取词库管理器、存储管理器和等级管理器单例
+// 获取词库管理器、存储管理器、等级管理器和复习管理器单例
 const manager = wordManager.getWordManager();
 const storage = storageManager.getStorageManager();
 const level = levelManager.getLevelManager();
+const review = reviewManager.getReviewManager();
 
 Page({
   data: {
@@ -74,6 +76,9 @@ Page({
     
     // 更新学习记录
     const record = storage.updateLearningRecord(wordId);
+    
+    // 更新复习记录（学习后计算下次复习时间）
+    review.updateStudyRecord(wordId);
     
     // 增加经验值（每学习一个单词获得10 XP）
     const xpResult = level.addXPForWord();
