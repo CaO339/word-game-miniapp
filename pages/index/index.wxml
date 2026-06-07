@@ -9,6 +9,27 @@
   <!-- 统计卡片区域 -->
   <view class="stats-section">
     <view class="stats-card">
+      <!-- 等级显示 -->
+      <view class="level-row">
+        <view class="level-badge">
+          <text class="level-text">Lv{{currentLevel}}</text>
+        </view>
+      </view>
+      
+      <!-- 经验值进度条 -->
+      <view class="xp-row">
+        <view class="xp-info">
+          <text class="xp-current">{{currentXp}}</text>
+          <text class="xp-separator">/</text>
+          <text class="xp-max">{{maxXp}}</text>
+        </view>
+        <view class="xp-bar-container">
+          <view class="xp-bar-fill" style="width: {{xpProgress}}%"></view>
+        </view>
+      </view>
+
+      <view class="stat-divider"></view>
+      
       <view class="stat-row">
         <view class="stat-item">
           <view class="stat-icon today-icon">📚</view>
@@ -21,7 +42,9 @@
           <text class="stat-label">累计学习</text>
         </view>
       </view>
+      
       <view class="stat-divider"></view>
+      
       <view class="checkin-row">
         <view class="checkin-item">
           <view class="checkin-icon">🔥</view>

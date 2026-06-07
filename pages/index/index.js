@@ -1,14 +1,20 @@
 // index.js - 首页逻辑
 const storageManager = require('../../utils/storageManager.js');
+const levelManager = require('../../utils/levelManager.js');
 
-// 获取存储管理器单例
+// 获取存储管理器和等级管理器单例
 const storage = storageManager.getStorageManager();
+const level = levelManager.getLevelManager();
 
 Page({
   data: {
     todayCount: 0,       // 今日学习数量
     totalCount: 0,       // 累计学习数量
-    continuousDays: 0    // 连续打卡天数
+    continuousDays: 0,   // 连续打卡天数
+    currentLevel: 1,     // 当前等级
+    currentXp: 0,        // 当前经验值
+    maxXp: 100,         // 当前等级最大经验值
+    xpProgress: 0        // 经验值进度百分比
   },
 
   onLoad: function() {
@@ -23,11 +29,20 @@ Page({
 
   // 加载统计数据
   loadStats: function() {
-    const stats = storage.getHomeStats();
+    // 获取学习记录统计
+    const studyStats = storage.getHomeStats();
+    
+    // 获取等级数据
+    const levelStats = level.getHomeStats();
+    
     this.setData({
-      todayCount: stats.todayCount,
-      totalCount: stats.totalCount,
-      continuousDays: stats.continuousDays
+      todayCount: studyStats.todayCount,
+      totalCount: studyStats.totalCount,
+      continuousDays: studyStats.continuousDays,
+      currentLevel: levelStats.level,
+      currentXp: levelStats.currentXp,
+      maxXp: levelStats.maxXp,
+      xpProgress: levelStats.progress
     });
   },
 

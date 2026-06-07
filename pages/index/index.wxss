@@ -58,6 +58,72 @@
   box-shadow: 0 10rpx 40rpx rgba(0, 0, 0, 0.1);
 }
 
+/* 等级行 */
+.level-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20rpx;
+}
+
+.level-badge {
+  background: linear-gradient(135deg, #ffd700 0%, #ffb700 100%);
+  padding: 10rpx 30rpx;
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 15rpx rgba(255, 215, 0, 0.3);
+}
+
+.level-text {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #8b6914;
+}
+
+/* 经验值行 */
+.xp-row {
+  margin-bottom: 30rpx;
+}
+
+.xp-info {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  margin-bottom: 15rpx;
+}
+
+.xp-current {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.xp-separator {
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0 8rpx;
+}
+
+.xp-max {
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* 经验值进度条容器 */
+.xp-bar-container {
+  width: 100%;
+  height: 16rpx;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 8rpx;
+  overflow: hidden;
+}
+
+/* 经验值进度条填充 */
+.xp-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ffd700 0%, #ff6b6b 100%);
+  border-radius: 8rpx;
+  transition: width 0.3s ease;
+}
+
 /* 统计行 */
 .stat-row {
   display: flex;
