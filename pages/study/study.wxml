@@ -7,6 +7,19 @@
     <text class="progress">已学习 {{learnedCount}}/{{totalWords}}</text>
   </view>
 
+  <!-- 学习统计 -->
+  <view class="stats-bar">
+    <view class="stat-item">
+      <text class="stat-value">{{todayCount}}</text>
+      <text class="stat-label">今日</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-value">{{totalCount}}</text>
+      <text class="stat-label">累计</text>
+    </view>
+  </view>
+
   <!-- 单词卡片 -->
   <view class="word-card">
     <!-- 英文单词 -->
@@ -33,13 +46,19 @@
       显示答案
     </button>
 
-    <!-- 下一题按钮（随机抽词） -->
-    <button
-      class="btn btn-success"
-      bindtap="nextWord"
-      wx:if="{{showAnswer}}">
-      下一题
-    </button>
+    <!-- 认识/不认识按钮组 -->
+    <view class="result-btn-group" wx:if="{{showResultButtons}}">
+      <button
+        class="btn btn-success"
+        bindtap="markKnown">
+        认识
+      </button>
+      <button
+        class="btn btn-danger"
+        bindtap="markUnknown">
+        不认识
+      </button>
+    </view>
   </view>
 
   <!-- 返回首页 -->

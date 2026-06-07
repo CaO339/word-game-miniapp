@@ -6,6 +6,34 @@
     <text class="app-name">WordMaster</text>
   </view>
 
+  <!-- 统计卡片区域 -->
+  <view class="stats-section">
+    <view class="stats-card">
+      <view class="stat-row">
+        <view class="stat-item">
+          <view class="stat-icon today-icon">📚</view>
+          <text class="stat-number">{{todayCount}}</text>
+          <text class="stat-label">今日学习</text>
+        </view>
+        <view class="stat-item">
+          <view class="stat-icon total-icon">📖</view>
+          <text class="stat-number">{{totalCount}}</text>
+          <text class="stat-label">累计学习</text>
+        </view>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="checkin-row">
+        <view class="checkin-item">
+          <view class="checkin-icon">🔥</view>
+          <view class="checkin-content">
+            <text class="checkin-days">{{continuousDays}}</text>
+            <text class="checkin-label">连续打卡天数</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
   <!-- 欢迎文字区域 -->
   <view class="welcome-section">
     <text class="welcome-text">欢迎来到 WordMaster</text>
