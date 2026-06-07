@@ -238,7 +238,7 @@ class StorageManager {
       totalCount: totalCount,
       continuousDays: checkin.continuousDays
     };
-  },
+  }
 
   /**
    * 获取已学习的单词ID列表
