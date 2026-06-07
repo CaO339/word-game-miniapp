@@ -75,14 +75,17 @@ Page({
     const studyStats = storage.getHomeStats();
     console.log('[统计页面] 学习数据:', studyStats);
     
+    // 确保累计学习 >= 今日学习（修正业务逻辑）
+    const totalCount = Math.max(studyStats.totalCount, studyStats.todayCount);
+    
     // 计算掌握率
     const masteredCount = this.calculateMasteredCount();
-    const totalLearned = studyStats.totalCount > 0 ? studyStats.totalCount : 1;
+    const totalLearned = totalCount > 0 ? totalCount : 1;
     const masteryRate = ((masteredCount / totalLearned) * 100).toFixed(1);
     
     this.setData({
       todayCount: studyStats.todayCount,
-      totalCount: studyStats.totalCount,
+      totalCount: totalCount,
       masteredCount: masteredCount,
       masteryRate: masteryRate
     });

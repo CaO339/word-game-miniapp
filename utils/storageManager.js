@@ -225,14 +225,20 @@ class StorageManager {
     const today = this.getTodayString();
     
     // 如果今天没有学习记录，今日学习数量为0
-    const todayCount = record.lastStudyDate === today ? record.todayCount : 0;
+    let todayCount = 0;
+    if (record.lastStudyDate === today) {
+      todayCount = record.todayCount;
+    }
+    
+    // 确保累计学习 >= 今日学习（修正业务逻辑）
+    const totalCount = Math.max(record.totalCount, todayCount);
     
     return {
       todayCount: todayCount,
-      totalCount: record.totalCount,
+      totalCount: totalCount,
       continuousDays: checkin.continuousDays
     };
-  }
+  },
 
   /**
    * 获取已学习的单词ID列表
