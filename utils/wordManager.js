@@ -10,13 +10,23 @@ const builtinWords = [
 
 /**
  * 词库管理器类
+ * 
+ * 抽词算法：
+ * 1. 第一阶段：优先抽取未学习单词
+ *    - 从词库中排除已学习的单词
+ *    - 确保每个单词至少出现一次
+ * 2. 第二阶段：全部学完后，进入随机复习模式
+ *    - 从全部单词中随机抽取
+ *    - 支持艾宾浩斯复习系统的优先级
  */
 class WordManager {
   constructor() {
     // 当前词库
     this.currentWordList = [];
-    // 已访问过的单词ID列表
-    this.visitedIds = [];
+    // 当前学习会话中已访问过的单词ID列表（内存缓存，仅用于去重）
+    this.sessionVisitedIds = [];
+    // 是否已完成第一阶段学习
+    this._isFirstPhaseComplete = false;
     // 初始化词库
     this.initWordList();
   }
@@ -50,55 +60,163 @@ class WordManager {
   }
 
   /**
-   * 获取已学习单词数
+   * 从Storage获取已学习的单词ID列表
+   * @returns {Array} 已学习单词ID数组
    */
-  getLearnedCount() {
-    return this.visitedIds.length;
+  _getLearnedWordIds() {
+    try {
+      const record = wx.getStorageSync('wm_learning_record');
+      if (record && record.learnedWordIds) {
+        return record.learnedWordIds;
+      }
+    } catch (e) {
+      console.error('获取已学习单词失败:', e);
+    }
+    return [];
   }
 
   /**
-   * 获取随机单词（不重复）
-   * @returns {Object} 随机单词对象
+   * 检查是否已完成第一阶段（所有单词都学习过）
+   * @returns {boolean}
    */
-  getRandomWord() {
+  isFirstPhaseComplete() {
+    const learnedIds = this._getLearnedWordIds();
     const total = this.currentWordList.length;
     
-    // 如果所有单词都已学习过，重置已访问列表
-    if (this.visitedIds.length >= total) {
-      this.visitedIds = [];
+    // 所有单词都已学习
+    if (learnedIds.length >= total) {
+      this._isFirstPhaseComplete = true;
+      return true;
     }
-
-    // 过滤出未访问的单词
-    const unvisitedWords = this.currentWordList.filter(
-      word => !this.visitedIds.includes(word.id)
-    );
-
-    // 如果没有未访问的单词，使用全部单词
-    const pool = unvisitedWords.length > 0 ? unvisitedWords : this.currentWordList;
     
-    // 随机选择
-    const randomIndex = Math.floor(Math.random() * pool.length);
-    const selectedWord = pool[randomIndex];
+    // 检查是否词库中所有单词都已学习
+    const allLearned = this.currentWordList.every(word => 
+      learnedIds.includes(word.id)
+    );
+    
+    this._isFirstPhaseComplete = allLearned;
+    return allLearned;
+  }
 
+  /**
+   * 获取学习进度信息
+   * @returns {Object} { learnedCount, totalCount, remainingCount, isComplete }
+   */
+  getStudyProgress() {
+    const learnedIds = this._getLearnedWordIds();
+    const total = this.currentWordList.length;
+    const learnedCount = learnedIds.length;
+    
+    return {
+      learnedCount: learnedCount,
+      totalCount: total,
+      remainingCount: total - learnedCount,
+      isComplete: learnedCount >= total,
+      isFirstPhase: learnedCount < total
+    };
+  }
+
+  /**
+   * 获取已学习单词数
+   */
+  getLearnedCount() {
+    return this._getLearnedWordIds().length;
+  }
+
+  /**
+   * 获取未学习单词列表
+   * @returns {Array} 未学习的单词数组
+   */
+  _getUnlearnedWords() {
+    const learnedIds = this._getLearnedWordIds();
+    return this.currentWordList.filter(word => !learnedIds.includes(word.id));
+  }
+
+  /**
+   * 获取下一个学习单词（优先未学习单词）
+   * @returns {Object} 单词对象
+   */
+  getNextStudyWord() {
+    const learnedIds = this._getLearnedWordIds();
+    const total = this.currentWordList.length;
+    
+    // 第一阶段：优先从未学习单词中抽取
+    if (learnedIds.length < total) {
+      const unlearnedWords = this._getUnlearnedWords();
+      
+      // 过滤出会话中已访问过的单词（确保每次学习不重复）
+      const availableWords = unlearnedWords.filter(
+        word => !this.sessionVisitedIds.includes(word.id)
+      );
+      
+      // 如果所有未学单词都已访问过，重置会话访问记录
+      if (availableWords.length === 0) {
+        this.sessionVisitedIds = [];
+        return unlearnedWords[Math.floor(Math.random() * unlearnedWords.length)];
+      }
+      
+      // 随机选择一个未学习单词
+      const randomIndex = Math.floor(Math.random() * availableWords.length);
+      const selectedWord = availableWords[randomIndex];
+      
+      // 标记为已访问
+      this.sessionVisitedIds.push(selectedWord.id);
+      
+      return selectedWord;
+    }
+    
+    // 第二阶段：所有单词都已学习，进入随机复习模式
+    return this._getRandomReviewWord();
+  }
+
+  /**
+   * 获取随机复习单词
+   * @returns {Object} 随机单词对象
+   */
+  _getRandomReviewWord() {
+    // 过滤出会话中已访问过的单词
+    const availableWords = this.currentWordList.filter(
+      word => !this.sessionVisitedIds.includes(word.id)
+    );
+    
+    // 如果所有单词都已访问过，重置会话访问记录
+    if (availableWords.length === 0) {
+      this.sessionVisitedIds = [];
+      return this.currentWordList[Math.floor(Math.random() * this.currentWordList.length)];
+    }
+    
+    // 随机选择一个单词
+    const randomIndex = Math.floor(Math.random() * availableWords.length);
+    const selectedWord = availableWords[randomIndex];
+    
     // 标记为已访问
-    this.visitedIds.push(selectedWord.id);
-
+    this.sessionVisitedIds.push(selectedWord.id);
+    
     return selectedWord;
   }
 
   /**
-   * 获取下一个随机单词（用于切换到下一题）
-   * @returns {Object} 随机单词对象
+   * 获取随机单词（兼容旧接口）
+   * @returns {Object} 单词对象
+   */
+  getRandomWord() {
+    return this.getNextStudyWord();
+  }
+
+  /**
+   * 获取下一个单词（用于切换到下一题）
+   * @returns {Object} 单词对象
    */
   getNextWord() {
-    return this.getRandomWord();
+    return this.getNextStudyWord();
   }
 
   /**
    * 重置学习进度
    */
   reset() {
-    this.visitedIds = [];
+    this.sessionVisitedIds = [];
+    this._isFirstPhaseComplete = false;
   }
 
   /**

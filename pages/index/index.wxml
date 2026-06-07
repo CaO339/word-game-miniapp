@@ -22,6 +22,22 @@
 
       <view class="stat-divider"></view>
       
+      <!-- 学习进度区域 -->
+      <view class="progress-row">
+        <view class="progress-item">
+          <view class="progress-icon">📚</view>
+          <view class="progress-content">
+            <text class="progress-label">词库进度</text>
+            <text class="progress-value">{{learnedCount}}/{{totalWords}}</text>
+          </view>
+        </view>
+        <view class="progress-info">
+          <text class="progress-remaining">剩余 {{remainingCount}} 个单词</text>
+        </view>
+      </view>
+
+      <view class="stat-divider"></view>
+      
       <!-- 等级显示 -->
       <view class="level-row">
         <view class="level-badge">

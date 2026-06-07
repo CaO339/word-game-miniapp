@@ -98,6 +98,51 @@
   background-color: rgba(17, 153, 142, 0.2);
 }
 
+/* 学习进度行 */
+.progress-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10rpx;
+  padding: 0 10rpx;
+}
+
+.progress-item {
+  display: flex;
+  align-items: center;
+}
+
+.progress-icon {
+  font-size: 32rpx;
+  margin-right: 12rpx;
+}
+
+.progress-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.progress-label {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.progress-value {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.progress-info {
+  display: flex;
+  align-items: center;
+}
+
+.progress-remaining {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.6);
+}
+
 .target-icon {
   font-size: 36rpx;
   margin-right: 16rpx;

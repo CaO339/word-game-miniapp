@@ -4,6 +4,7 @@ const levelManager = require('../../utils/levelManager.js');
 const reviewManager = require('../../utils/reviewManager.js');
 const collectionManager = require('../../utils/collectionManager.js');
 const mistakeManager = require('../../utils/mistakeManager.js');
+const wordManager = require('../../utils/wordManager.js');
 
 // 获取存储管理器、等级管理器、复习管理器、收藏管理器和错题本管理器单例
 const storage = storageManager.getStorageManager();
@@ -11,6 +12,7 @@ const level = levelManager.getLevelManager();
 const review = reviewManager.getReviewManager();
 const collection = collectionManager;
 const mistakes = mistakeManager;
+const wordMgr = wordManager.getWordManager();
 
 Page({
   data: {
@@ -26,7 +28,10 @@ Page({
     mistakeCount: 0,       // 错题数量
     target: 20,            // 每日目标
     targetTodayNewCount: 0, // 今日新单词数
-    targetIsCompleted: false // 目标是否完成
+    targetIsCompleted: false, // 目标是否完成
+    learnedCount: 0,       // 已学单词数
+    totalWords: 0,         // 词库总单词数
+    remainingCount: 0      // 剩余未学单词数
   },
 
   onLoad: function() {
@@ -46,6 +51,9 @@ Page({
     
     // 获取每日目标统计
     const targetStats = storage.getHomeTargetStats();
+    
+    // 获取学习进度（词库完成情况）
+    const progress = wordMgr.getStudyProgress();
     
     // 获取等级数据
     const levelStats = level.getHomeStats();
@@ -73,7 +81,10 @@ Page({
       mistakeCount: mistakeCount,
       target: targetStats.target,
       targetTodayNewCount: targetStats.todayNewCount,
-      targetIsCompleted: targetStats.isCompleted
+      targetIsCompleted: targetStats.isCompleted,
+      learnedCount: progress.learnedCount,
+      totalWords: progress.totalCount,
+      remainingCount: progress.remainingCount
     });
   },
 
