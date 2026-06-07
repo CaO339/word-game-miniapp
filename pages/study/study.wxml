@@ -1,0 +1,51 @@
+<!--学习页面 WXML-->
+<view class="container">
+  <!-- 页面标题 -->
+  <view class="header">
+    <text class="title">WordMaster</text>
+    <text class="subtitle">学习进度 {{currentIndex + 1}}/{{totalWords}}</text>
+  </view>
+
+  <!-- 单词卡片 -->
+  <view class="word-card">
+    <!-- 英文单词 -->
+    <view class="word-english">{{currentWord.english}}</view>
+    
+    <!-- 中文释义（点击显示答案后显示） -->
+    <view class="word-chinese {{showAnswer ? 'show' : ''}}">
+      {{currentWord.chinese}}
+    </view>
+
+    <!-- 提示文字 -->
+    <view class="hint-text" wx:if="{{!showAnswer}}">
+      点击下方按钮显示答案
+    </view>
+  </view>
+
+  <!-- 操作按钮区域 -->
+  <view class="btn-group">
+    <!-- 显示答案按钮 -->
+    <button 
+      class="btn btn-primary" 
+      bindtap="showAnswer"
+      wx:if="{{!showAnswer}}">
+      显示答案
+    </button>
+
+    <!-- 下一个单词按钮 -->
+    <button 
+      class="btn btn-success" 
+      bindtap="nextWord"
+      wx:if="{{showAnswer && !isLastWord}}">
+      下一个单词
+    </button>
+
+    <!-- 学习完成按钮 -->
+    <button 
+      class="btn btn-warning" 
+      bindtap="goHome"
+      wx:if="{{showAnswer && isLastWord}}">
+      学习完成
+    </button>
+  </view>
+</view>

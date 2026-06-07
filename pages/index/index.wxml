@@ -1,0 +1,19 @@
+<!--首页 WXML-->
+<view class="container">
+  <!-- Logo区域 -->
+  <view class="logo-section">
+    <view class="logo">WM</view>
+    <text class="app-name">WordMaster</text>
+  </view>
+
+  <!-- 欢迎文字区域 -->
+  <view class="welcome-section">
+    <text class="welcome-text">欢迎来到 WordMaster</text>
+    <text class="description">开始你的英语单词学习之旅</text>
+  </view>
+
+  <!-- 开始学习按钮 -->
+  <view class="btn-section">
+    <button class="start-btn" bindtap="startStudy">开始学习</button>
+  </view>
+</view>

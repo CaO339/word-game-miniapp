@@ -1,0 +1,36 @@
+# 微信小程序项目忽略文件
+
+# 编译产物
+*.min.js
+*.min.wxml
+*.min.wxss
+*.min.css
+
+# 开发工具生成文件
+.project
+.project.private.config.json
+.apps.json
+
+# 日志文件
+*.log
+
+# 本地开发配置
+.env
+.env.local
+.env.*.local
+
+# 操作系统文件
+.DS_Store
+Thumbs.db
+
+# IDE 配置
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Node 模块（如果有）
+node_modules/
+
+# 微信开发者工具调试目录
+debug/
