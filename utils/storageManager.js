@@ -103,17 +103,8 @@ class StorageManager {
     // 直接从 Storage 读取最新数据
     const record = wx.getStorageSync(STORAGE_KEYS.LEARNING_RECORD);
     
-    console.log('[updateLearningRecord] wordId:', wordId);
-    console.log('[updateLearningRecord] today:', today);
-    console.log('[updateLearningRecord] record.lastStudyDate:', record ? record.lastStudyDate : 'null');
-    console.log('[updateLearningRecord] 学习前 todayCount:', record ? record.todayCount : 0);
-    console.log('[updateLearningRecord] 学习前 totalCount:', record ? record.totalCount : 0);
-    
     // 如果是新的一天，重置今日学习数量
     if (!record || record.lastStudyDate !== today) {
-      if (record && record.lastStudyDate !== today) {
-        console.log('[updateLearningRecord] 检测到日期变化！重置 todayCount');
-      }
       record = record || {};
       record.todayCount = 0;
       record.lastStudyDate = today;
@@ -125,21 +116,14 @@ class StorageManager {
       if (!record.learnedWordIds.includes(wordId)) {
         record.learnedWordIds.push(wordId);
         record.totalCount = (record.totalCount || 0) + 1;
-        console.log('[updateLearningRecord] 新单词，totalCount++');
       }
-    } else {
-      console.log('[updateLearningRecord] 重复单词，不增加 totalCount');
     }
     
     // 今日学习数量+1
     record.todayCount++;
-    console.log('[updateLearningRecord] todayCount++');
 
     // 保存到存储和缓存
     this.saveLearningRecord(record);
-    
-    console.log('[updateLearningRecord] 保存后 todayCount:', record.todayCount);
-    console.log('[updateLearningRecord] 保存后 totalCount:', record.totalCount);
     
     // 尝试打卡（每天第一次学习自动打卡）
     this.autoCheckin();
@@ -246,25 +230,14 @@ class StorageManager {
     const checkin = this.getCheckinInfo();
     const today = this.getTodayString();
     
-    console.log('[getHomeStats] today:', today);
-    console.log('[getHomeStats] record:', record);
-    console.log('[getHomeStats] record.lastStudyDate:', record ? record.lastStudyDate : 'null');
-    console.log('[getHomeStats] record.todayCount:', record ? record.todayCount : 0);
-    console.log('[getHomeStats] record.totalCount:', record ? record.totalCount : 0);
-    
     // 如果今天没有学习记录，今日学习数量为0
     let todayCount = 0;
     if (record && record.lastStudyDate === today) {
       todayCount = record.todayCount;
     }
     
-    console.log('[getHomeStats] todayCount (处理后):', todayCount);
-    
     // 确保累计学习 >= 今日学习（修正业务逻辑）
     const totalCount = Math.max(record ? record.totalCount : 0, todayCount);
-    
-    console.log('[getHomeStats] totalCount (Math.max后):', totalCount);
-    console.log('[getHomeStats] 返回值:', { todayCount, totalCount });
     
     // 更新内存缓存
     if (record) {

@@ -50,8 +50,6 @@ Page({
    * 加载所有统计数据
    */
   loadAllStats: function() {
-    console.log('[统计页面] 加载所有统计数据');
-    
     // 加载学习数据
     this.loadStudyStats();
     
@@ -73,7 +71,6 @@ Page({
    */
   loadStudyStats: function() {
     const studyStats = storage.getHomeStats();
-    console.log('[统计页面] 学习数据:', studyStats);
     
     // 确保累计学习 >= 今日学习（修正业务逻辑）
     const totalCount = Math.max(studyStats.totalCount, studyStats.todayCount);
@@ -106,7 +103,6 @@ Page({
    */
   loadCheckinStats: function() {
     const checkinInfo = storage.getCheckinInfo();
-    console.log('[统计页面] 打卡数据:', checkinInfo);
     
     // 计算总打卡天数
     const totalCheckins = this.calculateTotalCheckins();
@@ -132,7 +128,6 @@ Page({
    */
   loadLevelStats: function() {
     const levelStats = level.getHomeStats();
-    console.log('[统计页面] 等级数据:', levelStats);
     
     this.setData({
       currentLevel: levelStats.level,
@@ -147,8 +142,6 @@ Page({
   loadReviewStats: function() {
     const pendingCount = review.getPendingReviewCount();
     const completedCount = this.calculateCompletedReviews();
-    
-    console.log('[统计页面] 复习数据: 待复习=', pendingCount, ', 已完成=', completedCount);
     
     this.setData({
       pendingReviewCount: pendingCount,
@@ -185,8 +178,6 @@ Page({
         count: Math.floor(Math.random() * 20) + 1 // 模拟每日学习数量
       });
     }
-    
-    console.log('[统计页面] 最近7天学习数据:', weeklyData);
     
     this.setData({
       weeklyData: weeklyData

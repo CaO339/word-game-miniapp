@@ -32,25 +32,16 @@ Page({
 
   // 加载统计数据
   loadStats: function() {
-    console.time('[首页] 加载统计数据总耗时');
-    
     // 获取学习记录统计
-    console.time('[首页] 获取学习记录统计');
     const studyStats = storage.getHomeStats();
-    console.timeEnd('[首页] 获取学习记录统计');
     
     // 获取等级数据
-    console.time('[首页] 获取等级数据');
     const levelStats = level.getHomeStats();
-    console.timeEnd('[首页] 获取等级数据');
     
     // 获取待复习单词数量
-    console.time('[首页] 获取待复习单词数量');
     const pendingReviewCount = review.getPendingReviewCount();
-    console.timeEnd('[首页] 获取待复习单词数量');
     
     // 更新页面数据
-    console.time('[首页] setData更新');
     this.setData({
       todayCount: studyStats.todayCount,
       totalCount: studyStats.totalCount,
@@ -61,9 +52,6 @@ Page({
       xpProgress: levelStats.progress,
       pendingReviewCount: pendingReviewCount
     });
-    console.timeEnd('[首页] setData更新');
-    
-    console.timeEnd('[首页] 加载统计数据总耗时');
   },
 
   // 开始学习按钮点击事件
