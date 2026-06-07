@@ -42,6 +42,14 @@ class WordManager {
   }
 
   /**
+   * 获取所有单词列表
+   * @returns {Array} - 完整单词列表
+   */
+  getAllWords() {
+    return this.currentWordList;
+  }
+
+  /**
    * 获取已学习单词数
    */
   getLearnedCount() {

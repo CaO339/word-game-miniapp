@@ -298,7 +298,11 @@ class ReviewManager {
   getTodayReviewWords(wordList) {
     const pendingIds = this.getPendingReviewWordIds();
     console.log('[复习系统] 获取待复习单词详情，wordList长度:', wordList.length, ', pendingIds:', pendingIds);
-    const reviewWords = wordList.filter(word => pendingIds.includes(word.id));
+    
+    // 修复类型不匹配问题：确保ID类型一致后再匹配
+    const reviewWords = wordList.filter(word => 
+      pendingIds.some(id => Number(id) === Number(word.id))
+    );
     console.log('[复习系统] 待复习单词详情:', reviewWords);
     return reviewWords;
   }
