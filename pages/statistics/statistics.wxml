@@ -17,11 +17,11 @@
     <view class="stats-grid">
       <view class="stat-card">
         <text class="stat-value">{{todayCount}}</text>
-        <text class="stat-label">今日学习</text>
+        <text class="stat-label">今日练习</text>
       </view>
       <view class="stat-card">
         <text class="stat-value">{{totalCount}}</text>
-        <text class="stat-label">累计学习</text>
+        <text class="stat-label">已学单词</text>
       </view>
       <view class="stat-card">
         <text class="stat-value">{{masteredCount}}</text>

@@ -34,12 +34,12 @@
         <view class="stat-item">
           <view class="stat-icon today-icon">📚</view>
           <text class="stat-number">{{todayCount}}</text>
-          <text class="stat-label">今日学习</text>
+          <text class="stat-label">今日练习</text>
         </view>
         <view class="stat-item">
           <view class="stat-icon total-icon">📖</view>
           <text class="stat-number">{{totalCount}}</text>
-          <text class="stat-label">累计学习</text>
+          <text class="stat-label">已学单词</text>
         </view>
       </view>
       

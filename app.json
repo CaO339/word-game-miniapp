@@ -2,67 +2,7 @@
   "pages": [
     "pages/index/index",
     "pages/study/study",
-发现修复未生效。
-
-当前首页显示：
-
-今日学习：80
-累计学习：45
-
-截图已提供。
-
-你之前说明：
-
-getHomeStats() 中使用了 Math.max()
-保证：
-
-累计学习 >= 今日学习
-
-但实际运行结果仍然是：
-
-80 > 45
-
-请检查：
-
-1. 首页(index)显示的数据来源
-
-2. getHomeStats()是否真的被调用
-
-3. 首页是否直接读取：
-
-todayCount
-totalCount
-
-而没有使用修复后的返回值
-
-4. 检查：
-
-pages/index/index.js
-
-5. 检查：
-
-storageManager.js
-getHomeStats()
-
-要求：
-
-不要解释理论逻辑，
-
-直接定位为什么：
-
-Math.max()修复后，
-首页仍显示：
-
-今日80
-累计45
-
-并修复。
-
-完成后说明：
-
-- Bug根因
-- 修改文件
-- 修复代码位置    "pages/review/review",
+ "pages/review/review",
     "pages/statistics/statistics",
     "pages/logs/logs"
   ],
