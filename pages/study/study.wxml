@@ -28,11 +28,45 @@
     </view>
     
     <!-- 英文单词 -->
-    <view class="word-english">{{currentWord.english}}</view>
+    <view class="word-english">{{currentWord.word || currentWord.english}}</view>
+    
+    <!-- 音标 -->
+    <view class="word-phonetic">{{currentWord.phonetic}}</view>
+    
+    <!-- 词性 -->
+    <view class="word-part-of-speech">{{currentWord.partOfSpeech}}</view>
 
-    <!-- 中文释义（点击显示答案后显示） -->
-    <view class="word-chinese {{showAnswer ? 'show' : ''}}">
-      {{currentWord.chinese}}
+    <!-- 答案区域（点击显示答案后显示） -->
+    <view class="answer-section {{showAnswer ? 'show' : ''}}">
+      <!-- 中文释义 -->
+      <view class="word-meaning">
+        <text class="label">释义</text>
+        <text class="content">{{currentWord.meaning || currentWord.chinese}}</text>
+      </view>
+      
+      <!-- 例句 -->
+      <view class="word-example">
+        <text class="label">例句</text>
+        <text class="content">{{currentWord.example}}</text>
+      </view>
+      
+      <!-- 例句翻译 -->
+      <view class="word-translation">
+        <text class="label">翻译</text>
+        <text class="content">{{currentWord.translation}}</text>
+      </view>
+      
+      <!-- 常见搭配 -->
+      <view class="word-collocation">
+        <text class="label">搭配</text>
+        <text class="content">{{currentWord.collocation}}</text>
+      </view>
+      
+      <!-- 词根词缀 -->
+      <view class="word-root">
+        <text class="label">词根</text>
+        <text class="content">{{currentWord.root}}</text>
+      </view>
     </view>
 
     <!-- 提示文字 -->
