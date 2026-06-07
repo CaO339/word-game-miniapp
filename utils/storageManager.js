@@ -236,8 +236,8 @@ class StorageManager {
       todayCount = record.todayCount;
     }
     
-    // 确保累计学习 >= 今日学习（修正业务逻辑）
-    const totalCount = Math.max(record ? record.totalCount : 0, todayCount);
+    // totalCount 只统计去重单词数，不与 todayCount 混淆
+    const totalCount = record ? record.totalCount : 0;
     
     // 更新内存缓存
     if (record) {
