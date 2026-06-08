@@ -1,5 +1,5 @@
 // 词库管理器 - 负责加载和管理单词数据
-const cet4Data = require('../data/cet4.js');
+const cet4Data = require('../data/cet4_converted.js');
 
 // 内置基础单词（备用）
 const builtinWords = [
@@ -35,6 +35,8 @@ class WordManager {
    * 初始化词库 - 优先使用CET4词库
    */
   initWordList() {
+    console.log('词库文件: ../data/cet4_converted.js');
+    console.log('原始词库长度:', cet4Data.length);
     if (cet4Data && cet4Data.length > 0) {
       // 使用CET4词库
       this.currentWordList = cet4Data;
@@ -42,6 +44,7 @@ class WordManager {
       // 使用内置基础单词
       this.currentWordList = builtinWords;
     }
+    console.log('当前词库长度:', this.currentWordList.length);
   }
 
   /**
