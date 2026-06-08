@@ -1,0 +1,128 @@
+/* WordCard 组件样式 */
+.word-card {
+  padding: 16px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* 单词区域 */
+.word-section {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.word {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333333;
+}
+
+/* 词性区域 */
+.pos-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.pos-label {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.pos-value {
+  font-size: 24rpx;
+  color: #4A90E2;
+  background: #E0E0FF;
+  padding: 4px 12px;
+  border-radius: 20rpx;
+}
+
+/* 音标区域 */
+.phonetic-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.phonetic-label {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.phonetic-value {
+  font-size: 26rpx;
+  color: #666666;
+}
+
+/* 标签样式 */
+.section-label {
+  display: block;
+  font-size: 26rpx;
+  font-weight: bold;
+  color: #4A90E2;
+  margin-bottom: 8px;
+}
+
+/* 释义区域 */
+.definition-section {
+  margin-bottom: 12px;
+}
+
+.definition-content {
+  font-size: 28rpx;
+  color: #333333;
+  line-height: 1.6;
+}
+
+/* 搭配区域 */
+.collocations-section {
+  margin-bottom: 12px;
+}
+
+.collocations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.collocation-item {
+  font-size: 26rpx;
+  color: #333333;
+  line-height: 1.5;
+}
+
+/* 例句区域 */
+.example-section {
+  margin-bottom: 12px;
+}
+
+.example-content {
+  display: block;
+  font-size: 26rpx;
+  color: #333333;
+  line-height: 1.6;
+  margin-bottom: 4px;
+}
+
+.example-translation {
+  display: block;
+  font-size: 24rpx;
+  color: #666666;
+  line-height: 1.5;
+}
+
+/* 词根区域 */
+.root-section {
+  margin-bottom: 12px;
+}
+
+.root-content {
+  font-size: 26rpx;
+  color: #333333;
+  line-height: 1.6;
+}

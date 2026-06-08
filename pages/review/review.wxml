@@ -32,40 +32,17 @@
 
   <!-- 单词卡片区域 -->
   <view class="card-section" wx:else>
-    <view class="word-card">
-      <!-- 单词 -->
-      <view class="word-section">
+    <view class="word-card-wrapper">
+      <!-- 使用 WordCard 组件 -->
+      <WordCard 
+        wx:if="{{showAnswer}}" 
+        word="{{currentWord}}" 
+      />
+      
+      <!-- 未显示答案时只显示单词 -->
+      <view class="word-only" wx:else>
         <text class="word">{{currentWord.word || currentWord.english}}</text>
-        <text class="phonetic" wx:if="{{currentWord.phonetic}}">{{currentWord.phonetic}}</text>
-        <text class="part-of-speech" wx:if="{{currentWord.partOfSpeech}}">{{currentWord.partOfSpeech}}</text>
-      </view>
-
-      <!-- 释义 -->
-      <view class="meaning-section" wx:if="{{showAnswer}}">
-        <view class="meaning-item">
-          <text class="label">释义</text>
-          <text class="content">{{currentWord.meaning || currentWord.chinese}}</text>
-        </view>
-        
-        <view class="meaning-item" wx:if="{{currentWord.example}}">
-          <text class="label">例句</text>
-          <text class="content">{{currentWord.example}}</text>
-        </view>
-        
-        <view class="meaning-item" wx:if="{{currentWord.translation}}">
-          <text class="label">翻译</text>
-          <text class="content">{{currentWord.translation}}</text>
-        </view>
-        
-        <view class="meaning-item" wx:if="{{currentWord.collocation}}">
-          <text class="label">搭配</text>
-          <text class="content">{{currentWord.collocation}}</text>
-        </view>
-        
-        <view class="meaning-item" wx:if="{{currentWord.root}}">
-          <text class="label">词根</text>
-          <text class="content">{{currentWord.root}}</text>
-        </view>
+        <view class="hint-text">点击下方按钮显示答案</view>
       </view>
 
       <!-- 显示答案按钮 -->

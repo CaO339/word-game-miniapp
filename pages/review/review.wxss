@@ -130,47 +130,35 @@
   align-items: center;
 }
 
-.word-card {
+/* 单词卡片容器 */
+.word-card-wrapper {
   width: 90%;
   max-width: 600rpx;
   background-color: #ffffff;
   border-radius: 30rpx;
-  padding: 80rpx 40rpx;
+  padding: 40rpx;
   box-shadow: 0 20rpx 60rpx rgba(0, 0, 0, 0.15);
 }
 
-/* 单词区域 */
-.word-section {
-  text-align: center;
-  margin-bottom: 40rpx;
+/* 未显示答案时只显示单词 */
+.word-only {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300rpx;
 }
 
-.word {
+.word-only .word {
   font-size: 72rpx;
   font-weight: bold;
   color: #333333;
-  display: block;
-  margin-bottom: 15rpx;
-  letter-spacing: 4rpx;
+  margin-bottom: 30rpx;
 }
 
-.phonetic {
-  font-size: 28rpx;
+.word-only .hint-text {
+  font-size: 26rpx;
   color: #999999;
-}
-
-/* 释义区域 */
-.meaning-section {
-  text-align: center;
-  margin-bottom: 40rpx;
-  padding: 30rpx;
-  background-color: rgba(102, 126, 234, 0.1);
-  border-radius: 20rpx;
-}
-
-.meaning {
-  font-size: 36rpx;
-  color: #333333;
 }
 
 /* 显示答案按钮 */
@@ -185,6 +173,7 @@
   color: #ffffff;
   border: none;
   box-shadow: 0 10rpx 30rpx rgba(102, 126, 234, 0.3);
+  margin-top: 20rpx;
 }
 
 .show-answer-btn:active {
@@ -197,6 +186,7 @@
   display: flex;
   justify-content: space-between;
   gap: 30rpx;
+  margin-top: 20rpx;
 }
 
 .result-btn {

@@ -26,57 +26,22 @@
   </view>
 
   <!-- 单词卡片 -->
-  <view class="word-card">
+  <view class="word-card-wrapper">
     <!-- 收藏按钮 -->
     <view class="collect-btn" bindtap="toggleCollect">
       <text class="{{isCollected ? 'collected' : ''}}">{{isCollected ? '❤️' : '🤍'}}</text>
     </view>
     
-    <!-- 英文单词 -->
-    <view class="word-english">{{currentWord.word || currentWord.english}}</view>
+    <!-- 使用 WordCard 组件 -->
+    <WordCard 
+      wx:if="{{showAnswer}}" 
+      word="{{currentWord}}" 
+    />
     
-    <!-- 音标 -->
-    <view class="word-phonetic" wx:if="{{currentWord.phonetic}}">{{currentWord.phonetic}}</view>
-    
-    <!-- 词性 -->
-    <view class="word-part-of-speech" wx:if="{{currentWord.partOfSpeech}}">{{currentWord.partOfSpeech}}</view>
-
-    <!-- 答案区域（点击显示答案后显示） -->
-    <view class="answer-section {{showAnswer ? 'show' : ''}}">
-      <!-- 中文释义 -->
-      <view class="word-meaning">
-        <text class="label">释义</text>
-        <text class="content">{{currentWord.meaning || currentWord.chinese}}</text>
-      </view>
-      
-      <!-- 例句 -->
-      <view class="word-example" wx:if="{{currentWord.example}}">
-        <text class="label">例句</text>
-        <text class="content">{{currentWord.example}}</text>
-      </view>
-      
-      <!-- 例句翻译 -->
-      <view class="word-translation" wx:if="{{currentWord.translation}}">
-        <text class="label">翻译</text>
-        <text class="content">{{currentWord.translation}}</text>
-      </view>
-      
-      <!-- 常见搭配 -->
-      <view class="word-collocation" wx:if="{{currentWord.collocation}}">
-        <text class="label">搭配</text>
-        <text class="content">{{currentWord.collocation}}</text>
-      </view>
-      
-      <!-- 词根词缀 -->
-      <view class="word-root" wx:if="{{currentWord.root}}">
-        <text class="label">词根</text>
-        <text class="content">{{currentWord.root}}</text>
-      </view>
-    </view>
-
-    <!-- 提示文字 -->
-    <view class="hint-text" wx:if="{{!showAnswer}}">
-      点击下方按钮显示答案
+    <!-- 未显示答案时只显示单词 -->
+    <view class="word-only" wx:else>
+      <text class="word">{{currentWord.word || currentWord.english}}</text>
+      <view class="hint-text">点击下方按钮显示答案</view>
     </view>
   </view>
 
