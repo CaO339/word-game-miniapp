@@ -55,6 +55,9 @@ Page({
     }
     
     // 有待复习单词，开始复习
+    // 调试：打印第一个复习单词
+    console.log('[Review] 当前复习单词对象:', JSON.stringify(pendingWords[0]));
+    
     this.setData({
       reviewCompleted: false,
       hasPendingWords: true,
@@ -113,6 +116,8 @@ Page({
     } else {
       // 继续下一个单词
       const nextWord = this.data.reviewWords[nextIndex];
+      // 调试：打印下一个复习单词
+      console.log('[Review] 下一个复习单词对象:', JSON.stringify(nextWord));
       this.setData({
         currentWord: nextWord,
         currentIndex: nextIndex,

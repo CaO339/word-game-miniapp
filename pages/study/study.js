@@ -50,6 +50,9 @@ Page({
     // 获取第一个单词
     const firstWord = manager.getRandomWord();
     
+    // 调试：打印当前单词对象
+    console.log('[Study] 当前单词对象:', JSON.stringify(firstWord));
+    
     // 检查当前单词是否已收藏
     const isCollected = collection.isCollected(firstWord.id);
     
@@ -125,6 +128,9 @@ Page({
     
     // 获取下一个单词
     const nextWord = manager.getNextWord();
+    
+    // 调试：打印下一个单词对象
+    console.log('[Study] 下一个单词对象:', JSON.stringify(nextWord));
     
     // 检查下一个单词是否已收藏
     const isCollected = collection.isCollected(nextWord.id);

@@ -139,6 +139,23 @@
   position: relative;
 }
 
+/* 调试信息样式 */
+.debug-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20rpx;
+  padding: 10rpx;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10rpx;
+}
+
+.debug-text {
+  font-size: 20rpx;
+  color: #ffffff;
+  margin-bottom: 4rpx;
+}
+
 /* 按钮组 */
 .btn-group {
   width: 88%;

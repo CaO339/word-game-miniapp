@@ -1,54 +1,55 @@
 <!-- WordCard 组件 -->
 <view class="word-card">
-  <!-- 单词 -->
+  <!-- 单词区域 - 始终显示 -->
   <view class="word-section">
-    <text class="word">{{word.word || word.english}}</text>
+    <text class="word">{{word.word || word.english || '暂无单词'}}</text>
   </view>
   
-  <!-- 发音按钮区域（在单词和词性之间） -->
+  <!-- 音频按钮区域 - 始终显示 -->
   <view class="audio-buttons">
-    <button class="audio-btn uk-btn" bindtap="playUK">
+    <button class="audio-btn uk-btn" bindtap="playUK" hover-class="button-hover">
       <text class="flag">🇬🇧</text>
       <text class="label">英音</text>
     </button>
-    <button class="audio-btn us-btn" bindtap="playUS">
+    <button class="audio-btn us-btn" bindtap="playUS" hover-class="button-hover">
       <text class="flag">🇺🇸</text>
       <text class="label">美音</text>
     </button>
   </view>
   
-  <!-- 播放错误提示 -->
-  <view class="audio-error" wx:if="{{audioError}}">{{audioError}}</view>
+  <!-- 音频错误提示 -->
+  <view class="audio-error" wx:if="{{audioError}}">
+    <text class="error-text">{{audioError}}</text>
+  </view>
   
-  <!-- 答案内容（点击显示答案后显示） -->
+  <!-- 答案内容区域 - 点击显示答案后显示 -->
   <view class="answer-content" wx:if="{{showAnswer}}">
-    <!-- 词性 -->
+    <!-- 词性区域 -->
     <view class="pos-section" wx:if="{{word.partOfSpeech}}">
       <text class="section-label">词性</text>
       <text class="pos-value">{{word.partOfSpeech}}</text>
     </view>
     
-    <!-- 释义 -->
+    <!-- 释义区域 -->
     <view class="definition-section" wx:if="{{word.meaning || word.chinese}}">
       <text class="section-label">释义</text>
       <text class="definition-content">{{word.meaning || word.chinese}}</text>
     </view>
     
-    <!-- 搭配 -->
-    <view class="collocations-section" wx:if="{{word.collocation}}">
+    <!-- 搭配区域 -->
+    <view class="collocations-section" wx:if="{{collocationList.length > 0}}">
       <text class="section-label">搭配</text>
       <view class="collocations-list">
-        <text 
-          class="collocation-item" 
-          wx:for="{{collocationList}}" 
-          wx:key="index"
-        >{{item}}</text>
+        <view class="collocation-item" wx:for="{{collocationList}}" wx:key="index">
+          <text class="collocation-bullet">•</text>
+          <text class="collocation-text">{{item}}</text>
+        </view>
       </view>
     </view>
   </view>
   
   <!-- 未显示答案时的提示 -->
-  <view class="hint-section" wx:else>
-    <text class="hint-text">点击下方按钮显示答案</text>
+  <view class="hint-section" wx:if="{{!showAnswer}}">
+    <text class="hint-text">点击下方「显示答案」按钮查看详情</text>
   </view>
 </view>
