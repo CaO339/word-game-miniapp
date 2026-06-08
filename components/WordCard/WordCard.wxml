@@ -1,0 +1,59 @@
+<!-- WordCard 组件 -->
+<view class="word-card">
+  <!-- 发音按钮区域 -->
+  <view class="audio-buttons">
+    <button class="audio-btn uk-btn" bindtap="playUK">
+      <text class="flag">🇬🇧</text>
+      <text class="label">英音</text>
+    </button>
+    <button class="audio-btn us-btn" bindtap="playUS">
+      <text class="flag">🇺🇸</text>
+      <text class="label">美音</text>
+    </button>
+  </view>
+  
+  <!-- 播放错误提示 -->
+  <view class="audio-error" wx:if="{{audioError}}">{{audioError}}</view>
+  
+  <!-- 单词 -->
+  <view class="word-section">
+    <text class="word">{{word.word || word.english}}</text>
+  </view>
+  
+  <!-- 音标 -->
+  <view class="phonetic-section" wx:if="{{word.phonetic}}">
+    <text class="phonetic-value">{{word.phonetic}}</text>
+  </view>
+  
+  <!-- 答案内容（点击显示答案后显示） -->
+  <view class="answer-content" wx:if="{{showAnswer}}">
+    <!-- 词性 -->
+    <view class="pos-section" wx:if="{{word.partOfSpeech}}">
+      <text class="section-label">词性</text>
+      <text class="pos-value">{{word.partOfSpeech}}</text>
+    </view>
+    
+    <!-- 释义 -->
+    <view class="definition-section" wx:if="{{word.meaning || word.chinese}}">
+      <text class="section-label">释义</text>
+      <text class="definition-content">{{word.meaning || word.chinese}}</text>
+    </view>
+    
+    <!-- 搭配 -->
+    <view class="collocations-section" wx:if="{{word.collocation}}">
+      <text class="section-label">搭配</text>
+      <view class="collocations-list">
+        <text 
+          class="collocation-item" 
+          wx:for="{{collocationList}}" 
+          wx:key="index"
+        >• {{item}}</text>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 未显示答案时的提示 -->
+  <view class="hint-section" wx:else>
+    <text class="hint-text">点击下方按钮显示答案</text>
+  </view>
+</view>
