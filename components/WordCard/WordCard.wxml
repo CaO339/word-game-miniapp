@@ -1,5 +1,20 @@
 <!-- WordCard 组件 -->
 <view class="word-card">
+  <!-- 发音按钮区域 -->
+  <view class="audio-buttons">
+    <button class="audio-btn uk-btn" bindtap="playUK">
+      <text class="flag">🇬🇧</text>
+      <text class="label">英音</text>
+    </button>
+    <button class="audio-btn us-btn" bindtap="playUS">
+      <text class="flag">🇺🇸</text>
+      <text class="label">美音</text>
+    </button>
+  </view>
+  
+  <!-- 播放错误提示 -->
+  <view class="audio-error" wx:if="{{audioError}}">{{audioError}}</view>
+  
   <!-- 单词 -->
   <view class="word-section">
     <text class="word">{{word.word || word.english}}</text>

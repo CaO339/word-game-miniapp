@@ -6,6 +6,54 @@
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
+/* 发音按钮区域 */
+.audio-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20rpx;
+  margin-bottom: 16px;
+}
+
+.audio-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 140rpx;
+  height: 80rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16rpx;
+  border: none;
+  box-shadow: 0 4rpx 12rpx rgba(102, 126, 234, 0.3);
+}
+
+.audio-btn:active {
+  transform: scale(0.95);
+  opacity: 0.9;
+}
+
+.audio-btn .flag {
+  font-size: 32rpx;
+  margin-bottom: 4px;
+}
+
+.audio-btn .label {
+  font-size: 22rpx;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+/* 播放错误提示 */
+.audio-error {
+  text-align: center;
+  font-size: 24rpx;
+  color: #ff4757;
+  margin-bottom: 12px;
+  padding: 8px 16px;
+  background: rgba(255, 71, 87, 0.1);
+  border-radius: 8rpx;
+}
+
 /* 单词区域 */
 .word-section {
   text-align: center;
