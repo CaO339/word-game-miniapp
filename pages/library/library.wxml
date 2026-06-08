@@ -78,10 +78,11 @@
     class="word-list"
     scroll-y
     enable-back-to-top
+    bindscrolltolower="onScrollToLower"
   >
     <view 
       class="word-card {{item.status}}"
-      wx:for="{{filteredWordList}}"
+      wx:for="{{displayWordList}}"
       wx:key="id"
     >
       <view class="word-header">
@@ -93,8 +94,13 @@
       <text class="word-chinese">{{item.chinese}}</text>
     </view>
 
+    <!-- 加载中提示 -->
+    <view class="loading-state" wx:if="{{hasMore && displayWordList.length > 0}}">
+      <text class="loading-text">加载中...</text>
+    </view>
+
     <!-- 空状态 -->
-    <view class="empty-state" wx:if="{{filteredWordList.length === 0}}">
+    <view class="empty-state" wx:if="{{displayWordList.length === 0}}">
       <text class="empty-icon">📚</text>
       <text class="empty-text">没有找到相关单词</text>
     </view>
