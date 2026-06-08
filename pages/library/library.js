@@ -19,18 +19,12 @@ Page({
     // 单词列表
     wordList: [],
     filteredWordList: [],
-    displayWordList: [],     // 当前显示的单词列表（分页用）
     
     // 搜索
     searchKeyword: '',
     
     // 状态过滤
-    currentFilter: 'all',  // all: 全部, learned: 已学, pending: 待复习, notLearned: 未学
-    
-    // 分页控制
-    pageSize: 100,          // 每页加载数量
-    currentPage: 0,         // 当前页码
-    hasMore: true           // 是否还有更多数据
+    currentFilter: 'all'  // all: 全部, learned: 已学, pending: 待复习, notLearned: 未学
   },
 
   onLoad: function() {
@@ -48,9 +42,6 @@ Page({
   loadWordLibrary: function() {
     // 获取完整词库
     const allWords = wordMgr.getAllWords();
-    
-    console.log('词库总数:', allWords.length);
-    console.log('第一条单词:', allWords[0]);
     
     // 获取已学习单词ID列表
     const learnedWordIds = storage.getLearnedWordIds();
@@ -82,54 +73,15 @@ Page({
     const pendingReviewCount = wordList.filter(w => w.status === 'pendingReview').length;
     const notLearnedCount = wordList.filter(w => w.status === 'notLearned').length;
     
-    // 更新页面数据（重置分页）
+    // 更新页面数据
     this.setData({
       totalCount: wordList.length,
       learnedCount: learnedCount,
       pendingReviewCount: pendingReviewCount,
       notLearnedCount: notLearnedCount,
       wordList: wordList,
-      filteredWordList: wordList,
-      currentPage: 0,
-      hasMore: true
+      filteredWordList: wordList
     });
-    
-    // 加载第一页数据
-    this.loadNextPage();
-  },
-
-  /**
-   * 加载下一页数据
-   */
-  loadNextPage: function() {
-    const { filteredWordList, currentPage, pageSize, displayWordList } = this.data;
-    
-    if (!this.data.hasMore) return;
-    
-    const start = currentPage * pageSize;
-    const end = start + pageSize;
-    const newItems = filteredWordList.slice(start, end);
-    
-    if (newItems.length === 0) {
-      this.setData({
-        hasMore: false
-      });
-      return;
-    }
-    
-    this.setData({
-      displayWordList: [...displayWordList, ...newItems],
-      currentPage: currentPage + 1,
-      hasMore: end < filteredWordList.length
-    });
-  },
-
-  /**
-   * 滚动到底部加载更多
-   */
-  onScrollToLower: function() {
-    console.log('滚动到底部，加载更多');
-    this.loadNextPage();
   },
 
   /**
@@ -138,10 +90,7 @@ Page({
   onSearchInput: function(e) {
     const keyword = e.detail.value.toLowerCase();
     this.setData({
-      searchKeyword: keyword,
-      currentPage: 0,
-      displayWordList: [],
-      hasMore: true
+      searchKeyword: keyword
     });
     this.filterWords();
   },
@@ -151,10 +100,7 @@ Page({
    */
   onClearSearch: function() {
     this.setData({
-      searchKeyword: '',
-      currentPage: 0,
-      displayWordList: [],
-      hasMore: true
+      searchKeyword: ''
     });
     this.filterWords();
   },
@@ -180,16 +126,9 @@ Page({
       );
     }
     
-    // 重置分页并加载第一页
     this.setData({
-      filteredWordList: filtered,
-      currentPage: 0,
-      displayWordList: [],
-      hasMore: true
+      filteredWordList: filtered
     });
-    
-    // 加载第一页
-    this.loadNextPage();
   },
 
   /**
@@ -198,10 +137,7 @@ Page({
   onFilterChange: function(e) {
     const filter = e.currentTarget.dataset.filter;
     this.setData({
-      currentFilter: filter,
-      currentPage: 0,
-      displayWordList: [],
-      hasMore: true
+      currentFilter: filter
     });
     this.filterWords();
   },

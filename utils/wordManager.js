@@ -1,5 +1,28 @@
 // 词库管理器 - 负责加载和管理单词数据
-const cet4Data = require('../data/cet4_converted.js');
+
+// 调试日志 - 尝试加载模块
+console.log('[WordManager] 正在尝试加载词库...');
+
+let cet4Data = [];
+
+try {
+  // 尝试加载主词库
+  cet4Data = require('../data/cet4.js');
+  console.log('[WordManager] 词库加载成功! 单词数量:', cet4Data ? cet4Data.length : 'undefined');
+  if (cet4Data && cet4Data.length > 0) {
+    console.log('[WordManager] 第一个单词:', JSON.stringify(cet4Data[0]));
+  }
+} catch (error) {
+  console.error('[WordManager] 加载主词库失败:', error.message);
+  
+  // 尝试加载测试词库
+  try {
+    cet4Data = require('../data/cet4_test.js');
+    console.log('[WordManager] 备用测试词库加载成功!');
+  } catch (testError) {
+    console.error('[WordManager] 备用词库也加载失败:', testError.message);
+  }
+}
 
 // 内置基础单词（备用）
 const builtinWords = [
@@ -35,8 +58,6 @@ class WordManager {
    * 初始化词库 - 优先使用CET4词库
    */
   initWordList() {
-    console.log('词库文件: ../data/cet4_converted.js');
-    console.log('原始词库长度:', cet4Data.length);
     if (cet4Data && cet4Data.length > 0) {
       // 使用CET4词库
       this.currentWordList = cet4Data;
@@ -44,7 +65,6 @@ class WordManager {
       // 使用内置基础单词
       this.currentWordList = builtinWords;
     }
-    console.log('当前词库长度:', this.currentWordList.length);
   }
 
   /**

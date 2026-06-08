@@ -90,10 +90,6 @@ Page({
 
   // 处理单词学习（记录学习并进入下一题）
   processWord: function(isKnown) {
-    console.log('==========');
-    console.log('当前单词', this.data.currentWord);
-    console.log('当前ID', this.data.currentWord.id);
-    
     const wordId = this.data.currentWord.id;
     
     // 如果不认识，添加到错题本
@@ -129,8 +125,6 @@ Page({
     
     // 获取下一个单词
     const nextWord = manager.getNextWord();
-    
-    console.log('下一单词', nextWord);
     
     // 检查下一个单词是否已收藏
     const isCollected = collection.isCollected(nextWord.id);

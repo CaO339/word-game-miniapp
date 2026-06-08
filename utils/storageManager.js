@@ -114,7 +114,7 @@ class StorageManager {
   updateLearningRecord(wordId) {
     const today = this.getTodayString();
     // 直接从 Storage 读取最新数据
-    let record = wx.getStorageSync(STORAGE_KEYS.LEARNING_RECORD);
+    const record = wx.getStorageSync(STORAGE_KEYS.LEARNING_RECORD);
     
     // 如果是新的一天，重置今日学习数量
     if (!record || record.lastStudyDate !== today) {
