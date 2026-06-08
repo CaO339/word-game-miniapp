@@ -7,7 +7,7 @@ let cet4Data = [];
 
 try {
   // 尝试加载主词库
-  cet4Data = require('../data/cet4.js');
+  cet4Data = require('../data/cet4_converted.js');
   console.log('[WordManager] 词库加载成功! 单词数量:', cet4Data ? cet4Data.length : 'undefined');
   if (cet4Data && cet4Data.length > 0) {
     console.log('[WordManager] 第一个单词:', JSON.stringify(cet4Data[0]));
