@@ -129,14 +129,13 @@
   align-items: center;
 }
 
-/* 单词卡片容器 */
+/* 单词卡片容器 - 透明容器，不再作为卡片 */
 .word-card-wrapper {
-  width: 90%;
-  max-width: 600rpx;
-  background-color: #ffffff;
-  border-radius: 30rpx;
-  padding: 20rpx;
-  box-shadow: 0 20rpx 60rpx rgba(0, 0, 0, 0.15);
+  width: 85%;
+  max-width: 550rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin-bottom: 40rpx;
   position: relative;
 }
@@ -144,16 +143,17 @@
 /* 收藏按钮 */
 .collect-btn {
   position: absolute;
-  top: 20rpx;
-  right: 20rpx;
+  top: -10rpx;
+  right: -10rpx;
   width: 60rpx;
   height: 60rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: #ffffff;
   border-radius: 50%;
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.12);
+  z-index: 10;
 }
 
 .collect-btn text {
@@ -166,8 +166,8 @@
 
 /* 操作按钮区域 */
 .btn-group {
-  width: 90%;
-  max-width: 600rpx;
+  width: 85%;
+  max-width: 550rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
