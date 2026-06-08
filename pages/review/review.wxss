@@ -131,8 +131,8 @@
 
 /* 单词卡片容器 - 透明容器，不再作为卡片 */
 .word-card-wrapper {
-  width: 85%;
-  max-width: 550rpx;
+  width: 80%;
+  max-width: 520rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -166,8 +166,8 @@
 
 /* 操作按钮区域 */
 .btn-group {
-  width: 85%;
-  max-width: 550rpx;
+  width: 80%;
+  max-width: 520rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
