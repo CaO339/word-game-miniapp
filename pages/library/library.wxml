@@ -1,0 +1,107 @@
+<!--词库浏览页面 WXML-->
+<view class="container">
+  <!-- 顶部统计区域 -->
+  <view class="stats-bar">
+    <view class="stat-item">
+      <text class="stat-number">{{totalCount}}</text>
+      <text class="stat-label">总词数</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-number learned">{{learnedCount}}</text>
+      <text class="stat-label">已学</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-number pending">{{pendingReviewCount}}</text>
+      <text class="stat-label">待复习</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-number not-learned">{{notLearnedCount}}</text>
+      <text class="stat-label">未学</text>
+    </view>
+  </view>
+
+  <!-- 搜索框 -->
+  <view class="search-section">
+    <view class="search-box">
+      <text class="search-icon">🔍</text>
+      <input 
+        class="search-input" 
+        placeholder="搜索单词或中文释义"
+        value="{{searchKeyword}}"
+        bindinput="onSearchInput"
+      />
+      <text 
+        class="clear-icon" 
+        wx:if="{{searchKeyword}}"
+        bindtap="onClearSearch"
+      >✕</text>
+    </view>
+  </view>
+
+  <!-- 状态筛选标签 -->
+  <view class="filter-section">
+    <view 
+      class="filter-tag {{currentFilter === 'all' ? 'active' : ''}}"
+      bindtap="onFilterChange"
+      data-filter="all"
+    >
+      全部
+    </view>
+    <view 
+      class="filter-tag learned {{currentFilter === 'learned' ? 'active' : ''}}"
+      bindtap="onFilterChange"
+      data-filter="learned"
+    >
+      已学
+    </view>
+    <view 
+      class="filter-tag pending {{currentFilter === 'pendingReview' ? 'active' : ''}}"
+      bindtap="onFilterChange"
+      data-filter="pendingReview"
+    >
+      待复习
+    </view>
+    <view 
+      class="filter-tag not-learned {{currentFilter === 'notLearned' ? 'active' : ''}}"
+      bindtap="onFilterChange"
+      data-filter="notLearned"
+    >
+      未学
+    </view>
+  </view>
+
+  <!-- 单词列表 -->
+  <scroll-view 
+    class="word-list"
+    scroll-y
+    enable-back-to-top
+  >
+    <view 
+      class="word-card {{item.status}}"
+      wx:for="{{filteredWordList}}"
+      wx:key="id"
+    >
+      <view class="word-header">
+        <text class="word-english">{{item.english}}</text>
+        <view class="status-tag {{item.status}}">
+          {{item.status === 'learned' ? '已学' : item.status === 'pendingReview' ? '待复习' : '未学'}}
+        </view>
+      </view>
+      <text class="word-chinese">{{item.chinese}}</text>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{filteredWordList.length === 0}}">
+      <text class="empty-icon">📚</text>
+      <text class="empty-text">没有找到相关单词</text>
+    </view>
+  </scroll-view>
+
+  <!-- 返回按钮 -->
+  <view class="back-btn" bindtap="goHome">
+    <text>返回首页</text>
+  </view>
+</view>

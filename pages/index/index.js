@@ -151,5 +151,12 @@ Page({
         }
       }
     });
+  },
+
+  // 查看词库浏览页面
+  viewLibrary: function() {
+    wx.navigateTo({
+      url: '/pages/library/library'
+    });
   }
 });

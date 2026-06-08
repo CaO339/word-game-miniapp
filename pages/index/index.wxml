@@ -25,7 +25,7 @@
       
       <!-- 学习进度区域 -->
       <view class="progress-row">
-        <view class="progress-item">
+        <view class="progress-item" bindtap="viewLibrary">
           <view class="progress-icon">📚</view>
           <view class="progress-content">
             <text class="progress-label">词库进度</text>
