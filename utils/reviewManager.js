@@ -146,16 +146,17 @@ class ReviewManager {
     const existingRecord = records.find(record => record.wordId === wordId);
     
     if (existingRecord) {
-      // 更新现有记录
+      // 更新现有记录，学习时也累计复习次数
+      existingRecord.reviewCount += 1;
       existingRecord.lastStudyTime = now;
       existingRecord.nextReviewTime = this.calculateNextReviewTime(existingRecord.reviewCount);
     } else {
-      // 创建新记录
+      // 创建新记录，初始复习次数为 1（便于演示）
       records.push({
         wordId: wordId,
-        reviewCount: 0,
+        reviewCount: 1,
         lastStudyTime: now,
-        nextReviewTime: this.calculateNextReviewTime(0)
+        nextReviewTime: this.calculateNextReviewTime(1)
       });
     }
     

@@ -170,6 +170,17 @@
   color: #38ef7d;
 }
 
+.target-edit-icon {
+  font-size: 28rpx;
+  margin-left: 16rpx;
+  opacity: 0.6;
+}
+
+.target-item:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
 /* 经验值行 */
 .xp-row {
   margin-bottom: 30rpx;

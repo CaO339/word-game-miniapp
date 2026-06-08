@@ -126,5 +126,30 @@ Page({
     wx.navigateTo({
       url: '/pages/mistakes/mistakes'
     });
+  },
+
+  // 修改每日目标
+  changeTarget: function() {
+    const targetOptions = [5, 10, 20, 30, 50];
+    const currentTarget = this.data.target;
+    
+    wx.showActionSheet({
+      itemList: targetOptions.map(t => t + '个单词'),
+      success: (res) => {
+        const newTarget = targetOptions[res.tapIndex];
+        if (newTarget !== currentTarget) {
+          storage.setDailyTarget(newTarget);
+          this.setData({
+            target: newTarget,
+            targetIsCompleted: this.data.targetTodayNewCount >= newTarget
+          });
+          wx.showToast({
+            title: '目标已更新',
+            icon: 'success',
+            duration: 1500
+          });
+        }
+      }
+    });
   }
 });

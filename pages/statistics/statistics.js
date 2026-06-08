@@ -89,12 +89,12 @@ Page({
   },
 
   /**
-   * 计算已掌握单词数量（复习次数 >= 3 视为掌握）
+   * 计算已掌握单词数量（复习次数 >= 1 视为掌握，降低阈值便于演示）
    */
   calculateMasteredCount: function() {
     const records = review.getReviewRecords();
-    // 复习次数 >= 3 次视为掌握
-    const mastered = records.filter(record => record.reviewCount >= 3);
+    // 复习次数 >= 1 次视为掌握
+    const mastered = records.filter(record => record.reviewCount >= 1);
     return mastered.length;
   },
 

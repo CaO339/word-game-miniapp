@@ -11,12 +11,13 @@
     <view class="stats-card">
       <!-- 每日目标区域 -->
       <view class="target-row">
-        <view class="target-item {{targetIsCompleted ? 'completed' : ''}}">
+        <view class="target-item {{targetIsCompleted ? 'completed' : ''}}" bindtap="changeTarget">
           <view class="target-icon">{{targetIsCompleted ? '🎯' : '📍'}}</view>
           <view class="target-content">
             <text class="target-label">今日目标</text>
             <text class="target-value">{{targetIsCompleted ? '已完成' : targetTodayNewCount + '/' + target}}</text>
           </view>
+          <view class="target-edit-icon">✏️</view>
         </view>
       </view>
 
