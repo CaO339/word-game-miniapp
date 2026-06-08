@@ -35,13 +35,37 @@
     <view class="word-card">
       <!-- 单词 -->
       <view class="word-section">
-        <text class="word">{{currentWord.english}}</text>
+        <text class="word">{{currentWord.word || currentWord.english}}</text>
         <text class="phonetic">{{currentWord.phonetic || '暂无音标'}}</text>
+        <text class="part-of-speech">{{currentWord.partOfSpeech || '暂无词性'}}</text>
       </view>
 
       <!-- 释义 -->
       <view class="meaning-section" wx:if="{{showAnswer}}">
-        <text class="meaning">{{currentWord.chinese}}</text>
+        <view class="meaning-item">
+          <text class="label">释义</text>
+          <text class="content">{{currentWord.meaning || currentWord.chinese}}</text>
+        </view>
+        
+        <view class="meaning-item">
+          <text class="label">例句</text>
+          <text class="content">{{currentWord.example || '暂无例句'}}</text>
+        </view>
+        
+        <view class="meaning-item">
+          <text class="label">翻译</text>
+          <text class="content">{{currentWord.translation || '暂无翻译'}}</text>
+        </view>
+        
+        <view class="meaning-item">
+          <text class="label">搭配</text>
+          <text class="content">{{currentWord.collocation || '暂无搭配'}}</text>
+        </view>
+        
+        <view class="meaning-item">
+          <text class="label">词根</text>
+          <text class="content">{{currentWord.root || '暂无词根'}}</text>
+        </view>
       </view>
 
       <!-- 显示答案按钮 -->
