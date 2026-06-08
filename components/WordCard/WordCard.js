@@ -10,6 +10,10 @@ Component({
       type: Object,
       value: {},
       observer: 'onWordChange'
+    },
+    showAnswer: {
+      type: Boolean,
+      value: false
     }
   },
 

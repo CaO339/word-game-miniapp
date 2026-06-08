@@ -34,15 +34,9 @@
     
     <!-- 使用 WordCard 组件 -->
     <WordCard 
-      wx:if="{{showAnswer}}" 
       word="{{currentWord}}" 
+      showAnswer="{{showAnswer}}"
     />
-    
-    <!-- 未显示答案时只显示单词 -->
-    <view class="word-only" wx:else>
-      <text class="word">{{currentWord.word || currentWord.english}}</text>
-      <view class="hint-text">点击下方按钮显示答案</view>
-    </view>
   </view>
 
   <!-- 操作按钮区域 -->

@@ -20,46 +20,40 @@
     <text class="word">{{word.word || word.english}}</text>
   </view>
   
-  <!-- 词性 -->
-  <view class="pos-section" wx:if="{{word.partOfSpeech}}">
-    <text class="pos-label">词性</text>
-    <text class="pos-value">{{word.partOfSpeech}}</text>
-  </view>
-  
   <!-- 音标 -->
   <view class="phonetic-section" wx:if="{{word.phonetic}}">
-    <text class="phonetic-label">音标</text>
     <text class="phonetic-value">{{word.phonetic}}</text>
   </view>
   
-  <!-- 释义 -->
-  <view class="definition-section" wx:if="{{word.meaning || word.chinese}}">
-    <text class="section-label">释义</text>
-    <text class="definition-content">{{word.meaning || word.chinese}}</text>
-  </view>
-  
-  <!-- 搭配 -->
-  <view class="collocations-section" wx:if="{{word.collocation}}">
-    <text class="section-label">搭配</text>
-    <view class="collocations-list">
-      <text 
-        class="collocation-item" 
-        wx:for="{{collocationList}}" 
-        wx:key="index"
-      >• {{item}}</text>
+  <!-- 答案内容（点击显示答案后显示） -->
+  <view class="answer-content" wx:if="{{showAnswer}}">
+    <!-- 词性 -->
+    <view class="pos-section" wx:if="{{word.partOfSpeech}}">
+      <text class="section-label">词性</text>
+      <text class="pos-value">{{word.partOfSpeech}}</text>
+    </view>
+    
+    <!-- 释义 -->
+    <view class="definition-section" wx:if="{{word.meaning || word.chinese}}">
+      <text class="section-label">释义</text>
+      <text class="definition-content">{{word.meaning || word.chinese}}</text>
+    </view>
+    
+    <!-- 搭配 -->
+    <view class="collocations-section" wx:if="{{word.collocation}}">
+      <text class="section-label">搭配</text>
+      <view class="collocations-list">
+        <text 
+          class="collocation-item" 
+          wx:for="{{collocationList}}" 
+          wx:key="index"
+        >• {{item}}</text>
+      </view>
     </view>
   </view>
   
-  <!-- 例句 -->
-  <view class="example-section" wx:if="{{word.example}}">
-    <text class="section-label">例句</text>
-    <text class="example-content">{{word.example}}</text>
-    <text class="example-translation" wx:if="{{word.translation}}">{{word.translation}}</text>
-  </view>
-  
-  <!-- 词根 -->
-  <view class="root-section" wx:if="{{word.root}}">
-    <text class="section-label">词根</text>
-    <text class="root-content">{{word.root}}</text>
+  <!-- 未显示答案时的提示 -->
+  <view class="hint-section" wx:else>
+    <text class="hint-text">点击下方按钮显示答案</text>
   </view>
 </view>

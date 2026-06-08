@@ -35,19 +35,16 @@
     <view class="word-card-wrapper">
       <!-- 使用 WordCard 组件 -->
       <WordCard 
-        wx:if="{{showAnswer}}" 
         word="{{currentWord}}" 
+        showAnswer="{{showAnswer}}"
       />
-      
-      <!-- 未显示答案时只显示单词 -->
-      <view class="word-only" wx:else>
-        <text class="word">{{currentWord.word || currentWord.english}}</text>
-        <view class="hint-text">点击下方按钮显示答案</view>
-      </view>
+    </view>
 
+    <!-- 操作按钮区域 -->
+    <view class="btn-group">
       <!-- 显示答案按钮 -->
       <button 
-        class="show-answer-btn" 
+        class="btn btn-primary" 
         wx:if="{{!showAnswer}}" 
         bindtap="showAnswer"
       >
@@ -55,9 +52,9 @@
       </button>
 
       <!-- 认识/不认识按钮 -->
-      <view class="result-buttons" wx:if="{{showResultButtons}}">
-        <button class="result-btn known-btn" bindtap="markKnown">认识</button>
-        <button class="result-btn unknown-btn" bindtap="markUnknown">不认识</button>
+      <view class="result-btn-group" wx:if="{{showResultButtons}}">
+        <button class="btn btn-success" bindtap="markKnown">认识</button>
+        <button class="btn btn-danger" bindtap="markUnknown">不认识</button>
       </view>
     </view>
   </view>

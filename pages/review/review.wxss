@@ -4,7 +4,6 @@
   min-height: 100vh;
   padding: 40rpx;
   box-sizing: border-box;
-  /* 统一主色调：紫色渐变 */
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
@@ -136,81 +135,88 @@
   max-width: 600rpx;
   background-color: #ffffff;
   border-radius: 30rpx;
-  padding: 40rpx;
+  padding: 20rpx;
   box-shadow: 0 20rpx 60rpx rgba(0, 0, 0, 0.15);
+  margin-bottom: 40rpx;
+  position: relative;
 }
 
-/* 未显示答案时只显示单词 */
-.word-only {
+/* 收藏按钮 */
+.collect-btn {
+  position: absolute;
+  top: 20rpx;
+  right: 20rpx;
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.collect-btn text {
+  font-size: 36rpx;
+}
+
+.collect-btn .collected {
+  color: #ff4757;
+}
+
+/* 操作按钮区域 */
+.btn-group {
+  width: 90%;
+  max-width: 600rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-height: 300rpx;
 }
 
-.word-only .word {
-  font-size: 72rpx;
-  font-weight: bold;
-  color: #333333;
-  margin-bottom: 30rpx;
-}
-
-.word-only .hint-text {
-  font-size: 26rpx;
-  color: #999999;
-}
-
-/* 显示答案按钮 */
-.show-answer-btn {
-  width: 100%;
-  height: 100rpx;
-  line-height: 100rpx;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 50rpx;
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #ffffff;
-  border: none;
-  box-shadow: 0 10rpx 30rpx rgba(102, 126, 234, 0.3);
-  margin-top: 20rpx;
-}
-
-.show-answer-btn:active {
-  transform: scale(0.98);
-  opacity: 0.9;
-}
-
-/* 结果按钮区域 */
-.result-buttons {
+/* 认识/不认识按钮组 */
+.result-btn-group {
   display: flex;
   justify-content: space-between;
+  width: 100%;
   gap: 30rpx;
-  margin-top: 20rpx;
 }
 
-.result-btn {
+.result-btn-group .btn {
   flex: 1;
+}
+
+/* 通用按钮样式 */
+.btn {
   height: 100rpx;
   line-height: 100rpx;
   border-radius: 50rpx;
   font-size: 32rpx;
   font-weight: bold;
+  margin-bottom: 30rpx;
   border: none;
   box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.15);
 }
 
-.result-btn:active {
+.btn:active {
   transform: scale(0.98);
   opacity: 0.9;
 }
 
-.known-btn {
+/* 显示答案按钮 - 主色调 */
+.btn-primary {
+  width: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+}
+
+/* 认识按钮 - 成功色调 */
+.btn-success {
   background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
   color: #ffffff;
 }
 
-.unknown-btn {
+/* 不认识按钮 - 危险色调 */
+.btn-danger {
   background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
   color: #ffffff;
 }
