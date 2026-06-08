@@ -1,6 +1,11 @@
 <!-- WordCard 组件 -->
 <view class="word-card">
-  <!-- 发音按钮区域 -->
+  <!-- 单词 -->
+  <view class="word-section">
+    <text class="word">{{word.word || word.english}}</text>
+  </view>
+  
+  <!-- 发音按钮区域（在单词和词性之间） -->
   <view class="audio-buttons">
     <button class="audio-btn uk-btn" bindtap="playUK">
       <text class="flag">🇬🇧</text>
@@ -14,16 +19,6 @@
   
   <!-- 播放错误提示 -->
   <view class="audio-error" wx:if="{{audioError}}">{{audioError}}</view>
-  
-  <!-- 单词 -->
-  <view class="word-section">
-    <text class="word">{{word.word || word.english}}</text>
-  </view>
-  
-  <!-- 音标 -->
-  <view class="phonetic-section" wx:if="{{word.phonetic}}">
-    <text class="phonetic-value">{{word.phonetic}}</text>
-  </view>
   
   <!-- 答案内容（点击显示答案后显示） -->
   <view class="answer-content" wx:if="{{showAnswer}}">
@@ -47,7 +42,7 @@
           class="collocation-item" 
           wx:for="{{collocationList}}" 
           wx:key="index"
-        >• {{item}}</text>
+        >{{item}}</text>
       </view>
     </view>
   </view>

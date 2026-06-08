@@ -32,31 +32,37 @@
 
   <!-- 单词卡片区域 -->
   <view class="card-section" wx:else>
-    <view class="word-card">
-      <!-- 单词 -->
-      <view class="word-section">
-        <text class="word">{{currentWord.english}}</text>
-        <text class="phonetic">{{currentWord.phonetic || '暂无音标'}}</text>
-      </view>
+    <!-- 单词卡片容器 -->
+    <view class="word-card-wrapper">
+      <!-- 使用 WordCard 组件 -->
+      <WordCard 
+        word="{{currentWord}}" 
+        showAnswer="{{showAnswer}}"
+      />
+    </view>
 
-      <!-- 释义 -->
-      <view class="meaning-section" wx:if="{{showAnswer}}">
-        <text class="meaning">{{currentWord.chinese}}</text>
-      </view>
-
+    <!-- 操作按钮区域 -->
+    <view class="btn-group">
       <!-- 显示答案按钮 -->
-      <button 
-        class="show-answer-btn" 
-        wx:if="{{!showAnswer}}" 
+      <button
+        class="btn btn-primary"
         bindtap="showAnswer"
-      >
+        wx:if="{{!showAnswer}}">
         显示答案
       </button>
 
-      <!-- 认识/不认识按钮 -->
-      <view class="result-buttons" wx:if="{{showResultButtons}}">
-        <button class="result-btn known-btn" bindtap="markKnown">认识</button>
-        <button class="result-btn unknown-btn" bindtap="markUnknown">不认识</button>
+      <!-- 认识/不认识按钮组 -->
+      <view class="result-btn-group" wx:if="{{showResultButtons}}">
+        <button
+          class="btn btn-success"
+          bindtap="markKnown">
+          认识
+        </button>
+        <button
+          class="btn btn-danger"
+          bindtap="markUnknown">
+          不认识
+        </button>
       </view>
     </view>
   </view>

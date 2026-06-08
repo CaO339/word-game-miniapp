@@ -25,59 +25,18 @@
     </view>
   </view>
 
-  <!-- 单词卡片 -->
-  <view class="word-card">
+  <!-- 单词卡片容器 -->
+  <view class="word-card-wrapper">
     <!-- 收藏按钮 -->
     <view class="collect-btn" bindtap="toggleCollect">
       <text class="{{isCollected ? 'collected' : ''}}">{{isCollected ? '❤️' : '🤍'}}</text>
     </view>
     
-    <!-- 英文单词 -->
-    <view class="word-english">{{currentWord.word || currentWord.english}}</view>
-    
-    <!-- 音标 -->
-    <view class="word-phonetic">{{currentWord.phonetic}}</view>
-    
-    <!-- 词性 -->
-    <view class="word-part-of-speech">{{currentWord.partOfSpeech}}</view>
-
-    <!-- 答案区域（点击显示答案后显示） -->
-    <view class="answer-section {{showAnswer ? 'show' : ''}}">
-      <!-- 中文释义 -->
-      <view class="word-meaning">
-        <text class="label">释义</text>
-        <text class="content">{{currentWord.meaning || currentWord.chinese}}</text>
-      </view>
-      
-      <!-- 例句 -->
-      <view class="word-example">
-        <text class="label">例句</text>
-        <text class="content">{{currentWord.example}}</text>
-      </view>
-      
-      <!-- 例句翻译 -->
-      <view class="word-translation">
-        <text class="label">翻译</text>
-        <text class="content">{{currentWord.translation}}</text>
-      </view>
-      
-      <!-- 常见搭配 -->
-      <view class="word-collocation">
-        <text class="label">搭配</text>
-        <text class="content">{{currentWord.collocation}}</text>
-      </view>
-      
-      <!-- 词根词缀 -->
-      <view class="word-root">
-        <text class="label">词根</text>
-        <text class="content">{{currentWord.root}}</text>
-      </view>
-    </view>
-
-    <!-- 提示文字 -->
-    <view class="hint-text" wx:if="{{!showAnswer}}">
-      点击下方按钮显示答案
-    </view>
+    <!-- 使用 WordCard 组件 -->
+    <WordCard 
+      word="{{currentWord}}" 
+      showAnswer="{{showAnswer}}"
+    />
   </view>
 
   <!-- 操作按钮区域 -->

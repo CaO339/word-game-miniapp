@@ -1,6 +1,8 @@
 /* WordCard 组件样式 */
 .word-card {
-  width: 100%;
+  width: 88%;
+  max-width: 680rpx;
+  margin: 0 auto;
   padding: 40rpx 32rpx;
   background: #ffffff;
   border-radius: 28rpx;
@@ -59,7 +61,7 @@
 /* 单词区域 */
 .word-section {
   text-align: center;
-  margin-bottom: 12rpx;
+  margin-bottom: 20rpx;
 }
 
 .word {
@@ -67,18 +69,6 @@
   font-weight: bold;
   color: #333333;
   letter-spacing: 3rpx;
-}
-
-/* 音标区域 */
-.phonetic-section {
-  text-align: center;
-  margin-bottom: 20rpx;
-}
-
-.phonetic-value {
-  font-size: 26rpx;
-  color: #666666;
-  font-style: italic;
 }
 
 /* 答案内容区域 */
