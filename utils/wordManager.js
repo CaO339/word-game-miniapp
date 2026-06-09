@@ -47,51 +47,110 @@ const PRELOADED_LIBRARIES = {};
  * 预加载所有词库
  */
 function preloadAllLibraries() {
-  console.log('[WordManager] 开始预加载所有词库...');
+  console.log('[WordManager] ==================== 开始预加载词库 ====================');
   
-  for (const key of Object.keys(WORD_LIBRARIES)) {
+  // 输出支持的词库列表
+  const levels = Object.keys(WORD_LIBRARIES);
+  console.log('[WordManager] supported levels:', levels);
+  
+  for (const key of levels) {
     try {
       const library = WORD_LIBRARIES[key];
-      console.log('[WordManager] 正在加载词库:', library.name, '- 路径:', library.path);
+      console.log('[WordManager] --------------------');
+      console.log('[WordManager] current level:', key);
       
-      // 检查是否是 CET4 完整词库
+      // 根据词库类型加载对应的文件
+      let data = null;
+      let loadedFile = '';
+      
       if (key === 'cet4') {
-        // CET4 词库使用完整版
-        const data = require('../data/cet4_converted.js');
-        console.log('[WordManager] require 返回类型:', typeof data, '- 数据长度:', data ? data.length : 'N/A');
-        
-        if (data && data.length > 0) {
-          PRELOADED_LIBRARIES[key] = data;
-          console.log('[WordManager] 预加载 CET4 词库成功:', library.name, '- 单词数:', data.length);
-        } else {
-          console.warn('[WordManager] CET4 词库为空或数据无效:', library.name, '- 数据长度:', data ? data.length : 0);
-          PRELOADED_LIBRARIES[key] = builtinWords;
+        // CET4 使用完整版
+        loadedFile = '../data/cet4_converted.js';
+        data = require('../data/cet4_converted.js');
+      } else if (key === 'cet6') {
+        // CET6 优先使用完整版，否则使用JSON文件
+        loadedFile = '../data/cet6_full.js';
+        try {
+          data = require('../data/cet6_full.js');
+        } catch (e) {
+          console.warn('[WordManager] CET6完整版不存在，尝试加载JSON');
+          loadedFile = '../data/4-CET6-顺序.json';
+          try {
+            const jsonContent = require('../data/4-CET6-顺序.json');
+            data = convertJsonToWords(jsonContent, 20000);
+          } catch (jsonError) {
+            console.warn('[WordManager] JSON也无法加载，使用基础版');
+            loadedFile = '../data/cet6.js';
+            data = require('../data/cet6.js');
+          }
+        }
+      } else if (key === 'kaoyan') {
+        // 考研优先使用完整版，否则使用JSON文件
+        loadedFile = '../data/kaoyan_full.js';
+        try {
+          data = require('../data/kaoyan_full.js');
+        } catch (e) {
+          console.warn('[WordManager] 考研完整版不存在，尝试加载JSON');
+          loadedFile = '../data/5-考研-顺序.json';
+          try {
+            const jsonContent = require('../data/5-考研-顺序.json');
+            data = convertJsonToWords(jsonContent, 30000);
+          } catch (jsonError) {
+            console.warn('[WordManager] JSON也无法加载，使用基础版');
+            loadedFile = '../data/kaoyan.js';
+            data = require('../data/kaoyan.js');
+          }
         }
       } else {
         // 其他词库正常加载
-        const data = require(library.path);
-        
-        console.log('[WordManager] require 返回类型:', typeof data, '- 数据长度:', data ? data.length : 'N/A');
-        
-        if (data && data.length > 0) {
-          PRELOADED_LIBRARIES[key] = data;
-          console.log('[WordManager] 预加载词库成功:', library.name, '- 单词数:', data.length);
-        } else {
-          console.warn('[WordManager] 词库为空或数据无效:', library.name, '- 数据长度:', data ? data.length : 0);
-          PRELOADED_LIBRARIES[key] = builtinWords;
-        }
+        loadedFile = library.path;
+        data = require(library.path);
+      }
+      
+      console.log('[WordManager] loaded file:', loadedFile);
+      console.log('[WordManager] words count:', data ? data.length : 'N/A');
+      
+      if (data && data.length > 0) {
+        PRELOADED_LIBRARIES[key] = data;
+        console.log('[WordManager] 预加载成功:', library.name, '-', data.length, '个单词');
+      } else {
+        console.warn('[WordManager] 词库为空:', library.name);
+        PRELOADED_LIBRARIES[key] = builtinWords;
       }
     } catch (error) {
-      console.error('[WordManager] 预加载词库失败:', key, '- 错误:', error.message);
-      console.error('[WordManager] 错误详情:', error.stack);
+      console.error('[WordManager] 预加载失败:', key, '-', error.message);
       PRELOADED_LIBRARIES[key] = builtinWords;
     }
   }
   
-  console.log('[WordManager] 预加载完成，预加载词库:', Object.keys(PRELOADED_LIBRARIES).join(', '));
+  console.log('[WordManager] ==================== 预加载完成 ====================');
   for (const key of Object.keys(PRELOADED_LIBRARIES)) {
-    console.log('[WordManager] 预加载词库详情:', key, '- 单词数:', PRELOADED_LIBRARIES[key].length);
+    console.log('[WordManager] 词库:', key, '- 单词数:', PRELOADED_LIBRARIES[key].length);
   }
+}
+
+/**
+ * 将JSON格式转换为单词格式
+ */
+function convertJsonToWords(jsonData, startId) {
+  if (!jsonData || !Array.isArray(jsonData)) {
+    return [];
+  }
+  
+  return jsonData.map((item, index) => {
+    const translation = item.translations?.[0]?.translation || '';
+    const partOfSpeech = item.translations?.[0]?.type || '';
+    
+    return {
+      word: item.word,
+      id: startId + index + 1,
+      english: item.word,
+      meaning: translation,
+      partOfSpeech: partOfSpeech,
+      collocation: (item.phrases || []).map(p => p.phrase).join('; ') || '',
+      chinese: translation
+    };
+  });
 }
 
 // 立即预加载所有词库
