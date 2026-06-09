@@ -6,6 +6,45 @@
     <text class="app-name">WordMaster</text>
   </view>
 
+  <!-- 词库选择区域 -->
+  <view class="library-section">
+    <view class="library-title">选择词库</view>
+
+    <view class="library-list">
+      <view 
+        class="library-item {{selectedLibrary==='cet4'?'active':''}}" 
+        bindtap="switchLibrary" 
+        data-library="cet4" 
+      >
+        CET-4 
+      </view>
+
+      <view 
+        class="library-item {{selectedLibrary==='cet6'?'active':''}}" 
+        bindtap="switchLibrary" 
+        data-library="cet6" 
+      >
+        CET-6 
+      </view>
+
+      <view 
+        class="library-item {{selectedLibrary==='kaoyan'?'active':''}}" 
+        bindtap="switchLibrary" 
+        data-library="kaoyan" 
+      >
+        考研 
+      </view>
+
+      <view 
+        class="library-item {{selectedLibrary==='ielts'?'active':''}}" 
+        bindtap="switchLibrary" 
+        data-library="ielts" 
+      >
+        雅思 
+      </view>
+    </view>
+  </view>
+
   <!-- 统计卡片区域 -->
   <view class="stats-section">
     <view class="stats-card">

@@ -43,6 +43,39 @@
   letter-spacing: 4rpx;
 }
 
+/* 词库选择区域 */
+.library-section {
+  margin: 30rpx 0;
+}
+
+.library-title {
+  font-size: 28rpx;
+  color: #666;
+  text-align: center;
+  margin-bottom: 20rpx;
+}
+
+.library-list {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+
+.library-item {
+  padding: 16rpx 28rpx;
+  background: #ffffff;
+  border-radius: 20rpx;
+  font-size: 28rpx;
+  color: #333;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.06);
+}
+
+.library-item.active {
+  background: #4A90E2;
+  color: #fff;
+}
+
 /* 统计卡片区域 */
 .stats-section {
   width: 90%;

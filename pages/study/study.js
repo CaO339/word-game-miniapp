@@ -34,9 +34,25 @@ Page({
   },
 
   onLoad: function() {
+    this.loadWordData();
+  },
+
+  onShow: function() {
+    // 每次页面显示时重新加载数据（词库可能已切换）
+    // 同步 storageManager 的当前词库
+    storage.setCurrentLibrary(manager.getLibraryKey());
+    this.loadWordData();
+  },
+
+  /**
+   * 加载单词数据
+   */
+  loadWordData: function() {
     // 获取词库信息
     const totalWords = manager.getTotalCount();
-    const wordListName = manager.getWordListName();
+    const wordListName = manager.getLibraryName();
+    const libraryKey = manager.getLibraryKey();
+    const allWords = manager.getAllWords();
     
     // 获取学习统计数据
     const stats = storage.getHomeStats();
@@ -50,8 +66,22 @@ Page({
     // 获取第一个单词
     const firstWord = manager.getRandomWord();
     
-    // 调试：打印当前单词对象
-    console.log('[Study] 当前单词对象:', JSON.stringify(firstWord));
+    // 详细调试日志
+    console.log('========== [Study] 学习页面加载日志 ==========');
+    console.log('[Study] 当前词库名称:', wordListName);
+    console.log('[Study] 当前词库Key:', libraryKey);
+    console.log('[Study] 词库总单词数:', totalWords);
+    console.log('[Study] manager.currentWordList.length:', allWords.length);
+    console.log('[Study] 已学单词数:', manager.getLearnedCount());
+    console.log('[Study] 未学单词数:', totalWords - manager.getLearnedCount());
+    console.log('[Study] 当前单词:', firstWord.english);
+    console.log('[Study] 当前单词ID:', firstWord.id);
+    console.log('===========================================');
+    
+    if (!firstWord || Object.keys(firstWord).length === 0) {
+      console.error('[Study] 无法获取单词，词库可能为空');
+      return;
+    }
     
     // 检查当前单词是否已收藏
     const isCollected = collection.isCollected(firstWord.id);
@@ -69,7 +99,9 @@ Page({
       isCollected: isCollected,
       target: targetStats.target,
       targetTodayNewCount: targetStats.todayNewCount,
-      targetIsCompleted: targetStats.isCompleted
+      targetIsCompleted: targetStats.isCompleted,
+      showAnswer: false,
+      showResultButtons: false
     });
   },
 

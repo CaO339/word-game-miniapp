@@ -3,9 +3,9 @@
 
 // 存储键名常量
 const STORAGE_KEYS = {
-  LEARNING_RECORD: 'wm_learning_record',  // 学习记录
-  CHECKIN_INFO: 'wm_checkin_info',         // 打卡信息
-  DAILY_TARGET: 'wm_daily_target'           // 每日目标
+  LEARNING_RECORD_PREFIX: 'wm_learning_record_',  // 学习记录前缀（按词库区分）
+  CHECKIN_INFO: 'wm_checkin_info',               // 打卡信息
+  DAILY_TARGET: 'wm_daily_target'                  // 每日目标
 };
 
 /**
@@ -43,6 +43,7 @@ class StorageManager {
   constructor() {
     // 内存缓存
     this._learningRecordCache = null;
+    this._currentLibraryKey = 'cet4'; // 当前词库
     this._checkinInfoCache = null;
     this._dailyTargetCache = null;
     
@@ -52,6 +53,26 @@ class StorageManager {
     this.initCheckinInfo();
     // 初始化每日目标
     this.initDailyTarget();
+  }
+
+  /**
+   * 设置当前词库（用于学习记录分离）
+   */
+  setCurrentLibrary(libraryKey) {
+    // 切换词库时，先保存当前词库的学习记录
+    if (this._currentLibraryKey !== libraryKey) {
+      console.log('[StorageManager] 切换词库学习记录:', this._currentLibraryKey, '->', libraryKey);
+      this._currentLibraryKey = libraryKey;
+      // 清空缓存，下次读取会从新词库的存储中获取
+      this._learningRecordCache = null;
+    }
+  }
+
+  /**
+   * 获取当前学习记录存储键
+   */
+  _getLearningRecordKey() {
+    return STORAGE_KEYS.LEARNING_RECORD_PREFIX + this._currentLibraryKey;
   }
 
   /**
@@ -78,7 +99,7 @@ class StorageManager {
         lastStudyDate: ''
       };
       this._learningRecordCache = defaultRecord;
-      wx.setStorageSync(STORAGE_KEYS.LEARNING_RECORD, defaultRecord);
+      wx.setStorageSync(this._getLearningRecordKey(), defaultRecord);
     }
   }
 
@@ -90,7 +111,7 @@ class StorageManager {
       return this._learningRecordCache;
     }
     try {
-      const record = wx.getStorageSync(STORAGE_KEYS.LEARNING_RECORD);
+      const record = wx.getStorageSync(this._getLearningRecordKey());
       this._learningRecordCache = record;
       return record;
     } catch (e) {
@@ -104,7 +125,7 @@ class StorageManager {
    */
   saveLearningRecord(record) {
     this._learningRecordCache = record;
-    wx.setStorageSync(STORAGE_KEYS.LEARNING_RECORD, record);
+    wx.setStorageSync(this._getLearningRecordKey(), record);
   }
 
   /**
@@ -113,23 +134,23 @@ class StorageManager {
    */
   updateLearningRecord(wordId) {
     const today = this.getTodayString();
-    // 直接从 Storage 读取最新数据
-    const record = wx.getStorageSync(STORAGE_KEYS.LEARNING_RECORD);
+    // 从 Storage 读取后做深拷贝，避免修改只读对象
+    const rawRecord = wx.getStorageSync(this._getLearningRecordKey());
+    const record = rawRecord ? JSON.parse(JSON.stringify(rawRecord)) : {};
     
     // 如果是新的一天，重置今日学习数量
     if (!record || record.lastStudyDate !== today) {
-      record = record || {};
       record.todayCount = 0;
       record.lastStudyDate = today;
     }
 
     // 如果该单词未学习过，更新统计
-    if (!record.learnedWordIds || !record.learnedWordIds.includes(wordId)) {
-      if (!record.learnedWordIds) record.learnedWordIds = [];
-      if (!record.learnedWordIds.includes(wordId)) {
-        record.learnedWordIds.push(wordId);
-        record.totalCount = (record.totalCount || 0) + 1;
-      }
+    if (!record.learnedWordIds) {
+      record.learnedWordIds = [];
+    }
+    if (!record.learnedWordIds.includes(wordId)) {
+      record.learnedWordIds.push(wordId);
+      record.totalCount = (record.totalCount || 0) + 1;
     }
     
     // 今日学习数量+1
@@ -338,7 +359,7 @@ class StorageManager {
    */
   getHomeStats() {
     // 每次都从 Storage 读取最新数据，避免缓存导致的数据不一致
-    const record = wx.getStorageSync(STORAGE_KEYS.LEARNING_RECORD);
+    const record = wx.getStorageSync(this._getLearningRecordKey());
     const checkin = this.getCheckinInfo();
     const today = this.getTodayString();
     
@@ -355,6 +376,8 @@ class StorageManager {
     if (record) {
       this._learningRecordCache = record;
     }
+    
+    console.log('[StorageManager] getHomeStats - 当前词库:', this._currentLibraryKey, '已学:', totalCount);
     
     return {
       todayCount: todayCount,

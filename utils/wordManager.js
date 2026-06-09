@@ -1,52 +1,178 @@
-// 词库管理器 - 负责加载和管理单词数据
+// 词库管理器 - 支持多词库动态加载
 
-// 调试日志 - 尝试加载模块
-console.log('[WordManager] 正在尝试加载词库...');
-
-let cet4Data = [];
-
-try {
-  // 尝试加载主词库
-  cet4Data = require('../data/cet4_converted.js');
-  console.log('[WordManager] 词库加载成功! 单词数量:', cet4Data ? cet4Data.length : 'undefined');
-  if (cet4Data && cet4Data.length > 0) {
-    console.log('[WordManager] 第一个单词:', JSON.stringify(cet4Data[0]));
+// 词库配置
+const WORD_LIBRARIES = {
+  cet4: {
+    name: 'CET-4',
+    path: '../data/cet4_converted.js',
+    description: '大学英语四级词汇'
+  },
+  cet6: {
+    name: 'CET-6',
+    path: '../data/cet6.js',
+    description: '大学英语六级词汇'
+  },
+  kaoyan: {
+    name: '考研',
+    path: '../data/kaoyan.js',
+    description: '考研英语词汇'
+  },
+  ielts: {
+    name: '雅思',
+    path: '../data/ielts.js',
+    description: '雅思考试词汇'
   }
-} catch (error) {
-  console.error('[WordManager] 加载主词库失败:', error.message);
-  
-  // 尝试加载测试词库
-  try {
-    cet4Data = require('../data/cet4_test.js');
-    console.log('[WordManager] 备用测试词库加载成功!');
-  } catch (testError) {
-    console.error('[WordManager] 备用词库也加载失败:', testError.message);
-  }
-}
+};
+
+// 默认词库
+const DEFAULT_LIBRARY = 'cet4';
+
+// Storage keys
+const STORAGE_KEYS = {
+  SELECTED_LIBRARY: 'selectedWordLibrary',
+  LEARNING_RECORD_PREFIX: 'wm_learning_record_'
+};
 
 // 内置基础单词（备用）
 const builtinWords = [
-  { id: 1001, english: 'apple', chinese: '苹果' },
-  { id: 1002, english: 'book', chinese: '书' },
-  { id: 1003, english: 'computer', chinese: '电脑' }
+  { id: 1001, english: 'apple', chinese: '苹果', meaning: '苹果', partOfSpeech: 'n', collocation: '' },
+  { id: 1002, english: 'book', chinese: '书', meaning: '书', partOfSpeech: 'n', collocation: '' },
+  { id: 1003, english: 'computer', chinese: '电脑', meaning: '电脑', partOfSpeech: 'n', collocation: '' }
 ];
+
+// 预加载所有词库（解决 require 缓存问题）
+const PRELOADED_LIBRARIES = {};
+
+/**
+ * 预加载所有词库
+ */
+function preloadAllLibraries() {
+  console.log('[WordManager] 开始预加载所有词库...');
+  
+  for (const key of Object.keys(WORD_LIBRARIES)) {
+    try {
+      const library = WORD_LIBRARIES[key];
+      console.log('[WordManager] 正在加载词库:', library.name, '- 路径:', library.path);
+      
+      // 检查是否是 CET4 完整词库
+      if (key === 'cet4') {
+        // CET4 词库使用完整版
+        const data = require('../data/cet4_converted.js');
+        console.log('[WordManager] require 返回类型:', typeof data, '- 数据长度:', data ? data.length : 'N/A');
+        
+        if (data && data.length > 0) {
+          PRELOADED_LIBRARIES[key] = data;
+          console.log('[WordManager] 预加载 CET4 词库成功:', library.name, '- 单词数:', data.length);
+        } else {
+          console.warn('[WordManager] CET4 词库为空或数据无效:', library.name, '- 数据长度:', data ? data.length : 0);
+          PRELOADED_LIBRARIES[key] = builtinWords;
+        }
+      } else {
+        // 其他词库正常加载
+        const data = require(library.path);
+        
+        console.log('[WordManager] require 返回类型:', typeof data, '- 数据长度:', data ? data.length : 'N/A');
+        
+        if (data && data.length > 0) {
+          PRELOADED_LIBRARIES[key] = data;
+          console.log('[WordManager] 预加载词库成功:', library.name, '- 单词数:', data.length);
+        } else {
+          console.warn('[WordManager] 词库为空或数据无效:', library.name, '- 数据长度:', data ? data.length : 0);
+          PRELOADED_LIBRARIES[key] = builtinWords;
+        }
+      }
+    } catch (error) {
+      console.error('[WordManager] 预加载词库失败:', key, '- 错误:', error.message);
+      console.error('[WordManager] 错误详情:', error.stack);
+      PRELOADED_LIBRARIES[key] = builtinWords;
+    }
+  }
+  
+  console.log('[WordManager] 预加载完成，预加载词库:', Object.keys(PRELOADED_LIBRARIES).join(', '));
+  for (const key of Object.keys(PRELOADED_LIBRARIES)) {
+    console.log('[WordManager] 预加载词库详情:', key, '- 单词数:', PRELOADED_LIBRARIES[key].length);
+  }
+}
+
+// 立即预加载所有词库
+preloadAllLibraries();
+
+/**
+ * 获取预加载的词库数据
+ * @param {string} libraryKey - 词库标识
+ * @returns {Array} - 词库数组
+ */
+function getLibraryData(libraryKey) {
+  if (PRELOADED_LIBRARIES[libraryKey]) {
+    console.log('[WordManager] 使用预加载词库:', WORD_LIBRARIES[libraryKey]?.name || libraryKey);
+    return PRELOADED_LIBRARIES[libraryKey];
+  }
+  
+  console.warn('[WordManager] 词库不存在，使用内置词库:', libraryKey);
+  return builtinWords;
+}
+
+/**
+ * 获取当前选中的词库
+ * @returns {string} - 词库标识
+ */
+function getSelectedLibrary() {
+  try {
+    const selected = wx.getStorageSync(STORAGE_KEYS.SELECTED_LIBRARY);
+    if (selected && WORD_LIBRARIES[selected]) {
+      console.log('[WordManager] 使用已保存的词库:', selected);
+      return selected;
+    }
+  } catch (e) {
+    console.error('[WordManager] 读取词库选择失败:', e);
+  }
+  
+  console.log('[WordManager] 使用默认词库:', DEFAULT_LIBRARY);
+  return DEFAULT_LIBRARY;
+}
+
+/**
+ * 保存选中的词库
+ * @param {string} libraryKey - 词库标识
+ */
+function saveSelectedLibrary(libraryKey) {
+  if (!WORD_LIBRARIES[libraryKey]) {
+    console.warn('[WordManager] 无效的词库标识:', libraryKey);
+    return false;
+  }
+  
+  try {
+    wx.setStorageSync(STORAGE_KEYS.SELECTED_LIBRARY, libraryKey);
+    console.log('[WordManager] 词库选择已保存:', libraryKey);
+    return true;
+  } catch (e) {
+    console.error('[WordManager] 保存词库选择失败:', e);
+    return false;
+  }
+}
+
+/**
+ * 获取所有可用词库列表
+ * @returns {Array} - 词库信息数组
+ */
+function getLibraryList() {
+  return Object.entries(WORD_LIBRARIES).map(([key, value]) => ({
+    key: key,
+    name: value.name,
+    description: value.description,
+    wordCount: PRELOADED_LIBRARIES[key]?.length || 0
+  }));
+}
 
 /**
  * 词库管理器类
- * 
- * 抽词算法：
- * 1. 第一阶段：优先抽取未学习单词
- *    - 从词库中排除已学习的单词
- *    - 确保每个单词至少出现一次
- * 2. 第二阶段：全部学完后，进入随机复习模式
- *    - 从全部单词中随机抽取
- *    - 支持艾宾浩斯复习系统的优先级
  */
 class WordManager {
   constructor() {
     // 当前词库
+    this.currentLibraryKey = getSelectedLibrary();
     this.currentWordList = [];
-    // 当前学习会话中已访问过的单词ID列表（内存缓存，仅用于去重）
+    // 当前学习会话中已访问过的单词ID列表
     this.sessionVisitedIds = [];
     // 是否已完成第一阶段学习
     this._isFirstPhaseComplete = false;
@@ -55,16 +181,55 @@ class WordManager {
   }
 
   /**
-   * 初始化词库 - 优先使用CET4词库
+   * 初始化词库
    */
   initWordList() {
-    if (cet4Data && cet4Data.length > 0) {
-      // 使用CET4词库
-      this.currentWordList = cet4Data;
-    } else {
-      // 使用内置基础单词
-      this.currentWordList = builtinWords;
+    const data = getLibraryData(this.currentLibraryKey);
+    this.currentWordList = data || builtinWords;
+    
+    // 调试日志
+    const learnedIds = this._getLearnedWordIds();
+    const learnedCount = learnedIds.length;
+    const unlearnedCount = this.currentWordList.length - learnedCount;
+    
+    console.log(`[${WORD_LIBRARIES[this.currentLibraryKey]?.name || this.currentLibraryKey}]`);
+    console.log(`loaded words: ${this.currentWordList.length}`);
+    console.log(`learned words: ${learnedCount}`);
+    console.log(`unlearned words: ${unlearnedCount}`);
+  }
+
+  /**
+   * 切换词库
+   * @param {string} libraryKey - 词库标识
+   */
+  switchLibrary(libraryKey) {
+    if (!WORD_LIBRARIES[libraryKey]) {
+      console.warn('[WordManager] 无效的词库:', libraryKey);
+      return false;
     }
+    
+    if (this.currentLibraryKey === libraryKey) {
+      console.log('[WordManager] 已是当前词库，无需切换:', libraryKey);
+      return true;
+    }
+    
+    console.log('[WordManager] 切换词库:', this.currentLibraryKey, '->', libraryKey);
+    
+    // 保存新词库选择
+    saveSelectedLibrary(libraryKey);
+    
+    // 重置学习状态
+    this.currentLibraryKey = libraryKey;
+    this.sessionVisitedIds = [];
+    this._isFirstPhaseComplete = false;
+    
+    // 使用预加载的数据重新初始化
+    const data = getLibraryData(libraryKey);
+    this.currentWordList = data || builtinWords;
+    
+    console.log('[WordManager] 词库切换完成:', this.getLibraryName(), '- 单词数:', this.currentWordList.length);
+    
+    return true;
   }
 
   /**
@@ -76,19 +241,33 @@ class WordManager {
 
   /**
    * 获取所有单词列表
-   * @returns {Array} - 完整单词列表
    */
   getAllWords() {
     return this.currentWordList;
   }
 
   /**
+   * 获取当前词库名称
+   */
+  getLibraryName() {
+    const library = WORD_LIBRARIES[this.currentLibraryKey];
+    return library ? library.name : '未知词库';
+  }
+
+  /**
+   * 获取当前词库标识
+   */
+  getLibraryKey() {
+    return this.currentLibraryKey;
+  }
+
+  /**
    * 从Storage获取已学习的单词ID列表
-   * @returns {Array} 已学习单词ID数组
    */
   _getLearnedWordIds() {
+    const recordKey = STORAGE_KEYS.LEARNING_RECORD_PREFIX + this.currentLibraryKey;
     try {
-      const record = wx.getStorageSync('wm_learning_record');
+      const record = wx.getStorageSync(recordKey);
       if (record && record.learnedWordIds) {
         return record.learnedWordIds;
       }
@@ -99,20 +278,17 @@ class WordManager {
   }
 
   /**
-   * 检查是否已完成第一阶段（所有单词都学习过）
-   * @returns {boolean}
+   * 检查是否已完成第一阶段
    */
   isFirstPhaseComplete() {
     const learnedIds = this._getLearnedWordIds();
     const total = this.currentWordList.length;
     
-    // 所有单词都已学习
     if (learnedIds.length >= total) {
       this._isFirstPhaseComplete = true;
       return true;
     }
     
-    // 检查是否词库中所有单词都已学习
     const allLearned = this.currentWordList.every(word => 
       learnedIds.includes(word.id)
     );
@@ -123,7 +299,6 @@ class WordManager {
 
   /**
    * 获取学习进度信息
-   * @returns {Object} { learnedCount, totalCount, remainingCount, isComplete }
    */
   getStudyProgress() {
     const learnedIds = this._getLearnedWordIds();
@@ -135,7 +310,9 @@ class WordManager {
       totalCount: total,
       remainingCount: total - learnedCount,
       isComplete: learnedCount >= total,
-      isFirstPhase: learnedCount < total
+      isFirstPhase: learnedCount < total,
+      libraryName: this.getLibraryName(),
+      libraryKey: this.currentLibraryKey
     };
   }
 
@@ -148,7 +325,6 @@ class WordManager {
 
   /**
    * 获取未学习单词列表
-   * @returns {Array} 未学习的单词数组
    */
   _getUnlearnedWords() {
     const learnedIds = this._getLearnedWordIds();
@@ -156,79 +332,62 @@ class WordManager {
   }
 
   /**
-   * 获取下一个学习单词（优先未学习单词）
-   * @returns {Object} 单词对象
+   * 获取下一个学习单词
    */
   getNextStudyWord() {
     const learnedIds = this._getLearnedWordIds();
     const total = this.currentWordList.length;
     
-    // 第一阶段：优先从未学习单词中抽取
     if (learnedIds.length < total) {
       const unlearnedWords = this._getUnlearnedWords();
-      
-      // 过滤出会话中已访问过的单词（确保每次学习不重复）
       const availableWords = unlearnedWords.filter(
         word => !this.sessionVisitedIds.includes(word.id)
       );
       
-      // 如果所有未学单词都已访问过，重置会话访问记录
       if (availableWords.length === 0) {
         this.sessionVisitedIds = [];
         return unlearnedWords[Math.floor(Math.random() * unlearnedWords.length)];
       }
       
-      // 随机选择一个未学习单词
       const randomIndex = Math.floor(Math.random() * availableWords.length);
       const selectedWord = availableWords[randomIndex];
-      
-      // 标记为已访问
       this.sessionVisitedIds.push(selectedWord.id);
       
       return selectedWord;
     }
     
-    // 第二阶段：所有单词都已学习，进入随机复习模式
     return this._getRandomReviewWord();
   }
 
   /**
    * 获取随机复习单词
-   * @returns {Object} 随机单词对象
    */
   _getRandomReviewWord() {
-    // 过滤出会话中已访问过的单词
     const availableWords = this.currentWordList.filter(
       word => !this.sessionVisitedIds.includes(word.id)
     );
     
-    // 如果所有单词都已访问过，重置会话访问记录
     if (availableWords.length === 0) {
       this.sessionVisitedIds = [];
       return this.currentWordList[Math.floor(Math.random() * this.currentWordList.length)];
     }
     
-    // 随机选择一个单词
     const randomIndex = Math.floor(Math.random() * availableWords.length);
     const selectedWord = availableWords[randomIndex];
-    
-    // 标记为已访问
     this.sessionVisitedIds.push(selectedWord.id);
     
     return selectedWord;
   }
 
   /**
-   * 获取随机单词（兼容旧接口）
-   * @returns {Object} 单词对象
+   * 获取随机单词
    */
   getRandomWord() {
     return this.getNextStudyWord();
   }
 
   /**
-   * 获取下一个单词（用于切换到下一题）
-   * @returns {Object} 单词对象
+   * 获取下一个单词
    */
   getNextWord() {
     return this.getNextStudyWord();
@@ -243,26 +402,14 @@ class WordManager {
   }
 
   /**
-   * 获取单词名称
-   */
-  getWordListName() {
-    if (this.currentWordList === cet4Data) {
-      return 'CET-4 词汇';
-    }
-    return '基础词汇';
-  }
-
-  /**
    * 根据ID获取单词详情
-   * @param {number} wordId 单词ID
-   * @returns {Object|null} 单词对象，如果未找到返回null
    */
   getWordById(wordId) {
     return this.currentWordList.find(word => word.id === wordId) || null;
   }
 }
 
-// 导出单例实例
+// 导出单例实例和方法
 module.exports = {
   WordManager: WordManager,
   getWordManager: function() {
@@ -270,5 +417,12 @@ module.exports = {
       global.wordManagerInstance = new WordManager();
     }
     return global.wordManagerInstance;
-  }
+  },
+  getLibraryList: getLibraryList,
+  getSelectedLibrary: getSelectedLibrary,
+  saveSelectedLibrary: saveSelectedLibrary,
+  WORD_LIBRARIES: WORD_LIBRARIES,
+  DEFAULT_LIBRARY: DEFAULT_LIBRARY,
+  preloadAllLibraries: preloadAllLibraries,
+  getLibraryData: getLibraryData
 };

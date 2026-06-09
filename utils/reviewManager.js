@@ -1,7 +1,7 @@
 // 复习管理器 - 基于艾宾浩斯遗忘曲线的复习系统
 
 // 存储键名常量
-const STORAGE_KEY = 'wm_review_records';
+const STORAGE_KEY_PREFIX = 'wm_review_records_';
 
 // 开发测试模式标志（开发完成后设为 false）
 const DEV_MODE = false;
@@ -64,9 +64,29 @@ class ReviewManager {
   constructor() {
     // 内存缓存
     this._reviewRecordsCache = null;
+    this._currentLibraryKey = 'cet4'; // 当前词库
     
     // 初始化复习记录
     this.initReviewRecords();
+  }
+
+  /**
+   * 设置当前词库（用于复习记录分离）
+   */
+  setCurrentLibrary(libraryKey) {
+    if (this._currentLibraryKey !== libraryKey) {
+      console.log('[ReviewManager] 切换词库复习记录:', this._currentLibraryKey, '->', libraryKey);
+      this._currentLibraryKey = libraryKey;
+      // 清空缓存，下次读取会从新词库的存储中获取
+      this._reviewRecordsCache = null;
+    }
+  }
+
+  /**
+   * 获取当前复习记录存储键
+   */
+  _getStorageKey() {
+    return STORAGE_KEY_PREFIX + this._currentLibraryKey;
   }
 
   /**
@@ -76,7 +96,7 @@ class ReviewManager {
     const records = this.getReviewRecords();
     if (!records) {
       this._reviewRecordsCache = [];
-      wx.setStorageSync(STORAGE_KEY, []);
+      wx.setStorageSync(this._getStorageKey(), []);
     }
   }
 
@@ -88,7 +108,7 @@ class ReviewManager {
       return this._reviewRecordsCache;
     }
     try {
-      const records = wx.getStorageSync(STORAGE_KEY);
+      const records = wx.getStorageSync(this._getStorageKey());
       this._reviewRecordsCache = records || [];
       return this._reviewRecordsCache;
     } catch (e) {
@@ -103,7 +123,7 @@ class ReviewManager {
   saveReviewRecords(records) {
     try {
       this._reviewRecordsCache = records;
-      wx.setStorageSync(STORAGE_KEY, records);
+      wx.setStorageSync(this._getStorageKey(), records);
       return true;
     } catch (e) {
       console.error('[复习系统] 保存复习记录失败:', e);
@@ -208,6 +228,11 @@ class ReviewManager {
       return nextReviewTime <= now;
     });
     
+    // 调试日志
+    console.log(`review level: ${this._currentLibraryKey}`);
+    console.log(`learning records: ${records.length}`);
+    console.log(`review words: ${pendingRecords.length}`);
+    
     return pendingRecords.map(record => record.wordId);
   }
 
@@ -288,7 +313,7 @@ class ReviewManager {
    */
   reset() {
     this._reviewRecordsCache = [];
-    wx.setStorageSync(STORAGE_KEY, []);
+    wx.setStorageSync(this._getStorageKey(), []);
   }
 }
 

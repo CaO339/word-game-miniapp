@@ -1,4 +1,5 @@
 // index.js - 首页逻辑
+console.log('[Index页面开始加载]');
 const storageManager = require('../../utils/storageManager.js');
 const levelManager = require('../../utils/levelManager.js');
 const reviewManager = require('../../utils/reviewManager.js');
@@ -31,10 +32,16 @@ Page({
     targetIsCompleted: false, // 目标是否完成
     learnedCount: 0,       // 已学单词数
     totalWords: 0,         // 词库总单词数
-    remainingCount: 0      // 剩余未学单词数
+    remainingCount: 0,      // 剩余未学单词数
+    currentLibrary: 'CET-4', // 当前词库名称
+    libraryList: [],         // 词库列表
+    selectedLibrary: wx.getStorageSync('selectedWordLibrary') || 'cet4' // 当前选中的词库
   },
 
   onLoad: function() {
+    console.log('[Index onLoad执行]');
+    // 获取词库列表
+    this.loadLibraryList();
     // 获取学习统计数据
     this.loadStats();
   },
@@ -42,6 +49,27 @@ Page({
   onShow: function() {
     // 页面显示时重新加载统计数据（从学习页面返回时更新）
     this.loadStats();
+  },
+
+  // 加载词库列表
+  loadLibraryList: function() {
+    const list = wordManager.getLibraryList();
+    const currentLibraryKey = wordMgr.getLibraryKey();
+    const currentLibrary = wordMgr.getLibraryName();
+    
+    // 为每个词库添加 active 状态
+    const libraryListWithActive = list.map(item => ({
+      ...item,
+      active: item.key === currentLibraryKey
+    }));
+    
+    this.setData({
+      libraryList: libraryListWithActive,
+      currentLibrary: currentLibrary
+    });
+    
+    console.log('[Index] 词库列表:', libraryListWithActive);
+    console.log('[Index] 当前词库:', currentLibrary);
   },
 
   // 加载统计数据
@@ -84,8 +112,74 @@ Page({
       targetIsCompleted: targetStats.isCompleted,
       learnedCount: progress.learnedCount,
       totalWords: progress.totalCount,
-      remainingCount: progress.remainingCount
+      remainingCount: progress.remainingCount,
+      currentLibrary: progress.libraryName
     });
+  },
+
+  // 选择词库（旧方法，保留兼容）
+  selectLibrary: function(e) {
+    const libraryKey = e.currentTarget.dataset.key;
+    const libraryName = e.currentTarget.dataset.name;
+    
+    console.log('[Index] 选择词库:', libraryKey, libraryName);
+    
+    // 切换词库
+    const success = wordMgr.switchLibrary(libraryKey);
+    
+    if (success) {
+      // 重新加载统计数据
+      this.loadStats();
+      this.loadLibraryList();
+      
+      wx.showToast({
+        title: '已切换到' + libraryName,
+        icon: 'success',
+        duration: 1500
+      });
+    }
+  },
+
+  // 点击切换词库（新方法，绑定首页按钮）
+  switchLibrary: function(e) {
+    const libraryKey = e.currentTarget.dataset.library;
+    const oldLibraryKey = wordMgr.getLibraryKey();
+    
+    console.log(`switch: ${oldLibraryKey} -> ${libraryKey}`);
+    console.log(`wordManager.currentLevel: ${oldLibraryKey}`);
+    console.log(`storageManager.currentLevel: ${storage.getCurrentLibrary()}`);
+    
+    console.log('[切换词库]', libraryKey);
+
+    // 保存选择
+    this.setData({ selectedLibrary: libraryKey });
+    wx.setStorageSync('selectedWordLibrary', libraryKey);
+
+    // 通知 wordManager 切换词库（使用顶部已定义的 wordMgr）
+    wordMgr.switchLibrary(libraryKey);
+    
+    // 同步更新 storageManager 的当前词库
+    storage.setCurrentLibrary(libraryKey);
+
+    // 重新加载统计数据
+    this.loadStats();
+    
+    wx.showToast({
+      title: '已切换到' + this.getLibraryName(libraryKey),
+      icon: 'success',
+      duration: 1500
+    });
+  },
+
+  // 获取词库名称
+  getLibraryName: function(libraryKey) {
+    const libraries = {
+      cet4: 'CET-4',
+      cet6: 'CET-6',
+      kaoyan: '考研',
+      ielts: '雅思'
+    };
+    return libraries[libraryKey] || libraryKey;
   },
 
   // 开始学习按钮点击事件

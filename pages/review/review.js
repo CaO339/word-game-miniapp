@@ -23,12 +23,37 @@ Page({
     this.loadReviewWords();
   },
 
+  onShow: function() {
+    // 每次页面显示时重新加载数据（词库可能已切换）
+    // 同步 storageManager 和 reviewManager 的当前词库
+    const libraryKey = wx.getStorageSync('selectedWordLibrary') || 'cet4';
+    review.setCurrentLibrary(libraryKey);
+    this.loadReviewWords();
+  },
+
   /**
    * 加载待复习单词列表
    */
   loadReviewWords: function() {
-    // 获取所有单词列表
+    // 获取所有单词列表（当前词库）
     const allWords = manager.getAllWords();
+    
+    console.log('[Review] 当前词库单词数:', allWords.length);
+    
+    if (allWords.length === 0) {
+      // 当前词库为空
+      this.setData({
+        reviewCompleted: false,
+        hasPendingWords: false,
+        pendingCount: 0,
+        reviewWords: [],
+        currentWord: {},
+        currentIndex: 0,
+        showAnswer: false,
+        showResultButtons: false
+      });
+      return;
+    }
     
     // 获取待复习单词ID列表（用于验证数量）
     const pendingIds = review.getPendingReviewWordIds();
@@ -38,6 +63,8 @@ Page({
     
     // 使用ID列表的数量作为待复习数量（更准确）
     const actualPendingCount = pendingIds.length;
+    
+    console.log('[Review] 待复习单词数:', pendingWords.length);
     
     if (actualPendingCount === 0) {
       // 没有待复习单词
