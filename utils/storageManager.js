@@ -69,6 +69,13 @@ class StorageManager {
   }
 
   /**
+   * 获取当前词库
+   */
+  getCurrentLibrary() {
+    return this._currentLibraryKey;
+  }
+
+  /**
    * 获取当前学习记录存储键
    */
   _getLearningRecordKey() {

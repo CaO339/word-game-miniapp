@@ -272,7 +272,10 @@ class WordManager {
       return true;
     }
     
-    console.log('[WordManager] 切换词库:', this.currentLibraryKey, '->', libraryKey);
+    const oldLibraryKey = this.currentLibraryKey;
+    console.log('[WordManager] ==================== 开始切换词库 ====================');
+    console.log('[WordManager] 切换前词库:', oldLibraryKey, '-', WORD_LIBRARIES[oldLibraryKey]?.name);
+    console.log('[WordManager] 切换后词库:', libraryKey, '-', WORD_LIBRARIES[libraryKey]?.name);
     
     // 保存新词库选择
     saveSelectedLibrary(libraryKey);
@@ -286,7 +289,9 @@ class WordManager {
     const data = getLibraryData(libraryKey);
     this.currentWordList = data || builtinWords;
     
-    console.log('[WordManager] 词库切换完成:', this.getLibraryName(), '- 单词数:', this.currentWordList.length);
+    console.log('[WordManager] 加载单词数:', this.currentWordList.length);
+    console.log('[WordManager] 词库切换完成:', this.getLibraryName());
+    console.log('[WordManager] ==================== 词库切换结束 ====================');
     
     return true;
   }
