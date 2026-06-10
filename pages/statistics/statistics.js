@@ -2,11 +2,13 @@
 const storageManager = require('../../utils/storageManager.js');
 const levelManager = require('../../utils/levelManager.js');
 const reviewManager = require('../../utils/reviewManager.js');
+const wordManager = require('../../utils/wordManager.js');
 
 // 获取管理器单例
 const storage = storageManager.getStorageManager();
 const level = levelManager.getLevelManager();
 const review = reviewManager.getReviewManager();
+const wordMgr = wordManager.getWordManager();
 
 Page({
   data: {
@@ -42,7 +44,10 @@ Page({
   },
 
   onShow: function() {
-    // 页面显示时重新加载数据
+    // 页面显示时同步词库并重新加载数据
+    const libraryKey = wordMgr.getLibraryKey();
+    storage.setCurrentLibrary(libraryKey);
+    review.setCurrentLibrary(libraryKey);
     this.loadAllStats();
   },
 
@@ -70,26 +75,47 @@ Page({
    * 加载学习数据
    */
   loadStudyStats: function() {
+    // 获取当前词库信息
+    const currentLibraryKey = wordMgr.getLibraryKey();
+    const allWords = wordMgr.getAllWords();
+    const totalWords = allWords.length;
+    
+    // 获取已学习单词列表（当前词库）
+    const learnedWordIds = storage.getLearnedWordIds();
+    
+    // 调试日志
+    console.log('[Statistics] currentLevel:', currentLibraryKey);
+    console.log('[Statistics] totalWords:', totalWords);
+    console.log('[Statistics] learnedWordIds (去重前):', learnedWordIds.length);
+    
+    // 去重已学单词
+    const uniqueLearnedIds = [...new Set(learnedWordIds)];
+    console.log('[Statistics] learnedWordIds (去重后):', uniqueLearnedIds.length);
+    
+    // 计算掌握率：去重后的已学单词数 / 当前词库总单词数 * 100%
+    const masteredCount = uniqueLearnedIds.length;
+    let masteryRate = 0;
+    if (totalWords > 0) {
+      masteryRate = Math.min((masteredCount / totalWords) * 100, 100); // 不超过100%
+    }
+    
+    // 获取学习统计
     const studyStats = storage.getHomeStats();
-    
-    // 确保累计学习 >= 今日学习（修正业务逻辑）
-    const totalCount = Math.max(studyStats.totalCount, studyStats.todayCount);
-    
-    // 计算掌握率
-    const masteredCount = this.calculateMasteredCount();
-    const totalLearned = totalCount > 0 ? totalCount : 1;
-    const masteryRate = ((masteredCount / totalLearned) * 100).toFixed(1);
+    const todayCount = studyStats.todayCount;
     
     this.setData({
-      todayCount: studyStats.todayCount,
-      totalCount: totalCount,
+      todayCount: todayCount,
+      totalCount: masteredCount,  // 使用去重后的已学数量
       masteredCount: masteredCount,
-      masteryRate: masteryRate
+      masteryRate: masteryRate.toFixed(1)
     });
+    
+    console.log('[Statistics] masteryRate:', masteryRate.toFixed(1) + '%');
   },
 
   /**
    * 计算已掌握单词数量（复习次数 >= 1 视为掌握，降低阈值便于演示）
+   * 保留此方法供其他地方使用
    */
   calculateMasteredCount: function() {
     const records = review.getReviewRecords();
