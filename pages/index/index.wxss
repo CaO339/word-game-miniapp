@@ -1,7 +1,6 @@
 /* 首页样式 */
 
 .container {
-  /* 使用flex布局使内容垂直居中 */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -32,7 +31,6 @@
   font-weight: bold;
   color: #667eea;
   margin-bottom: 20rpx;
-  /* 添加阴影效果 */
   box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.2);
 }
 
@@ -45,7 +43,9 @@
 
 /* 词库选择区域 */
 .library-section {
-  margin: 30rpx 0;
+  width: 90%;
+  max-width: 500rpx;
+  margin-bottom: 30rpx;
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(10px);
   border-radius: 20rpx;
@@ -494,13 +494,11 @@
   font-weight: bold;
   color: #667eea;
   border: none;
-  /* 添加阴影效果 */
   box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.15);
   margin-bottom: 20rpx;
 }
 
 .start-btn:active {
-  /* 点击时缩小效果 */
   transform: scale(0.98);
   opacity: 0.9;
 }
@@ -516,7 +514,6 @@
   font-weight: bold;
   color: #ffffff;
   border: 2rpx solid rgba(255, 255, 255, 0.5);
-  /* 添加阴影效果 */
   box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.15);
   margin-bottom: 20rpx;
 }
@@ -532,12 +529,10 @@
   font-weight: bold;
   color: #ffffff;
   border: none;
-  /* 添加阴影效果 */
   box-shadow: 0 10rpx 30rpx rgba(79, 172, 254, 0.3);
 }
 
 .review-btn:active {
-  /* 点击时缩小效果 */
   transform: scale(0.98);
   opacity: 0.9;
 }

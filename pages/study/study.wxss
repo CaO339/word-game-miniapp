@@ -131,28 +131,66 @@
   color: #ff4757;
 }
 
-/* 调试信息样式 */
-.debug-info {
+.word-example,
+.word-translation,
+.word-collocation,
+.word-root {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  margin-bottom: 20rpx;
-  padding: 10rpx;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 10rpx;
+  margin-bottom: 24rpx;
+  padding: 20rpx;
+  background-color: #f8f9fa;
+  border-radius: 16rpx;
 }
 
-.debug-text {
-  font-size: 20rpx;
-  color: #ffffff;
-  margin-bottom: 4rpx;
+.word-meaning .label,
+.word-example .label,
+.word-translation .label,
+.word-collocation .label,
+.word-root .label {
+  font-size: 24rpx;
+  color: #667eea;
+  font-weight: bold;
+  margin-bottom: 8rpx;
 }
 
+.word-meaning .content {
+  font-size: 36rpx;
+  color: #333333;
+  font-weight: 500;
+}
+
+.word-example .content {
+  font-size: 28rpx;
+  color: #555555;
+  font-style: italic;
+}
+
+.word-translation .content {
+  font-size: 28rpx;
+  color: #666666;
+}
+
+.word-collocation .content {
+  font-size: 26rpx;
+  color: #777777;
+}
+
+.word-root .content {
+  font-size: 26rpx;
+  color: #888888;
+}
+
+.hint-text {
+  font-size: 26rpx;
+  color: #999999;
+  margin-top: 30rpx;
+}
 
 /* 按钮组 */
 .btn-group {
-  width: 88%;
-  max-width: 680rpx;
+  width: 90%;
+  max-width: 600rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
