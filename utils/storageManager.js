@@ -141,9 +141,17 @@ class StorageManager {
    */
   updateLearningRecord(wordId) {
     const today = this.getTodayString();
+    const storageKey = this._getLearningRecordKey();
+    
+    console.log('[StorageManager] updateLearningRecord - currentLevel:', this._currentLibraryKey);
+    console.log('[StorageManager] updateLearningRecord - storageKey:', storageKey);
+    console.log('[StorageManager] updateLearningRecord - wordId:', wordId);
+    
     // 从 Storage 读取后做深拷贝，避免修改只读对象
-    const rawRecord = wx.getStorageSync(this._getLearningRecordKey());
+    const rawRecord = wx.getStorageSync(storageKey);
     const record = rawRecord ? JSON.parse(JSON.stringify(rawRecord)) : {};
+    
+    console.log('[StorageManager] updateLearningRecord - record before:', JSON.stringify(record));
     
     // 如果是新的一天，重置今日学习数量
     if (!record || record.lastStudyDate !== today) {
@@ -162,6 +170,8 @@ class StorageManager {
     
     // 今日学习数量+1
     record.todayCount++;
+
+    console.log('[StorageManager] updateLearningRecord - record after:', JSON.stringify(record));
 
     // 保存到存储和缓存
     this.saveLearningRecord(record);

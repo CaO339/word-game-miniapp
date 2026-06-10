@@ -49,6 +49,8 @@ Page({
 
   onShow: function() {
     // 页面显示时重新加载统计数据（从学习页面返回时更新）
+    // 同步 reviewManager 的当前词库
+    review.setCurrentLibrary(wordMgr.getLibraryKey());
     this.loadStats();
   },
 
@@ -161,8 +163,9 @@ Page({
     const success = wordMgr.switchLibrary(libraryKey);
     
     if (success) {
-      // 同步更新 storageManager 的当前词库
+      // 同步更新 storageManager 和 reviewManager 的当前词库
       storage.setCurrentLibrary(libraryKey);
+      review.setCurrentLibrary(libraryKey);
 
       // 重新加载统计数据和词库列表
       this.loadStats();

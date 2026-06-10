@@ -40,8 +40,10 @@ Page({
 
   onShow: function() {
     // 每次页面显示时重新加载数据（词库可能已切换）
-    // 同步 storageManager 的当前词库
-    storage.setCurrentLibrary(manager.getLibraryKey());
+    // 同步 storageManager 和 reviewManager 的当前词库
+    const libraryKey = manager.getLibraryKey();
+    storage.setCurrentLibrary(libraryKey);
+    review.setCurrentLibrary(libraryKey);
     this.loadWordData();
   },
 

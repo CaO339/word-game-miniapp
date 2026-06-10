@@ -162,6 +162,10 @@ class ReviewManager {
     const records = this.getReviewRecords();
     const now = new Date().toISOString();
     
+    console.log('[ReviewManager] updateStudyRecord - currentLevel:', this._currentLibraryKey);
+    console.log('[ReviewManager] updateStudyRecord - wordId:', wordId);
+    console.log('[ReviewManager] updateStudyRecord - records before:', records.length);
+    
     // 查找现有记录
     const existingRecord = records.find(record => record.wordId === wordId);
     
@@ -170,18 +174,22 @@ class ReviewManager {
       existingRecord.reviewCount += 1;
       existingRecord.lastStudyTime = now;
       existingRecord.nextReviewTime = this.calculateNextReviewTime(existingRecord.reviewCount);
+      console.log('[ReviewManager] updateStudyRecord - updated existing record:', existingRecord);
     } else {
       // 创建新记录，初始复习次数为 1（便于演示）
-      records.push({
+      const newRecord = {
         wordId: wordId,
         reviewCount: 1,
         lastStudyTime: now,
         nextReviewTime: this.calculateNextReviewTime(1)
-      });
+      };
+      records.push(newRecord);
+      console.log('[ReviewManager] updateStudyRecord - created new record:', newRecord);
     }
     
     // 保存记录
     this.saveReviewRecords(records);
+    console.log('[ReviewManager] updateStudyRecord - records after:', records.length);
   }
 
   /**
@@ -229,9 +237,9 @@ class ReviewManager {
     });
     
     // 调试日志
-    console.log(`review level: ${this._currentLibraryKey}`);
-    console.log(`learning records: ${records.length}`);
-    console.log(`review words: ${pendingRecords.length}`);
+    console.log('[ReviewManager] currentLevel:', this._currentLibraryKey);
+    console.log('[ReviewManager] learnedWords length:', records.length);
+    console.log('[ReviewManager] reviewWords length:', pendingRecords.length);
     
     return pendingRecords.map(record => record.wordId);
   }
