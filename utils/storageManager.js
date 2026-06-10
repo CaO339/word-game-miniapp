@@ -5,7 +5,8 @@
 const STORAGE_KEYS = {
   LEARNING_RECORD_PREFIX: 'wm_learning_record_',  // 学习记录前缀（按词库区分）
   CHECKIN_INFO: 'wm_checkin_info',               // 打卡信息
-  DAILY_TARGET: 'wm_daily_target'                  // 每日目标
+  DAILY_TARGET: 'wm_daily_target',               // 每日目标
+  DAILY_HISTORY: 'wm_daily_history'              // 每日学习历史（按词库区分）
 };
 
 /**
@@ -46,6 +47,7 @@ class StorageManager {
     this._currentLibraryKey = 'cet4'; // 当前词库
     this._checkinInfoCache = null;
     this._dailyTargetCache = null;
+    this._dailyHistoryCache = null;
     
     // 初始化学习记录
     this.initLearningRecord();
@@ -53,6 +55,8 @@ class StorageManager {
     this.initCheckinInfo();
     // 初始化每日目标
     this.initDailyTarget();
+    // 初始化每日学习历史
+    this.initDailyHistory();
   }
 
   /**
@@ -65,6 +69,7 @@ class StorageManager {
       this._currentLibraryKey = libraryKey;
       // 清空缓存，下次读取会从新词库的存储中获取
       this._learningRecordCache = null;
+      this._dailyHistoryCache = null;
     }
   }
 
@@ -434,6 +439,113 @@ class StorageManager {
   getContinuousDays() {
     const checkin = this.getCheckinInfo();
     return checkin.continuousDays;
+  }
+
+  /**
+   * 初始化每日学习历史
+   */
+  initDailyHistory() {
+    try {
+      const history = wx.getStorageSync(STORAGE_KEYS.DAILY_HISTORY);
+      if (!history) {
+        wx.setStorageSync(STORAGE_KEYS.DAILY_HISTORY, {});
+      }
+    } catch (e) {
+      console.error('[StorageManager] 初始化每日学习历史失败:', e);
+    }
+  }
+
+  /**
+   * 获取每日学习历史
+   */
+  getDailyHistory() {
+    if (this._dailyHistoryCache) {
+      return this._dailyHistoryCache;
+    }
+    try {
+      const history = wx.getStorageSync(STORAGE_KEYS.DAILY_HISTORY);
+      this._dailyHistoryCache = history || {};
+      return this._dailyHistoryCache;
+    } catch (e) {
+      console.error('[StorageManager] 获取每日学习历史失败:', e);
+      return {};
+    }
+  }
+
+  /**
+   * 保存每日学习历史
+   */
+  saveDailyHistory(history) {
+    try {
+      this._dailyHistoryCache = history;
+      wx.setStorageSync(STORAGE_KEYS.DAILY_HISTORY, history);
+      return true;
+    } catch (e) {
+      console.error('[StorageManager] 保存每日学习历史失败:', e);
+      return false;
+    }
+  }
+
+  /**
+   * 记录每日学习数量（在学习单词时调用）
+   */
+  recordDailyStudy(count) {
+    const today = this.getTodayString();
+    const history = this.getDailyHistory();
+    
+    // 更新今日学习数量
+    if (!history[today]) {
+      history[today] = {
+        count: 0,
+        date: today,
+        hasRecord: false
+      };
+    }
+    
+    history[today].count = count;
+    history[today].hasRecord = count > 0;
+    
+    this.saveDailyHistory(history);
+  }
+
+  /**
+   * 获取最近N天的学习数据
+   * @param {number} days - 天数
+   * @returns {Array} - 学习数据数组
+   */
+  getRecentStudyData(days = 7) {
+    const history = this.getDailyHistory();
+    const result = [];
+    const today = new Date();
+    const dayNames = ['日', '一', '二', '三', '四', '五', '六'];
+    
+    for (let i = days - 1; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - i);
+      
+      const dateStr = this.formatDateString(date);
+      const record = history[dateStr];
+      
+      result.push({
+        date: `${date.getMonth() + 1}/${date.getDate()}`,
+        day: dayNames[date.getDay()],
+        count: record ? record.count : 0,
+        hasRecord: record ? record.hasRecord : false,
+        fullDate: dateStr
+      });
+    }
+    
+    return result;
+  }
+
+  /**
+   * 格式化日期字符串（YYYY-MM-DD）
+   */
+  formatDateString(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 }
 

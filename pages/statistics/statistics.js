@@ -157,9 +157,9 @@ Page({
    */
   calculateTotalCheckins: function() {
     const checkinInfo = storage.getCheckinInfo();
-    // 检查历史打卡记录（简化实现：使用连续天数 + 基础值）
+    // 使用连续打卡天数作为总打卡天数（简化实现）
     // 实际应用中可以存储每日打卡记录
-    return checkinInfo.continuousDays + Math.floor(Math.random() * 10); // 模拟历史打卡
+    return checkinInfo.continuousDays;
   },
 
   /**
@@ -202,24 +202,25 @@ Page({
    * 加载最近7天学习数据
    */
   loadWeeklyData: function() {
-    const weeklyData = [];
-    const today = new Date();
-    const dayNames = ['日', '一', '二', '三', '四', '五', '六'];
+    // 从 storageManager 获取真实的学习历史数据
+    const weeklyData = storage.getRecentStudyData(7);
     
-    // 生成最近7天数据（模拟数据，实际应从Storage读取）
-    for (let i = 6; i >= 0; i--) {
-      const date = new Date(today);
-      date.setDate(date.getDate() - i);
-      
-      weeklyData.push({
-        date: `${date.getMonth() + 1}/${date.getDate()}`,
-        day: dayNames[date.getDay()],
-        count: Math.floor(Math.random() * 20) + 1 // 模拟每日学习数量
+    // 输出调试日志
+    console.log('[Statistics] trendData:', weeklyData);
+    
+    // 过滤掉没有学习记录的日期（方案A：只显示有记录的日期）
+    const filteredData = weeklyData.filter(item => item.hasRecord);
+    
+    // 如果没有学习记录，显示空数据
+    if (filteredData.length === 0) {
+      this.setData({
+        weeklyData: []
       });
+      return;
     }
     
     this.setData({
-      weeklyData: weeklyData
+      weeklyData: filteredData
     });
   },
 
