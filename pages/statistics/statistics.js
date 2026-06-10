@@ -206,13 +206,18 @@ Page({
     const weeklyData = storage.getRecentStudyData(7);
     
     // 输出调试日志
-    console.log('[Statistics] trendData:', weeklyData);
+    console.log('[Statistics] trendData:', JSON.stringify(weeklyData));
+    console.log('[Statistics] trendData length:', weeklyData.length);
     
     // 过滤掉没有学习记录的日期（方案A：只显示有记录的日期）
     const filteredData = weeklyData.filter(item => item.hasRecord);
     
+    console.log('[Statistics] filteredData:', JSON.stringify(filteredData));
+    console.log('[Statistics] filteredData length:', filteredData.length);
+    
     // 如果没有学习记录，显示空数据
     if (filteredData.length === 0) {
+      console.log('[Statistics] 没有找到学习记录，显示空数据');
       this.setData({
         weeklyData: []
       });
@@ -222,6 +227,7 @@ Page({
     this.setData({
       weeklyData: filteredData
     });
+    console.log('[Statistics] 已设置 weeklyData:', JSON.stringify(filteredData));
   },
 
   /**

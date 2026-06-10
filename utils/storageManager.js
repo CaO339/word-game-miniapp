@@ -515,6 +515,11 @@ class StorageManager {
    */
   getRecentStudyData(days = 7) {
     const history = this.getDailyHistory();
+    
+    // 调试日志：检查存储中的学习历史
+    console.log('[StorageManager] getRecentStudyData - history:', JSON.stringify(history));
+    console.log('[StorageManager] getRecentStudyData - history keys:', Object.keys(history));
+    
     const result = [];
     const today = new Date();
     const dayNames = ['日', '一', '二', '三', '四', '五', '六'];
@@ -534,6 +539,9 @@ class StorageManager {
         fullDate: dateStr
       });
     }
+    
+    // 调试日志：输出处理后的结果
+    console.log('[StorageManager] getRecentStudyData - result:', JSON.stringify(result));
     
     return result;
   }
