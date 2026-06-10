@@ -347,3 +347,192 @@
   transform: scale(0.98);
   opacity: 0.9;
 }
+
+/* 日历模块样式 */
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+  padding: 0 10rpx;
+}
+
+.calendar-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.calendar-nav {
+  display: flex;
+  gap: 20rpx;
+}
+
+.nav-btn {
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 10rpx 20rpx;
+  border-radius: 20rpx;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.nav-btn:active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* 星期标题 */
+.calendar-weekdays {
+  display: flex;
+  justify-content: space-around;
+  padding: 15rpx 0;
+  margin-bottom: 10rpx;
+}
+
+.weekday {
+  flex: 1;
+  text-align: center;
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: bold;
+}
+
+/* 日历网格 */
+.calendar-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.calendar-day {
+  width: 14.28%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15rpx 0;
+  box-sizing: border-box;
+}
+
+.calendar-day.empty {
+  opacity: 0.3;
+}
+
+.calendar-day.selected {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 20rpx;
+}
+
+.day-text {
+  font-size: 28rpx;
+  color: #ffffff;
+  margin-bottom: 10rpx;
+}
+
+.calendar-day.empty .day-text {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* 日期指示器 */
+.day-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.indicator {
+  width: 24rpx;
+  height: 24rpx;
+  border-radius: 6rpx;
+  display: inline-block;
+}
+
+.indicator.empty {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2rpx solid rgba(255, 255, 255, 0.2);
+}
+
+.indicator.quarter {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.indicator.three-quarter {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.indicator.full {
+  background: #ffffff;
+}
+
+/* 图例 */
+.calendar-legend {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 30rpx;
+  padding: 20rpx;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20rpx;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.legend-text {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* 选中日期详情 */
+.date-detail {
+  margin-top: 20rpx;
+  padding: 25rpx;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 20rpx;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15rpx;
+}
+
+.detail-date {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.detail-status {
+  font-size: 24rpx;
+  padding: 8rpx 20rpx;
+  border-radius: 20rpx;
+}
+
+.detail-status.learned {
+  background: rgba(72, 199, 116, 0.3);
+  color: #48c774;
+}
+
+.detail-status.not-learned {
+  background: rgba(255, 107, 107, 0.3);
+  color: #ff6b6b;
+}
+
+.detail-content {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.detail-label {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.detail-value {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #ffffff;
+}

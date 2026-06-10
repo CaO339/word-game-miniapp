@@ -29,6 +29,13 @@ Page({
     currentXp: 0,            // 当前XP
     nextLevelXp: 100,        // 下一等级所需XP
     
+    // 日历数据
+    calendarYear: new Date().getFullYear(),        // 当前显示的年份
+    calendarMonth: new Date().getMonth() + 1,      // 当前显示的月份
+    calendarData: {},                              // 日历数据
+    selectedDate: null,                            // 选中的日期
+    selectedDateInfo: null,                        // 选中日期的详细信息
+    
     // 复习数据
     pendingReviewCount: 0,   // 待复习数量
     completedReviewCount: 0, // 已完成复习数量
@@ -71,6 +78,9 @@ Page({
     
     // 加载学习趋势数据
     this.loadWeeklyData();
+    
+    // 加载日历数据
+    this.loadCalendarData();
   },
 
   /**
@@ -215,6 +225,94 @@ Page({
       weeklyData: weeklyData
     });
     console.log('[Statistics] 已设置 weeklyData:', JSON.stringify(weeklyData));
+  },
+
+  /**
+   * 加载日历数据
+   */
+  loadCalendarData: function(year, month) {
+    // 如果没有传入年月，使用当前年月
+    if (!year || !month) {
+      year = new Date().getFullYear();
+      month = new Date().getMonth() + 1;
+    }
+    
+    // 获取日历数据
+    const calendarData = storage.getMonthStudyData(year, month);
+    
+    console.log('[Statistics] 日历数据:', JSON.stringify(calendarData));
+    
+    this.setData({
+      calendarYear: year,
+      calendarMonth: month,
+      calendarData: calendarData
+    });
+  },
+
+  /**
+   * 上一个月
+   */
+  prevMonth: function() {
+    let year = this.data.calendarYear;
+    let month = this.data.calendarMonth - 1;
+    
+    if (month < 1) {
+      month = 12;
+      year--;
+    }
+    
+    this.loadCalendarData(year, month);
+  },
+
+  /**
+   * 下一个月
+   */
+  nextMonth: function() {
+    let year = this.data.calendarYear;
+    let month = this.data.calendarMonth + 1;
+    
+    if (month > 12) {
+      month = 1;
+      year++;
+    }
+    
+    this.loadCalendarData(year, month);
+  },
+
+  /**
+   * 选择日期
+   */
+  selectDate: function(e) {
+    const date = e.currentTarget.dataset.date;
+    
+    if (!date || date === null) {
+      return;
+    }
+    
+    // 获取该日期的学习信息
+    const dayInfo = this.data.calendarData.days.find(item => item.date === date);
+    
+    let info = null;
+    if (dayInfo) {
+      if (dayInfo.count > 0) {
+        info = {
+          date: date,
+          count: dayInfo.count,
+          status: '已学习'
+        };
+      } else {
+        info = {
+          date: date,
+          count: 0,
+          status: '未学习'
+        };
+      }
+    }
+    
+    this.setData({
+      selectedDate: date,
+      selectedDateInfo: info
+    });
   },
 
   /**

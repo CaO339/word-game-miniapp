@@ -551,6 +551,61 @@ class StorageManager {
   }
 
   /**
+   * 获取指定月份的学习数据（用于日历显示）
+   * @param {number} year - 年份
+   * @param {number} month - 月份（1-12）
+   * @returns {Object} - { days: [], monthName: string, year: number, month: number }
+   */
+  getMonthStudyData(year, month) {
+    const history = this.getDailyHistory();
+    const dayNames = ['日', '一', '二', '三', '四', '五', '六'];
+    const monthNames = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
+    
+    // 获取指定月份的第一天和最后一天
+    const firstDay = new Date(year, month - 1, 1);
+    const lastDay = new Date(year, month, 0);
+    
+    // 获取第一天是星期几（0=周日，1=周一...6=周六）
+    const firstDayOfWeek = firstDay.getDay();
+    
+    const days = [];
+    
+    // 添加空白格子（月份开始前的日期）
+    for (let i = 0; i < firstDayOfWeek; i++) {
+      days.push({
+        day: '',
+        count: null,
+        hasRecord: false,
+        date: null,
+        isEmpty: true
+      });
+    }
+    
+    // 添加月份的所有日期
+    for (let day = 1; day <= lastDay.getDate(); day++) {
+      const date = new Date(year, month - 1, day);
+      const dateStr = this.formatDateString(date);
+      const record = history[dateStr];
+      
+      days.push({
+        day: day,
+        count: record ? record.count : 0,
+        hasRecord: record ? record.hasRecord : false,
+        date: dateStr,
+        isEmpty: false
+      });
+    }
+    
+    return {
+      days: days,
+      monthName: `${year}年${monthNames[month - 1]}`,
+      year: year,
+      month: month,
+      firstDayOfWeek: firstDayOfWeek
+    };
+  }
+
+  /**
    * 格式化日期字符串（YYYY-MM-DD）
    */
   formatDateString(date) {
