@@ -17,6 +17,8 @@ Page({
     totalCount: 0,           // 累计学习数量
     masteredCount: 0,        // 已掌握单词数量
     masteryRate: '0',        // 掌握率
+    target: 20,              // 每日目标
+    studyProgress: '0',      // 学习进度（今日完成/每日目标）
     
     // 打卡数据
     continuousDays: 0,       // 连续打卡天数
@@ -99,18 +101,29 @@ Page({
       masteryRate = Math.min((masteredCount / totalWords) * 100, 100); // 不超过100%
     }
     
-    // 获取学习统计
+    // 获取学习统计和每日目标
     const studyStats = storage.getHomeStats();
     const todayCount = studyStats.todayCount;
+    const targetData = storage.getDailyTarget();
+    const target = targetData ? targetData.target : 20;
+    
+    // 计算学习进度：今日学习数量 / 每日目标 * 100%
+    let studyProgress = 0;
+    if (target > 0) {
+      studyProgress = Math.min((todayCount / target) * 100, 100);
+    }
     
     this.setData({
       todayCount: todayCount,
       totalCount: masteredCount,  // 使用去重后的已学数量
       masteredCount: masteredCount,
-      masteryRate: masteryRate.toFixed(1)
+      masteryRate: masteryRate.toFixed(1),
+      target: target,
+      studyProgress: studyProgress.toFixed(1)
     });
     
     console.log('[Statistics] masteryRate:', masteryRate.toFixed(1) + '%');
+    console.log('[Statistics] studyProgress:', studyProgress.toFixed(1) + '%');
   },
 
   /**
