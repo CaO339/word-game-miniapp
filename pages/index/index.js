@@ -34,7 +34,8 @@ Page({
     totalWords: 0,         // 词库总单词数
     remainingCount: 0,      // 剩余未学单词数
     currentLibrary: 'CET-4', // 当前词库名称
-    libraryList: [],         // 词库列表
+    fixedLibraries: [],     // 固定词库列表
+    customLibraries: [],    // 自定义词库列表
     selectedLibrary: wx.getStorageSync('selectedWordLibrary') || 'cet4' // 当前选中的词库
   },
 
@@ -57,18 +58,19 @@ Page({
     const currentLibraryKey = wordMgr.getLibraryKey();
     const currentLibrary = wordMgr.getLibraryName();
     
-    // 为每个词库添加 active 状态
-    const libraryListWithActive = list.map(item => ({
-      ...item,
-      active: item.key === currentLibraryKey
-    }));
+    // 分离固定词库和自定义词库
+    const fixedLibraries = list.filter(item => item.type === 'fixed');
+    const customLibraries = list.filter(item => item.type === 'custom');
     
     this.setData({
-      libraryList: libraryListWithActive,
+      fixedLibraries: fixedLibraries,
+      customLibraries: customLibraries,
+      selectedLibrary: currentLibraryKey,
       currentLibrary: currentLibrary
     });
     
-    console.log('[Index] 词库列表:', libraryListWithActive);
+    console.log('[Index] 固定词库:', fixedLibraries);
+    console.log('[Index] 自定义词库:', customLibraries);
     console.log('[Index] 当前词库:', currentLibrary);
   },
 
@@ -156,30 +158,40 @@ Page({
     wx.setStorageSync('selectedWordLibrary', libraryKey);
 
     // 通知 wordManager 切换词库（使用顶部已定义的 wordMgr）
-    wordMgr.switchLibrary(libraryKey);
+    const success = wordMgr.switchLibrary(libraryKey);
     
-    // 同步更新 storageManager 的当前词库
-    storage.setCurrentLibrary(libraryKey);
+    if (success) {
+      // 同步更新 storageManager 的当前词库
+      storage.setCurrentLibrary(libraryKey);
 
-    // 重新加载统计数据
-    this.loadStats();
-    
-    wx.showToast({
-      title: '已切换到' + this.getLibraryName(libraryKey),
-      icon: 'success',
-      duration: 1500
-    });
+      // 重新加载统计数据和词库列表
+      this.loadStats();
+      this.loadLibraryList();
+      
+      wx.showToast({
+        title: '已切换到' + wordMgr.getLibraryName(),
+        icon: 'success',
+        duration: 1500
+      });
+    } else {
+      wx.showToast({
+        title: '切换词库失败',
+        icon: 'error',
+        duration: 1500
+      });
+    }
   },
 
-  // 获取词库名称
+  // 获取词库名称（兼容旧代码）
   getLibraryName: function(libraryKey) {
-    const libraries = {
-      cet4: 'CET-4',
-      cet6: 'CET-6',
-      kaoyan: '考研',
-      ielts: '雅思'
-    };
-    return libraries[libraryKey] || libraryKey;
+    return wordManager.getLibraryList().find(item => item.key === libraryKey)?.name || libraryKey;
+  },
+
+  // 跳转到词库管理页面
+  goToLibrary: function() {
+    wx.navigateTo({
+      url: '/pages/library/library'
+    });
   },
 
   // 开始学习按钮点击事件

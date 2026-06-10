@@ -8,39 +8,42 @@
 
   <!-- 词库选择区域 -->
   <view class="library-section">
-    <view class="library-title">选择词库</view>
+    <view class="library-header">
+      <view class="library-title">选择词库</view>
+      <view class="library-more" bindtap="goToLibrary">
+        <text>管理</text>
+        <text class="more-icon">→</text>
+      </view>
+    </view>
 
+    <!-- 固定词库 -->
     <view class="library-list">
       <view 
-        class="library-item {{selectedLibrary==='cet4'?'active':''}}" 
+        wx:for="{{fixedLibraries}}" 
+        wx:key="key"
+        class="library-item {{selectedLibrary === item.key ? 'active' : ''}}" 
         bindtap="switchLibrary" 
-        data-library="cet4" 
+        data-library="{{item.key}}" 
       >
-        CET-4 
+        <text class="library-name">{{item.name}}</text>
+        <text class="library-desc">{{item.description}}</text>
       </view>
+    </view>
 
-      <view 
-        class="library-item {{selectedLibrary==='cet6'?'active':''}}" 
-        bindtap="switchLibrary" 
-        data-library="cet6" 
-      >
-        CET-6 
-      </view>
-
-      <view 
-        class="library-item {{selectedLibrary==='kaoyan'?'active':''}}" 
-        bindtap="switchLibrary" 
-        data-library="kaoyan" 
-      >
-        考研 
-      </view>
-
-      <view 
-        class="library-item {{selectedLibrary==='ielts'?'active':''}}" 
-        bindtap="switchLibrary" 
-        data-library="ielts" 
-      >
-        雅思 
+    <!-- 用户词库 -->
+    <view wx:if="{{customLibraries.length > 0}}" class="custom-library-section">
+      <view class="custom-library-title">📁 用户词库</view>
+      <view class="library-list">
+        <view 
+          wx:for="{{customLibraries}}" 
+          wx:key="key"
+          class="library-item custom {{selectedLibrary === item.key ? 'active' : ''}}" 
+          bindtap="switchLibrary" 
+          data-library="{{item.key}}" 
+        >
+          <text class="library-name">{{item.name}}</text>
+          <text class="library-desc">{{item.wordCount}} 个单词</text>
+        </view>
       </view>
     </view>
   </view>
@@ -98,77 +101,77 @@
       </view>
 
       <view class="stat-divider"></view>
-      
-      <view class="stat-row">
-        <view class="stat-item">
-          <view class="stat-icon today-icon">📚</view>
-          <text class="stat-number">{{todayCount}}</text>
-          <text class="stat-label">今日练习</text>
-        </view>
-        <view class="stat-item">
-          <view class="stat-icon total-icon">📖</view>
-          <text class="stat-number">{{totalCount}}</text>
-          <text class="stat-label">已学单词</text>
-        </view>
-      </view>
-      
-      <view class="stat-divider"></view>
-      
-      <view class="checkin-row">
-        <view class="checkin-item">
-          <view class="checkin-icon">🔥</view>
-          <view class="checkin-content">
-            <text class="checkin-days">{{continuousDays}}</text>
-            <text class="checkin-label">连续打卡天数</text>
-          </view>
-        </view>
-      </view>
 
-      <view class="stat-divider"></view>
-      
-      <!-- 待复习区域 -->
-      <view class="review-row" bindtap="startReview">
-        <view class="review-item">
-          <view class="review-icon">🔄</view>
-          <view class="review-content">
-            <text class="review-count">{{pendingReviewCount}}</text>
-            <text class="review-label">待复习单词</text>
+      <!-- 学习统计区域 -->
+      <view class="stats-row">
+        <view class="stat-item" bindtap="viewStats">
+          <view class="stat-icon">📅</view>
+          <view class="stat-content">
+            <text class="stat-value">{{continuousDays}}</text>
+            <text class="stat-label">连续打卡</text>
           </view>
         </view>
-      </view>
-
-      <view class="stat-divider"></view>
-      
-      <!-- 收藏和错题区域 -->
-      <view class="extra-row">
-        <view class="extra-item" bindtap="viewCollection">
-          <view class="extra-icon">❤️</view>
-          <view class="extra-content">
-            <text class="extra-count">{{collectedCount}}</text>
-            <text class="extra-label">收藏</text>
+        <view class="stat-divider-vertical"></view>
+        <view class="stat-item" bindtap="viewReview">
+          <view class="stat-icon">🔄</view>
+          <view class="stat-content">
+            <text class="stat-value">{{pendingReviewCount}}</text>
+            <text class="stat-label">待复习</text>
           </view>
         </view>
-        <view class="extra-item" bindtap="viewMistakes">
-          <view class="extra-icon">📝</view>
-          <view class="extra-content">
-            <text class="extra-count">{{mistakeCount}}</text>
-            <text class="extra-label">错题</text>
+        <view class="stat-divider-vertical"></view>
+        <view class="stat-item" bindtap="viewCollection">
+          <view class="stat-icon">❤️</view>
+          <view class="stat-content">
+            <text class="stat-value">{{collectedCount}}</text>
+            <text class="stat-label">收藏</text>
+          </view>
+        </view>
+        <view class="stat-divider-vertical"></view>
+        <view class="stat-item" bindtap="viewMistakes">
+          <view class="stat-icon">❌</view>
+          <view class="stat-content">
+            <text class="stat-value">{{mistakeCount}}</text>
+            <text class="stat-label">错题</text>
           </view>
         </view>
       </view>
     </view>
   </view>
 
-  <!-- 欢迎文字区域 -->
-  <view class="welcome-section">
-    <text class="welcome-text">欢迎来到 WordMaster</text>
-    <text class="description">开始你的英语单词学习之旅</text>
+  <!-- 操作按钮区域 -->
+  <view class="actions-section">
+    <view class="action-btn primary" bindtap="goStudy">
+      <text class="action-icon">📖</text>
+      <text class="action-text">开始学习</text>
+    </view>
+    <view class="action-btn secondary" bindtap="goReview">
+      <text class="action-icon">🔄</text>
+      <text class="action-text">复习单词</text>
+    </view>
   </view>
 
-  <!-- 按钮区域 -->
-  <view class="btn-section">
-    <button class="start-btn" bindtap="startStudy">开始学习</button>
-    <button class="review-btn" bindtap="startReview">开始复习</button>
-    <button class="stats-btn" bindtap="viewStats">学习统计</button>
+  <!-- 底部导航 -->
+  <view class="tab-bar">
+    <view class="tab-item active">
+      <text class="tab-icon">🏠</text>
+      <text class="tab-label">首页</text>
+    </view>
+    <view class="tab-item" bindtap="goStudy">
+      <text class="tab-icon">📖</text>
+      <text class="tab-label">学习</text>
+    </view>
+    <view class="tab-item" bindtap="goReview">
+      <text class="tab-icon">🔄</text>
+      <text class="tab-label">复习</text>
+    </view>
+    <view class="tab-item" bindtap="goCollection">
+      <text class="tab-icon">❤️</text>
+      <text class="tab-label">收藏</text>
+    </view>
+    <view class="tab-item" bindtap="goStats">
+      <text class="tab-icon">📊</text>
+      <text class="tab-label">统计</text>
+    </view>
   </view>
 </view>

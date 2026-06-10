@@ -1,107 +1,174 @@
-<!--词库浏览页面 WXML-->
+<!--library.wxml-->
 <view class="container">
-  <!-- 顶部统计区域 -->
-  <view class="stats-bar">
-    <view class="stat-item">
-      <text class="stat-number">{{totalCount}}</text>
-      <text class="stat-label">总词数</text>
+  <!-- 头部 -->
+  <view class="header">
+    <view class="header-back" bindtap="goHome">
+      <text class="back-icon">←</text>
     </view>
-    <view class="stat-divider"></view>
-    <view class="stat-item">
-      <text class="stat-number learned">{{learnedCount}}</text>
-      <text class="stat-label">已学</text>
+    <text class="header-title">词库管理</text>
+    <view class="header-placeholder"></view>
+  </view>
+
+  <!-- 固定词库区域 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">📚 固定词库</text>
+      <text class="section-desc">系统内置词库</text>
     </view>
-    <view class="stat-divider"></view>
-    <view class="stat-item">
-      <text class="stat-number pending">{{pendingReviewCount}}</text>
-      <text class="stat-label">待复习</text>
-    </view>
-    <view class="stat-divider"></view>
-    <view class="stat-item">
-      <text class="stat-number not-learned">{{notLearnedCount}}</text>
-      <text class="stat-label">未学</text>
+    
+    <view class="library-list">
+      <view 
+        wx:for="{{fixedLibraries}}" 
+        wx:key="key" 
+        class="library-item"
+        bindtap="selectLibrary"
+        data-key="{{item.key}}"
+      >
+        <view class="library-info">
+          <text class="library-name">{{item.name}}</text>
+          <text class="library-desc">{{item.description}}</text>
+          <text class="library-count">{{item.wordCount}} 个单词</text>
+        </view>
+        <view class="library-arrow">→</view>
+      </view>
     </view>
   </view>
 
-  <!-- 搜索框 -->
-  <view class="search-section">
-    <view class="search-box">
-      <text class="search-icon">🔍</text>
-      <input 
-        class="search-input" 
-        placeholder="搜索单词或中文释义"
-        value="{{searchKeyword}}"
-        bindinput="onSearchInput"
-      />
-      <text 
-        class="clear-icon" 
-        wx:if="{{searchKeyword}}"
-        bindtap="onClearSearch"
-      >✕</text>
+  <!-- 自定义词库区域 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">📁 用户词库</text>
+      <text class="section-desc">导入的自定义词库</text>
     </view>
-  </view>
-
-  <!-- 状态筛选标签 -->
-  <view class="filter-section">
-    <view 
-      class="filter-tag {{currentFilter === 'all' ? 'active' : ''}}"
-      bindtap="onFilterChange"
-      data-filter="all"
-    >
-      全部
+    
+    <view wx:if="{{customLibraries.length === 0}}" class="empty-state">
+      <text class="empty-icon">📭</text>
+      <text class="empty-text">暂无自定义词库</text>
+      <text class="empty-hint">点击下方按钮导入词库</text>
     </view>
-    <view 
-      class="filter-tag learned {{currentFilter === 'learned' ? 'active' : ''}}"
-      bindtap="onFilterChange"
-      data-filter="learned"
-    >
-      已学
-    </view>
-    <view 
-      class="filter-tag pending {{currentFilter === 'pendingReview' ? 'active' : ''}}"
-      bindtap="onFilterChange"
-      data-filter="pendingReview"
-    >
-      待复习
-    </view>
-    <view 
-      class="filter-tag not-learned {{currentFilter === 'notLearned' ? 'active' : ''}}"
-      bindtap="onFilterChange"
-      data-filter="notLearned"
-    >
-      未学
-    </view>
-  </view>
-
-  <!-- 单词列表 -->
-  <scroll-view 
-    class="word-list"
-    scroll-y
-    enable-back-to-top
-  >
-    <view 
-      class="word-card {{item.status}}"
-      wx:for="{{filteredWordList}}"
-      wx:key="id"
-    >
-      <view class="word-header">
-        <text class="word-english">{{item.english}}</text>
-        <view class="status-tag {{item.status}}">
-          {{item.status === 'learned' ? '已学' : item.status === 'pendingReview' ? '待复习' : '未学'}}
+    
+    <view wx:else class="library-list">
+      <view 
+        wx:for="{{customLibraries}}" 
+        wx:key="key" 
+        class="library-item custom"
+      >
+        <view 
+          class="library-info"
+          bindtap="selectLibrary"
+          data-key="{{item.key}}"
+        >
+          <text class="library-name">{{item.name}}</text>
+          <text class="library-desc">{{item.description}}</text>
+          <text class="library-count">{{item.wordCount}} 个单词</text>
+        </view>
+        <view class="library-actions">
+          <view 
+            class="action-btn edit" 
+            bindtap="editLibraryName"
+            data-key="{{item.key}}"
+            data-name="{{item.name}}"
+          >
+            <text>✏️</text>
+          </view>
+          <view 
+            class="action-btn delete" 
+            bindtap="deleteLibrary"
+            data-key="{{item.key}}"
+            data-name="{{item.name}}"
+          >
+            <text>🗑️</text>
+          </view>
         </view>
       </view>
-      <text class="word-chinese">{{item.chinese}}</text>
     </view>
+  </view>
 
-    <!-- 空状态 -->
-    <view class="empty-state" wx:if="{{filteredWordList.length === 0}}">
-      <text class="empty-icon">📚</text>
-      <text class="empty-text">没有找到相关单词</text>
+  <!-- 导入按钮区域 -->
+  <view class="import-section">
+    <view class="import-title">导入词库</view>
+    <view class="import-options">
+      <view 
+        class="import-btn" 
+        bindtap="showImportModal" 
+        data-type="json"
+      >
+        <text class="import-icon">📄</text>
+        <text class="import-label">导入JSON</text>
+      </view>
+      <view 
+        class="import-btn" 
+        bindtap="showImportModal" 
+        data-type="txt"
+      >
+        <text class="import-icon">📝</text>
+        <text class="import-label">导入TXT</text>
+      </view>
+      <view 
+        class="import-btn" 
+        bindtap="showImportModal" 
+        data-type="csv"
+      >
+        <text class="import-icon">📊</text>
+        <text class="import-label">导入CSV</text>
+      </view>
     </view>
-  </scroll-view>
+    
+    <!-- 格式说明 -->
+    <view class="format-help">
+      <view class="help-title">📖 格式说明</view>
+      <view class="help-content">
+        <text class="help-item">• JSON: [{"word":"xxx","translations":[{"translation":"翻译","type":"n"}]}]</text>
+        <text class="help-item">• TXT: 每行一个单词，格式 "单词 翻译" 或 "单词|翻译"</text>
+        <text class="help-item">• CSV: word,meaning,partOfSpeech（首行为标题行）</text>
+      </view>
+    </view>
+  </view>
 
-  <!-- 返回按钮 -->
-  <view class="back-btn" bindtap="goHome">
-    <text>返回首页</text>
+  <!-- 导入弹窗 -->
+  <view wx:if="{{showImportModal}}" class="modal-overlay" bindtap="closeImportModal">
+    <view class="modal-content" catchtap="stopPropagation">
+      <view class="modal-header">
+        <text class="modal-title">导入{{importType === 'json' ? 'JSON' : importType === 'txt' ? 'TXT' : 'CSV'}}词库</text>
+        <view class="modal-close" bindtap="closeImportModal">✕</view>
+      </view>
+      
+      <view class="modal-body">
+        <view class="form-item">
+          <text class="form-label">词库名称</text>
+          <input 
+            class="form-input" 
+            placeholder="请输入词库名称" 
+            value="{{libraryName}}"
+            bindinput="inputLibraryName"
+          />
+        </view>
+        
+        <view class="form-item">
+          <text class="form-label">词库内容</text>
+          <view class="file-upload" bindtap="chooseFile">
+            <text class="upload-icon">📁</text>
+            <text class="upload-text">点击选择文件或直接粘贴内容</text>
+          </view>
+          <textarea 
+            class="form-textarea" 
+            placeholder="请输入词库内容..." 
+            value="{{fileContent}}"
+            bindinput="inputFileContent"
+          />
+        </view>
+      </view>
+      
+      <view class="modal-footer">
+        <button class="btn-cancel" bindtap="closeImportModal">取消</button>
+        <button 
+          class="btn-confirm" 
+          bindtap="importLibrary" 
+          disabled="{{uploading}}"
+        >
+          {{uploading ? '导入中...' : '确认导入'}}
+        </button>
+      </view>
+    </view>
   </view>
 </view>

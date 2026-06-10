@@ -46,20 +46,41 @@
 /* 词库选择区域 */
 .library-section {
   margin: 30rpx 0;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 20rpx;
+  padding: 25rpx;
+}
+
+.library-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
 }
 
 .library-title {
   font-size: 28rpx;
-  color: #666;
-  text-align: center;
-  margin-bottom: 20rpx;
+  color: #fff;
+  font-weight: bold;
+}
+
+.library-more {
+  display: flex;
+  align-items: center;
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.more-icon {
+  margin-left: 5rpx;
 }
 
 .library-list {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 20rpx;
+  gap: 15rpx;
 }
 
 .library-item {
@@ -72,8 +93,38 @@
 }
 
 .library-item.active {
-  background: #4A90E2;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: #fff;
+}
+
+.library-item.custom {
+  background: #f8f9fa;
+  border: 1rpx dashed #ddd;
+}
+
+.library-name {
+  display: block;
+  font-weight: bold;
+}
+
+.library-desc {
+  display: block;
+  font-size: 20rpx;
+  color: #999;
+  margin-top: 4rpx;
+}
+
+/* 自定义词库区域 */
+.custom-library-section {
+  margin-top: 20rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid rgba(255, 255, 255, 0.2);
+}
+
+.custom-library-title {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 15rpx;
 }
 
 /* 统计卡片区域 */

@@ -1,28 +1,94 @@
 // 词库管理器 - 支持多词库动态加载
 
-// 词库配置
-const WORD_LIBRARIES = {
+// 固定词库配置
+const FIXED_LIBRARIES = {
   cet4: {
     name: 'CET-4',
     path: '../data/cet4_converted.js',
-    description: '大学英语四级词汇'
+    description: '大学英语四级词汇',
+    type: 'fixed'
   },
   cet6: {
     name: 'CET-6',
     path: '../data/cet6.js',
-    description: '大学英语六级词汇'
+    description: '大学英语六级词汇',
+    type: 'fixed'
   },
   kaoyan: {
     name: '考研',
     path: '../data/kaoyan.js',
-    description: '考研英语词汇'
-  },
-  ielts: {
-    name: '雅思',
-    path: '../data/ielts.js',
-    description: '雅思考试词汇'
+    description: '考研英语词汇',
+    type: 'fixed'
   }
 };
+
+// 自定义词库存储键
+const CUSTOM_LIBRARIES_KEY = 'wm_custom_libraries';
+
+// 获取所有词库（固定词库 + 自定义词库）
+function getAllLibraries() {
+  const customLibraries = getCustomLibraries();
+  return { ...FIXED_LIBRARIES, ...customLibraries };
+}
+
+// 获取自定义词库
+function getCustomLibraries() {
+  try {
+    const data = wx.getStorageSync(CUSTOM_LIBRARIES_KEY);
+    return data ? JSON.parse(data) : {};
+  } catch (e) {
+    console.error('[WordManager] 读取自定义词库失败:', e);
+    return {};
+  }
+}
+
+// 保存自定义词库
+function saveCustomLibraries(customLibraries) {
+  try {
+    wx.setStorageSync(CUSTOM_LIBRARIES_KEY, JSON.stringify(customLibraries));
+  } catch (e) {
+    console.error('[WordManager] 保存自定义词库失败:', e);
+  }
+}
+
+// 添加自定义词库
+function addCustomLibrary(libraryId, name, words) {
+  const customLibraries = getCustomLibraries();
+  customLibraries[libraryId] = {
+    name: name,
+    description: `${words.length} 个单词`,
+    words: words,
+    type: 'custom',
+    createdAt: Date.now()
+  };
+  saveCustomLibraries(customLibraries);
+  return true;
+}
+
+// 删除自定义词库
+function removeCustomLibrary(libraryId) {
+  const customLibraries = getCustomLibraries();
+  if (customLibraries[libraryId]) {
+    delete customLibraries[libraryId];
+    saveCustomLibraries(customLibraries);
+    return true;
+  }
+  return false;
+}
+
+// 更新自定义词库名称
+function updateCustomLibraryName(libraryId, newName) {
+  const customLibraries = getCustomLibraries();
+  if (customLibraries[libraryId]) {
+    customLibraries[libraryId].name = newName;
+    saveCustomLibraries(customLibraries);
+    return true;
+  }
+  return false;
+}
+
+// 词库配置（兼容旧代码）
+const WORD_LIBRARIES = FIXED_LIBRARIES;
 
 // 默认词库
 const DEFAULT_LIBRARY = 'cet4';
@@ -133,14 +199,22 @@ function convertJsonToWords(jsonData, startId) {
 preloadAllLibraries();
 
 /**
- * 获取预加载的词库数据
+ * 获取词库数据（支持固定词库和自定义词库）
  * @param {string} libraryKey - 词库标识
  * @returns {Array} - 词库数组
  */
 function getLibraryData(libraryKey) {
+  // 首先检查预加载的固定词库
   if (PRELOADED_LIBRARIES[libraryKey]) {
-    console.log('[WordManager] 使用预加载词库:', WORD_LIBRARIES[libraryKey]?.name || libraryKey);
+    console.log('[WordManager] 使用预加载词库:', FIXED_LIBRARIES[libraryKey]?.name || libraryKey);
     return PRELOADED_LIBRARIES[libraryKey];
+  }
+  
+  // 然后检查自定义词库
+  const customLibraries = getCustomLibraries();
+  if (customLibraries[libraryKey]) {
+    console.log('[WordManager] 使用自定义词库:', customLibraries[libraryKey].name);
+    return customLibraries[libraryKey].words || [];
   }
   
   console.warn('[WordManager] 词库不存在，使用内置词库:', libraryKey);
@@ -154,9 +228,18 @@ function getLibraryData(libraryKey) {
 function getSelectedLibrary() {
   try {
     const selected = wx.getStorageSync(STORAGE_KEYS.SELECTED_LIBRARY);
-    if (selected && WORD_LIBRARIES[selected]) {
-      console.log('[WordManager] 使用已保存的词库:', selected);
-      return selected;
+    if (selected) {
+      // 检查是否是固定词库
+      if (FIXED_LIBRARIES[selected]) {
+        console.log('[WordManager] 使用已保存的固定词库:', selected);
+        return selected;
+      }
+      // 检查是否是自定义词库
+      const customLibraries = getCustomLibraries();
+      if (customLibraries[selected]) {
+        console.log('[WordManager] 使用已保存的自定义词库:', selected);
+        return selected;
+      }
     }
   } catch (e) {
     console.error('[WordManager] 读取词库选择失败:', e);
@@ -171,32 +254,78 @@ function getSelectedLibrary() {
  * @param {string} libraryKey - 词库标识
  */
 function saveSelectedLibrary(libraryKey) {
-  if (!WORD_LIBRARIES[libraryKey]) {
-    console.warn('[WordManager] 无效的词库标识:', libraryKey);
-    return false;
+  // 检查是否是固定词库
+  if (FIXED_LIBRARIES[libraryKey]) {
+    try {
+      wx.setStorageSync(STORAGE_KEYS.SELECTED_LIBRARY, libraryKey);
+      console.log('[WordManager] 词库选择已保存:', libraryKey);
+      return true;
+    } catch (e) {
+      console.error('[WordManager] 保存词库选择失败:', e);
+      return false;
+    }
   }
   
-  try {
-    wx.setStorageSync(STORAGE_KEYS.SELECTED_LIBRARY, libraryKey);
-    console.log('[WordManager] 词库选择已保存:', libraryKey);
-    return true;
-  } catch (e) {
-    console.error('[WordManager] 保存词库选择失败:', e);
-    return false;
+  // 检查是否是自定义词库
+  const customLibraries = getCustomLibraries();
+  if (customLibraries[libraryKey]) {
+    try {
+      wx.setStorageSync(STORAGE_KEYS.SELECTED_LIBRARY, libraryKey);
+      console.log('[WordManager] 自定义词库选择已保存:', libraryKey);
+      return true;
+    } catch (e) {
+      console.error('[WordManager] 保存词库选择失败:', e);
+      return false;
+    }
   }
+  
+  console.warn('[WordManager] 无效的词库标识:', libraryKey);
+  return false;
 }
 
 /**
- * 获取所有可用词库列表
+ * 获取所有可用词库列表（固定词库 + 自定义词库）
  * @returns {Array} - 词库信息数组
  */
 function getLibraryList() {
-  return Object.entries(WORD_LIBRARIES).map(([key, value]) => ({
-    key: key,
-    name: value.name,
-    description: value.description,
-    wordCount: PRELOADED_LIBRARIES[key]?.length || 0
-  }));
+  const libraries = [];
+  
+  // 添加固定词库
+  for (const [key, value] of Object.entries(FIXED_LIBRARIES)) {
+    libraries.push({
+      key: key,
+      name: value.name,
+      description: value.description,
+      wordCount: PRELOADED_LIBRARIES[key]?.length || 0,
+      type: 'fixed'
+    });
+  }
+  
+  // 添加自定义词库
+  const customLibraries = getCustomLibraries();
+  for (const [key, value] of Object.entries(customLibraries)) {
+    libraries.push({
+      key: key,
+      name: value.name,
+      description: value.description,
+      wordCount: value.words?.length || 0,
+      type: 'custom',
+      createdAt: value.createdAt
+    });
+  }
+  
+  return libraries;
+}
+
+/**
+ * 检查词库是否存在
+ * @param {string} libraryKey - 词库标识
+ * @returns {boolean} - 是否存在
+ */
+function libraryExists(libraryKey) {
+  if (FIXED_LIBRARIES[libraryKey]) return true;
+  const customLibraries = getCustomLibraries();
+  return !!customLibraries[libraryKey];
 }
 
 /**
@@ -227,7 +356,10 @@ class WordManager {
     const learnedCount = learnedIds.length;
     const unlearnedCount = this.currentWordList.length - learnedCount;
     
-    console.log(`[${WORD_LIBRARIES[this.currentLibraryKey]?.name || this.currentLibraryKey}]`);
+    const libraryName = FIXED_LIBRARIES[this.currentLibraryKey]?.name || 
+                        (getCustomLibraries()[this.currentLibraryKey]?.name) || 
+                        this.currentLibraryKey;
+    console.log(`[${libraryName}]`);
     console.log(`loaded words: ${this.currentWordList.length}`);
     console.log(`learned words: ${learnedCount}`);
     console.log(`unlearned words: ${unlearnedCount}`);
@@ -238,7 +370,8 @@ class WordManager {
    * @param {string} libraryKey - 词库标识
    */
   switchLibrary(libraryKey) {
-    if (!WORD_LIBRARIES[libraryKey]) {
+    // 检查词库是否存在（支持固定词库和自定义词库）
+    if (!libraryExists(libraryKey)) {
       console.warn('[WordManager] 无效的词库:', libraryKey);
       return false;
     }
@@ -250,8 +383,16 @@ class WordManager {
     
     const oldLibraryKey = this.currentLibraryKey;
     console.log('[WordManager] ==================== 开始切换词库 ====================');
-    console.log('[WordManager] 切换前词库:', oldLibraryKey, '-', WORD_LIBRARIES[oldLibraryKey]?.name);
-    console.log('[WordManager] 切换后词库:', libraryKey, '-', WORD_LIBRARIES[libraryKey]?.name);
+    
+    // 获取词库名称（支持固定词库和自定义词库）
+    const getLibraryName = (key) => {
+      if (FIXED_LIBRARIES[key]) return FIXED_LIBRARIES[key].name;
+      const customLibraries = getCustomLibraries();
+      return customLibraries[key]?.name || key;
+    };
+    
+    console.log('[WordManager] 切换前词库:', oldLibraryKey, '-', getLibraryName(oldLibraryKey));
+    console.log('[WordManager] 切换后词库:', libraryKey, '-', getLibraryName(libraryKey));
     
     // 保存新词库选择
     saveSelectedLibrary(libraryKey);
@@ -290,8 +431,16 @@ class WordManager {
    * 获取当前词库名称
    */
   getLibraryName() {
-    const library = WORD_LIBRARIES[this.currentLibraryKey];
-    return library ? library.name : '未知词库';
+    // 检查固定词库
+    if (FIXED_LIBRARIES[this.currentLibraryKey]) {
+      return FIXED_LIBRARIES[this.currentLibraryKey].name;
+    }
+    // 检查自定义词库
+    const customLibraries = getCustomLibraries();
+    if (customLibraries[this.currentLibraryKey]) {
+      return customLibraries[this.currentLibraryKey].name;
+    }
+    return '未知词库';
   }
 
   /**
@@ -462,7 +611,15 @@ module.exports = {
   getSelectedLibrary: getSelectedLibrary,
   saveSelectedLibrary: saveSelectedLibrary,
   WORD_LIBRARIES: WORD_LIBRARIES,
+  FIXED_LIBRARIES: FIXED_LIBRARIES,
   DEFAULT_LIBRARY: DEFAULT_LIBRARY,
   preloadAllLibraries: preloadAllLibraries,
-  getLibraryData: getLibraryData
+  getLibraryData: getLibraryData,
+  // 自定义词库管理
+  getCustomLibraries: getCustomLibraries,
+  addCustomLibrary: addCustomLibrary,
+  removeCustomLibrary: removeCustomLibrary,
+  updateCustomLibraryName: updateCustomLibraryName,
+  libraryExists: libraryExists,
+  convertJsonToWords: convertJsonToWords
 };
