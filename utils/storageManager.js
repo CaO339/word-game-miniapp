@@ -493,6 +493,10 @@ class StorageManager {
     const today = this.getTodayString();
     const history = this.getDailyHistory();
     
+    console.log('[StorageManager] recordDailyStudy - today:', today);
+    console.log('[StorageManager] recordDailyStudy - count:', count);
+    console.log('[StorageManager] recordDailyStudy - history before:', JSON.stringify(history));
+    
     // 更新今日学习数量
     if (!history[today]) {
       history[today] = {
@@ -504,6 +508,8 @@ class StorageManager {
     
     history[today].count = count;
     history[today].hasRecord = count > 0;
+    
+    console.log('[StorageManager] recordDailyStudy - history after:', JSON.stringify(history));
     
     this.saveDailyHistory(history);
   }
