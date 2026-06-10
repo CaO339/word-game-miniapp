@@ -70,11 +70,13 @@ function preloadAllLibraries() {
       } else if (key === 'cet6') {
         // CET6 使用完整版（已包含所有单词）
         loadedFile = '../data/cet6.js';
-        data = require('../data/cet6.js');
+        const rawData = require('../data/cet6.js');
+        data = convertJsonToWords(rawData, 20000);
       } else if (key === 'kaoyan') {
         // 考研使用完整版（已包含所有单词）
         loadedFile = '../data/kaoyan.js';
-        data = require('../data/kaoyan.js');
+        const rawData = require('../data/kaoyan.js');
+        data = convertJsonToWords(rawData, 30000);
       } else {
         // 其他词库正常加载
         loadedFile = library.path;
