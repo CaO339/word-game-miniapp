@@ -456,15 +456,13 @@ class StorageManager {
   }
 
   /**
-   * 获取每日学习历史
+   * 获取每日学习历史（每次都从 storage 读取，确保数据最新）
    */
   getDailyHistory() {
-    if (this._dailyHistoryCache) {
-      return this._dailyHistoryCache;
-    }
     try {
       const history = wx.getStorageSync(STORAGE_KEYS.DAILY_HISTORY);
       this._dailyHistoryCache = history || {};
+      console.log('[StorageManager] getDailyHistory - 从 storage 读取:', JSON.stringify(this._dailyHistoryCache));
       return this._dailyHistoryCache;
     } catch (e) {
       console.error('[StorageManager] 获取每日学习历史失败:', e);
