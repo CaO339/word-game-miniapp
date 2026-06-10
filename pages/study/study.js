@@ -146,6 +146,13 @@ Page({
     // 记录每日学习数量
     storage.recordDailyStudy(record.todayCount);
     console.log('[Study] 记录每日学习数量:', record.todayCount);
+    console.log('[Study] 完整学习记录:', JSON.stringify(record));
+    
+    // 验证是否写入成功
+    const today = storage.getTodayString();
+    const history = storage.getDailyHistory();
+    const todayRecord = history[today];
+    console.log('[Study] 今日学习记录:', JSON.stringify(todayRecord));
     
     // 更新每日目标（仅新单词计入目标）
     storage.updateDailyTarget(wordId, isNewWord);
