@@ -68,39 +68,13 @@ function preloadAllLibraries() {
         loadedFile = '../data/cet4_converted.js';
         data = require('../data/cet4_converted.js');
       } else if (key === 'cet6') {
-        // CET6 优先使用完整版，否则使用JSON文件
-        loadedFile = '../data/cet6_full.js';
-        try {
-          data = require('../data/cet6_full.js');
-        } catch (e) {
-          console.warn('[WordManager] CET6完整版不存在，尝试加载JSON');
-          loadedFile = '../data/4-CET6-顺序.json';
-          try {
-            const jsonContent = require('../data/4-CET6-顺序.json');
-            data = convertJsonToWords(jsonContent, 20000);
-          } catch (jsonError) {
-            console.warn('[WordManager] JSON也无法加载，使用基础版');
-            loadedFile = '../data/cet6.js';
-            data = require('../data/cet6.js');
-          }
-        }
+        // CET6 使用完整版（已包含所有单词）
+        loadedFile = '../data/cet6.js';
+        data = require('../data/cet6.js');
       } else if (key === 'kaoyan') {
-        // 考研优先使用完整版，否则使用JSON文件
-        loadedFile = '../data/kaoyan_full.js';
-        try {
-          data = require('../data/kaoyan_full.js');
-        } catch (e) {
-          console.warn('[WordManager] 考研完整版不存在，尝试加载JSON');
-          loadedFile = '../data/5-考研-顺序.json';
-          try {
-            const jsonContent = require('../data/5-考研-顺序.json');
-            data = convertJsonToWords(jsonContent, 30000);
-          } catch (jsonError) {
-            console.warn('[WordManager] JSON也无法加载，使用基础版');
-            loadedFile = '../data/kaoyan.js';
-            data = require('../data/kaoyan.js');
-          }
-        }
+        // 考研使用完整版（已包含所有单词）
+        loadedFile = '../data/kaoyan.js';
+        data = require('../data/kaoyan.js');
       } else {
         // 其他词库正常加载
         loadedFile = library.path;
