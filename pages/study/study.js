@@ -22,6 +22,7 @@ Page({
     learnedCount: 0,      // 已学习单词数（本次会话）
     totalWords: 0,       // 总单词数
     wordListName: '',     // 当前词库名称
+    currentLibrary: '',   // 当前词库名称（用于显示）
     todayCount: 0,       // 今日学习数量
     totalCount: 0,       // 累计学习数量
     currentLevel: 1,     // 当前等级
@@ -90,6 +91,7 @@ Page({
       currentWord: firstWord,
       totalWords: totalWords,
       wordListName: wordListName,
+      currentLibrary: wordListName,
       learnedCount: manager.getLearnedCount(),
       todayCount: stats.todayCount,
       totalCount: stats.totalCount,

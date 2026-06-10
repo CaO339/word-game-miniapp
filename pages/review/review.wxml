@@ -3,6 +3,7 @@
   <!-- 标题区域 -->
   <view class="header">
     <text class="title">单词复习</text>
+    <text class="library-info">📚 当前词库: {{currentLibrary}}</text>
     <text class="subtitle">待复习：{{pendingCount}}个</text>
   </view>
 

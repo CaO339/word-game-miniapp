@@ -3,6 +3,7 @@
   <!-- 页面标题 -->
   <view class="header">
     <text class="title">WordMaster</text>
+    <text class="library-info">📚 当前词库: {{currentLibrary}}</text>
     <text class="subtitle">{{wordListName}}</text>
     <text class="progress">已学习 {{learnedCount}}/{{totalWords}}</text>
   </view>

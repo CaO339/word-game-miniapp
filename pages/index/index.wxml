@@ -6,6 +6,15 @@
     <text class="app-name">WordMaster</text>
   </view>
 
+  <!-- 当前词库显示区域 -->
+  <view class="current-library-section">
+    <view class="current-library-label">当前词库</view>
+    <view class="current-library-value">
+      <text class="library-icon">📚</text>
+      <text class="library-name">{{currentLibrary}}</text>
+    </view>
+  </view>
+
   <!-- 词库选择区域 -->
   <view class="library-section">
     <view class="library-header">
@@ -16,23 +25,26 @@
       </view>
     </view>
 
-    <!-- 固定词库 -->
-    <view class="library-list">
-      <view 
-        wx:for="{{fixedLibraries}}" 
-        wx:key="key"
-        class="library-item {{selectedLibrary === item.key ? 'active' : ''}}" 
-        bindtap="switchLibrary" 
-        data-library="{{item.key}}" 
-      >
-        <text class="library-name">{{item.name}}</text>
-        <text class="library-desc">{{item.description}}</text>
+    <!-- 系统词库 -->
+    <view class="system-library-section">
+      <view class="system-library-title">📖 系统词库</view>
+      <view class="library-list">
+        <view 
+          wx:for="{{fixedLibraries}}" 
+          wx:key="key"
+          class="library-item {{selectedLibrary === item.key ? 'active' : ''}}" 
+          bindtap="switchLibrary" 
+          data-library="{{item.key}}" 
+        >
+          <text class="library-name">{{item.name}}</text>
+          <text class="library-desc">{{item.description}}</text>
+        </view>
       </view>
     </view>
 
-    <!-- 用户词库 -->
+    <!-- 自定义词库 -->
     <view wx:if="{{customLibraries.length > 0}}" class="custom-library-section">
-      <view class="custom-library-title">📁 用户词库</view>
+      <view class="custom-library-title">📁 自定义词库</view>
       <view class="library-list">
         <view 
           wx:for="{{customLibraries}}" 

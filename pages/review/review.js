@@ -15,7 +15,8 @@ Page({
     currentIndex: 0,      // 当前复习索引
     reviewWords: [],      // 待复习单词列表
     reviewCompleted: false, // 是否完成复习
-    hasPendingWords: true // 是否有待复习单词
+    hasPendingWords: true, // 是否有待复习单词
+    currentLibrary: ''    // 当前词库名称
   },
 
   onLoad: function() {
@@ -37,8 +38,10 @@ Page({
   loadReviewWords: function() {
     // 获取所有单词列表（当前词库）
     const allWords = manager.getAllWords();
+    const libraryName = manager.getLibraryName();
     
     console.log('[Review] 当前词库单词数:', allWords.length);
+    console.log('[Review] 当前词库名称:', libraryName);
     
     if (allWords.length === 0) {
       // 当前词库为空
@@ -50,7 +53,8 @@ Page({
         currentWord: {},
         currentIndex: 0,
         showAnswer: false,
-        showResultButtons: false
+        showResultButtons: false,
+        currentLibrary: libraryName
       });
       return;
     }
@@ -76,7 +80,8 @@ Page({
         currentWord: {},
         currentIndex: 0,
         showAnswer: false,
-        showResultButtons: false
+        showResultButtons: false,
+        currentLibrary: libraryName
       });
       return;
     }
@@ -93,7 +98,8 @@ Page({
       currentWord: pendingWords[0],
       currentIndex: 0,
       showAnswer: false,
-      showResultButtons: false
+      showResultButtons: false,
+      currentLibrary: libraryName
     });
   },
 
