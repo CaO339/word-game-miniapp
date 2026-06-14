@@ -7,7 +7,7 @@
   </view>
 
   <!-- 错误状态 -->
-  <view class="error-section" wx:if="hasError && wordCount === 0">
+  <view class="error-section" wx:if="{{showError}}">
     <view class="error-icon">⚠️</view>
     <text class="error-title">数据异常</text>
     <text class="error-message">{{errorMessage}}</text>

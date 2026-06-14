@@ -19,7 +19,8 @@ Page({
     pages: [],           // 页面数据
     type: '',            // 类型（favorite/wrong）
     hasError: false,     // 是否有错误
-    errorMessage: ''     // 错误信息
+    errorMessage: '',    // 错误信息
+    showError: false     // 是否显示错误面板
   },
 
   onLoad: function(options) {
@@ -40,6 +41,7 @@ Page({
       this.setData({
         hasError: true,
         errorMessage: validationResult.message,
+        showError: true,
         type: type,
         title: pdfGenerator.getTitle(type)
       });
@@ -68,12 +70,14 @@ Page({
         exportDate: dateStr,
         pages: pages,
         hasError: false,
-        errorMessage: ''
+        errorMessage: '',
+        showError: false
       });
       
       console.log('[ExportPDF] 页面加载成功，共', sortedWords.length, '个单词，', pages.length, '页');
       console.log('[ExportPDF] 当前状态 - hasError:', this.data.hasError);
       console.log('[ExportPDF] 当前状态 - errorMessage:', this.data.errorMessage);
+      console.log('[ExportPDF] 当前状态 - showError:', this.data.showError);
       console.log('[ExportPDF] 当前状态 - wordCount:', this.data.wordCount);
       console.log('[ExportPDF] 当前状态 - totalPages:', this.data.totalPages);
       
@@ -82,15 +86,18 @@ Page({
         console.log('[ExportPDF] 执行防御性状态重置');
         this.setData({
           hasError: false,
-          errorMessage: ''
+          errorMessage: '',
+          showError: false
         });
         console.log('[ExportPDF] 重置后状态 - hasError:', this.data.hasError);
         console.log('[ExportPDF] 重置后状态 - errorMessage:', this.data.errorMessage);
+        console.log('[ExportPDF] 重置后状态 - showError:', this.data.showError);
       }
     } catch (e) {
       console.error('[ExportPDF] 处理单词数据失败:', e);
       this.setData({
         hasError: true,
+        showError: true,
         errorMessage: '数据处理失败，无法生成PDF',
         type: type,
         title: pdfGenerator.getTitle(type)
