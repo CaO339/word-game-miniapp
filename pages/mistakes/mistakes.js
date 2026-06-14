@@ -4,7 +4,6 @@
 
 const wordManager = require('../../utils/wordManager.js');
 const mistakeManager = require('../../utils/mistakeManager.js');
-const { safeData } = require('../../utils/pdfGenerator.js');
 
 const manager = wordManager.getWordManager();
 const mistakes = mistakeManager;
@@ -33,6 +32,9 @@ Page({
     // 获取错题的单词ID列表
     const mistakeIds = mistakes.getMistakeWordIds();
     
+    console.log('[Mistakes] 错题单词ID数量:', mistakeIds.length);
+    console.log('[Mistakes] 错题单词IDs:', mistakeIds);
+    
     // 获取对应的单词详情
     const mistakeWords = [];
     for (let i = 0; i < mistakeIds.length; i++) {
@@ -41,6 +43,9 @@ Page({
         mistakeWords.push(word);
       }
     }
+    
+    console.log('[Mistakes] 错题单词详情数量:', mistakeWords.length);
+    console.log('[Mistakes] 错题单词详情:', JSON.stringify(mistakeWords.slice(0, 3)));
     
     this.setData({
       mistakeWords: mistakeWords,
@@ -78,21 +83,11 @@ Page({
   exportPdf: function() {
     console.log('[Mistakes] 开始导出PDF');
     
-    // 转换数据格式
-    const rawWords = this.data.mistakeWords.map(item => ({
-      word: item.english,
-      meaning: item.chinese
-    }));
-    
-    console.log('[Mistakes] 原始数据:', JSON.stringify(rawWords));
-    
-    // 使用 safeData 进行数据安全转换
-    const words = safeData(rawWords);
-    
-    console.log('[Mistakes] safeData 转换后数据长度:', words.length);
-    
     // 检查数据是否为空
-    if (words.length === 0) {
+    const mistakeIds = mistakes.getMistakeWordIds();
+    console.log('[Mistakes] 导出前检查 - 错题ID数量:', mistakeIds.length);
+    
+    if (mistakeIds.length === 0) {
       wx.showToast({
         title: '暂无可导出的单词',
         icon: 'none'
@@ -100,9 +95,9 @@ Page({
       return;
     }
     
-    // 跳转到导出页面
+    // 只传递类型参数，PDF页面将直接从数据管理器获取数据
     wx.navigateTo({
-      url: `/pages/exportPdf/exportPdf?type=wrong&words=${encodeURIComponent(JSON.stringify(words))}`
+      url: `/pages/exportPdf/exportPdf?type=wrong`
     });
   },
 

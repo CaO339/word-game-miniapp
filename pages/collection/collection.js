@@ -4,7 +4,6 @@
 
 const wordManager = require('../../utils/wordManager.js');
 const collectionManager = require('../../utils/collectionManager.js');
-const { safeData } = require('../../utils/pdfGenerator.js');
 
 const manager = wordManager.getWordManager();
 const collection = collectionManager;
@@ -33,6 +32,9 @@ Page({
     // 获取收藏的单词ID列表
     const collectedIds = collection.getCollectedWordIds();
     
+    console.log('[Collection] 收藏单词ID数量:', collectedIds.length);
+    console.log('[Collection] 收藏单词IDs:', collectedIds);
+    
     // 获取对应的单词详情
     const collectedWords = [];
     for (let i = 0; i < collectedIds.length; i++) {
@@ -41,6 +43,9 @@ Page({
         collectedWords.push(word);
       }
     }
+    
+    console.log('[Collection] 收藏单词详情数量:', collectedWords.length);
+    console.log('[Collection] 收藏单词详情:', JSON.stringify(collectedWords.slice(0, 3)));
     
     this.setData({
       collectedWords: collectedWords,
@@ -78,21 +83,11 @@ Page({
   exportPdf: function() {
     console.log('[Collection] 开始导出PDF');
     
-    // 转换数据格式
-    const rawWords = this.data.collectedWords.map(item => ({
-      word: item.english,
-      meaning: item.chinese
-    }));
-    
-    console.log('[Collection] 原始数据:', JSON.stringify(rawWords));
-    
-    // 使用 safeData 进行数据安全转换
-    const words = safeData(rawWords);
-    
-    console.log('[Collection] safeData 转换后数据长度:', words.length);
-    
     // 检查数据是否为空
-    if (words.length === 0) {
+    const collectedIds = collection.getCollectedWordIds();
+    console.log('[Collection] 导出前检查 - 收藏ID数量:', collectedIds.length);
+    
+    if (collectedIds.length === 0) {
       wx.showToast({
         title: '暂无可导出的单词',
         icon: 'none'
@@ -100,9 +95,9 @@ Page({
       return;
     }
     
-    // 跳转到导出页面
+    // 只传递类型参数，PDF页面将直接从数据管理器获取数据
     wx.navigateTo({
-      url: `/pages/exportPdf/exportPdf?type=favorite&words=${encodeURIComponent(JSON.stringify(words))}`
+      url: `/pages/exportPdf/exportPdf?type=favorite`
     });
   },
 

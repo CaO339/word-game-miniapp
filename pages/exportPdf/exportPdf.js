@@ -1,6 +1,13 @@
 // PDF导出页面逻辑
 const { getPdfGenerator, safeData } = require('../../utils/pdfGenerator.js');
 const pdfGenerator = getPdfGenerator();
+const wordManager = require('../../utils/wordManager.js');
+const collectionManager = require('../../utils/collectionManager.js');
+const mistakeManager = require('../../utils/mistakeManager.js');
+
+const manager = wordManager.getWordManager();
+const collection = collectionManager;
+const mistakes = mistakeManager;
 
 Page({
   data: {
@@ -21,10 +28,15 @@ Page({
     
     // 获取参数
     const type = options.type || 'favorite';
-    const wordsStr = options.words || '[]';
+    
+    // 直接调用数据管理器获取数据，确保与来源页面一致
+    const words = this.getWordsFromSource(type);
+    
+    console.log('[ExportPDF] 从数据源获取的数据长度:', words.length);
+    console.log('[ExportPDF] 从数据源获取的数据:', JSON.stringify(words.slice(0, 3)));
     
     // 数据安全检查
-    const validationResult = this.validateInputData(wordsStr);
+    const validationResult = this.validateInputData(words);
     
     if (!validationResult.success) {
       console.error('[ExportPDF] 数据验证失败:', validationResult.message);
@@ -38,11 +50,11 @@ Page({
     }
     
     // 使用验证后的数据（已通过 safeData 处理）
-    const words = validationResult.data;
+    const validatedWords = validationResult.data;
     
     try {
       // 按字母顺序排序并去重
-      const sortedWords = pdfGenerator.sortAndDeduplicate(words);
+      const sortedWords = pdfGenerator.sortAndDeduplicate(validatedWords);
       
       console.log('[ExportPDF] 排序去重后数据长度:', sortedWords.length);
       console.log('[ExportPDF] 前3条数据:', JSON.stringify(sortedWords.slice(0, 3)));
@@ -78,40 +90,55 @@ Page({
   },
 
   /**
+   * 从数据源获取单词数据（与来源页面使用相同接口）
+   * @param {String} type - 类型（favorite/wrong）
+   * @returns {Array} - 单词数组
+   */
+  getWordsFromSource: function(type) {
+    console.log('[ExportPDF] getWordsFromSource - 类型:', type);
+    
+    let wordIds = [];
+    
+    if (type === 'favorite') {
+      // 获取收藏单词ID列表（与收藏页使用相同方法）
+      wordIds = collection.getCollectedWordIds();
+      console.log('[ExportPDF] 收藏单词ID数量:', wordIds.length);
+      console.log('[ExportPDF] 收藏单词IDs:', wordIds);
+    } else if (type === 'wrong') {
+      // 获取错题单词ID列表（与错题页使用相同方法）
+      wordIds = mistakes.getMistakeWordIds();
+      console.log('[ExportPDF] 错题单词ID数量:', wordIds.length);
+      console.log('[ExportPDF] 错题单词IDs:', wordIds);
+    }
+    
+    // 获取单词详情（与来源页面使用相同方法）
+    const words = [];
+    for (let i = 0; i < wordIds.length; i++) {
+      const word = manager.getWordById(wordIds[i]);
+      if (word) {
+        words.push({
+          word: word.english,
+          meaning: word.chinese
+        });
+      }
+    }
+    
+    console.log('[ExportPDF] 获取到的单词详情数量:', words.length);
+    console.log('[ExportPDF] 获取到的单词详情:', JSON.stringify(words.slice(0, 3)));
+    
+    return words;
+  },
+
+  /**
    * 验证输入数据（使用 safeData）
-   * @param {String} wordsStr - 单词数据JSON字符串
+   * @param {Array} words - 单词数组
    * @returns {Object} - { success: boolean, message: string, data: Array }
    */
-  validateInputData: function(wordsStr) {
-    console.log('[ExportPDF] validateInputData - 原始字符串:', wordsStr);
-    
-    // 检查字符串是否为空
-    if (!wordsStr || wordsStr.trim() === '') {
-      console.log('[ExportPDF] 数据检查失败：输入字符串为空');
-      return {
-        success: false,
-        message: '暂无可导出的单词',
-        data: []
-      };
-    }
-    
-    let parsedWords;
-    try {
-      parsedWords = JSON.parse(wordsStr);
-    } catch (e) {
-      console.log('[ExportPDF] 数据检查失败：JSON解析错误');
-      return {
-        success: false,
-        message: '数据格式错误，无法生成PDF',
-        data: []
-      };
-    }
-    
-    console.log('[ExportPDF] 解析后数据类型:', typeof parsedWords);
-    console.log('[ExportPDF] 解析后是否为数组:', Array.isArray(parsedWords));
+  validateInputData: function(words) {
+    console.log('[ExportPDF] validateInputData - 数据:', JSON.stringify(words));
     
     // 使用 safeData 进行强制类型转换
-    const safeWords = safeData(parsedWords);
+    const safeWords = safeData(words);
     
     console.log('[ExportPDF] safeData 转换后数据长度:', safeWords.length);
     console.log('[ExportPDF] safeData 转换后前3条数据:', JSON.stringify(safeWords.slice(0, 3)));
