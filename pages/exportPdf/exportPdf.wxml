@@ -3,11 +3,19 @@
   <!-- 页面头部 -->
   <view class="header">
     <text class="title">{{title}}</text>
-    <text class="subtitle">共 {{wordCount}} 个单词，{{totalPages}} 页</text>
+    <text class="subtitle" wx:if="!hasError">共 {{wordCount}} 个单词，{{totalPages}} 页</text>
+  </view>
+
+  <!-- 错误状态 -->
+  <view class="error-section" wx:if="hasError">
+    <view class="error-icon">⚠️</view>
+    <text class="error-title">数据异常</text>
+    <text class="error-message">{{errorMessage}}</text>
+    <button class="error-btn" bindtap="goBack">返回</button>
   </view>
 
   <!-- 预览区域 -->
-  <view class="preview-section">
+  <view class="preview-section" wx:if="!hasError">
     <view class="preview-header">
       <text class="preview-title">📄 PDF预览</text>
     </view>
@@ -70,14 +78,14 @@
   </view>
 
   <!-- 操作按钮 -->
-  <view class="action-section">
+  <view class="action-section" wx:if="!hasError">
     <button class="action-btn primary" bindtap="sharePdf">📤 分享PDF</button>
     <button class="action-btn secondary" bindtap="copyContent">📋 复制内容</button>
     <button class="action-btn outline" bindtap="goBack">返回</button>
   </view>
 
   <!-- 提示信息 -->
-  <view class="tips-section">
+  <view class="tips-section" wx:if="!hasError">
     <text class="tips-title">💡 提示</text>
     <view class="tips-list">
       <text class="tip-item">• 左侧为默写区域，右侧为答案区域</text>
