@@ -130,6 +130,21 @@
   z-index: 200;
 }
 
+/* 首字母锚点 */
+.letter-anchor {
+  background: #f5f7fa;
+  padding: 15rpx 20rpx;
+  margin-bottom: 10rpx;
+  border-top-left-radius: 10rpx;
+  border-top-right-radius: 10rpx;
+}
+
+.letter-label {
+  font-size: 26rpx;
+  font-weight: bold;
+  color: #667eea;
+}
+
 /* 单词列表 */
 .word-list {
   height: calc(100vh - 220rpx);

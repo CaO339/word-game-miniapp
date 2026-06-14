@@ -28,10 +28,24 @@
     <text class="word-count">共 {{totalWords}} 个单词</text>
   </view>
 
+  <!-- 字母索引栏 -->
+  <view class="alphabet-index" wx:if="{{alphabetIndex.length > 0}}">
+    <view 
+      class="alphabet-item" 
+      wx:for="{{alphabetIndex}}" 
+      wx:key="*this"
+      bindtap="jumpToLetter"
+      data-letter="{{item}}"
+    >
+      {{item}}
+    </view>
+  </view>
+
   <!-- 单词列表 -->
   <scroll-view 
     class="word-list" 
     scroll-y 
+    scroll-into-view="{{scrollIntoView}}"
     bindscrolltolower="loadMore"
     enhanced
     :show-scrollbar="false"
@@ -47,6 +61,11 @@
       wx:key="id"
       wx:for-item="word"
     >
+      <!-- 首字母锚点 -->
+      <view class="letter-anchor" id="letter-{{word.firstLetter}}" wx:if="{{word.isFirstLetter}}">
+        <text class="letter-label">{{word.firstLetter}}</text>
+      </view>
+      
       <view class="word-header">
         <text class="word-english">{{word.word}}</text>
         <text class="word-phonetic" wx:if="{{word.phonetic}}">{{word.phonetic}}</text>
