@@ -134,34 +134,55 @@ Page({
     
     if (type === 'favorite') {
       const collected = collection.getCollectedWithTime();
+      console.log('[ExportPDF] 收藏数据长度:', collected.length);
+      console.log('[ExportPDF] 收藏数据:', JSON.stringify(collected.slice(0, 3)));
+      
       wordList = collected.map(item => ({
-        wordId: item.wordId,
+        wordId: item.wordId || item,  // 兼容旧格式
         word: '',
         meaning: '',
-        collectTime: item.collectTime,
+        collectTime: item.collectTime || 0,
         sortValue: item.collectTime
       }));
     } else if (type === 'wrong') {
       const mistakeList = mistakes.getMistakesWithDetail();
+      console.log('[ExportPDF] 错题数据长度:', mistakeList.length);
+      console.log('[ExportPDF] 错题数据:', JSON.stringify(mistakeList.slice(0, 3)));
+      
       wordList = mistakeList.map(item => ({
-        wordId: item.wordId,
+        wordId: item.wordId || item,  // 兼容旧格式
         word: '',
         meaning: '',
-        wrongCount: item.wrongCount,
-        lastWrongTime: item.lastWrongTime,
+        wrongCount: item.wrongCount || 1,
+        lastWrongTime: item.lastWrongTime || 0,
         sortValue: item.wrongCount
       }));
     }
+    
+    console.log('[ExportPDF] 转换后单词列表长度:', wordList.length);
+    console.log('[ExportPDF] 转换后单词列表:', JSON.stringify(wordList.slice(0, 3)));
     
     wordList.forEach(item => {
       const word = manager.getWordById(item.wordId);
       if (word) {
         item.word = word.english;
         item.meaning = word.chinese;
+      } else {
+        // 如果找不到单词详情，使用wordId作为备用
+        console.warn('[ExportPDF] 无法找到单词ID:', item.wordId);
+        item.word = String(item.wordId);
+        item.meaning = '未知';
       }
     });
     
-    return this.sortWords(wordList, sortBy);
+    console.log('[ExportPDF] 获取单词详情后长度:', wordList.length);
+    console.log('[ExportPDF] 获取单词详情后:', JSON.stringify(wordList.slice(0, 3)));
+    
+    const beforeSortCount = wordList.length;
+    const sortedWords = this.sortWords(wordList, sortBy);
+    console.log('[ExportPDF] 排序前:', beforeSortCount, '个，排序后:', sortedWords.length, '个');
+    
+    return sortedWords;
   },
 
   sortWords: function(words, sortBy) {
@@ -217,11 +238,16 @@ Page({
   },
 
   validateInputData: function(words) {
-    console.log('[ExportPDF] validateInputData - 数据:', JSON.stringify(words));
+    console.log('[ExportPDF] validateInputData - 原始数据长度:', words.length);
+    console.log('[ExportPDF] validateInputData - 原始数据:', JSON.stringify(words.slice(0, 3)));
     
     const safeWords = safeData(words);
     
+    console.log('[ExportPDF] validateInputData - safeData转换后长度:', safeWords.length);
+    console.log('[ExportPDF] validateInputData - safeData转换后:', JSON.stringify(safeWords.slice(0, 3)));
+    
     if (safeWords.length === 0) {
+      console.log('[ExportPDF] validateInputData - 数据为空');
       return {
         success: false,
         message: '暂无可导出的单词',
