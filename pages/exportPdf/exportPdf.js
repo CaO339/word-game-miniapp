@@ -26,16 +26,13 @@ Page({
     console.log('[ExportPDF] onLoad - 开始加载页面');
     console.log('[ExportPDF] 参数:', JSON.stringify(options));
     
-    // 获取参数
     const type = options.type || 'favorite';
     
-    // 直接调用数据管理器获取数据，确保与来源页面一致
     const words = this.getWordsFromSource(type);
     
     console.log('[ExportPDF] 从数据源获取的数据长度:', words.length);
     console.log('[ExportPDF] 从数据源获取的数据:', JSON.stringify(words.slice(0, 3)));
     
-    // 数据安全检查
     const validationResult = this.validateInputData(words);
     
     if (!validationResult.success) {
@@ -49,11 +46,9 @@ Page({
       return;
     }
     
-    // 使用验证后的数据（已通过 safeData 处理）
     const validatedWords = validationResult.data;
     
     try {
-      // 按字母顺序排序并去重
       const sortedWords = pdfGenerator.sortAndDeduplicate(validatedWords);
       
       console.log('[ExportPDF] 排序去重后数据长度:', sortedWords.length);
@@ -62,7 +57,6 @@ Page({
       const today = new Date();
       const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
       
-      // 生成页面数据
       const pages = this.generatePages(sortedWords);
       
       this.setData({
@@ -89,29 +83,21 @@ Page({
     }
   },
 
-  /**
-   * 从数据源获取单词数据（与来源页面使用相同接口）
-   * @param {String} type - 类型（favorite/wrong）
-   * @returns {Array} - 单词数组
-   */
   getWordsFromSource: function(type) {
     console.log('[ExportPDF] getWordsFromSource - 类型:', type);
     
     let wordIds = [];
     
     if (type === 'favorite') {
-      // 获取收藏单词ID列表（与收藏页使用相同方法）
       wordIds = collection.getCollectedWordIds();
       console.log('[ExportPDF] 收藏单词ID数量:', wordIds.length);
       console.log('[ExportPDF] 收藏单词IDs:', wordIds);
     } else if (type === 'wrong') {
-      // 获取错题单词ID列表（与错题页使用相同方法）
       wordIds = mistakes.getMistakeWordIds();
       console.log('[ExportPDF] 错题单词ID数量:', wordIds.length);
       console.log('[ExportPDF] 错题单词IDs:', wordIds);
     }
     
-    // 获取单词详情（与来源页面使用相同方法）
     const words = [];
     for (let i = 0; i < wordIds.length; i++) {
       const word = manager.getWordById(wordIds[i]);
@@ -129,21 +115,14 @@ Page({
     return words;
   },
 
-  /**
-   * 验证输入数据（使用 safeData）
-   * @param {Array} words - 单词数组
-   * @returns {Object} - { success: boolean, message: string, data: Array }
-   */
   validateInputData: function(words) {
     console.log('[ExportPDF] validateInputData - 数据:', JSON.stringify(words));
     
-    // 使用 safeData 进行强制类型转换
     const safeWords = safeData(words);
     
     console.log('[ExportPDF] safeData 转换后数据长度:', safeWords.length);
     console.log('[ExportPDF] safeData 转换后前3条数据:', JSON.stringify(safeWords.slice(0, 3)));
     
-    // 检查转换后的数据
     if (safeWords.length === 0) {
       console.log('[ExportPDF] 数据检查失败：转换后数据为空');
       return {
@@ -160,13 +139,9 @@ Page({
     };
   },
 
-  /**
-   * 生成页面数据
-   */
   generatePages: function(words) {
     const WORDS_PER_PAGE = 20;
     
-    // 使用 safeData 确保数据格式正确
     const safeWords = safeData(words);
     const totalPages = Math.ceil(safeWords.length / WORDS_PER_PAGE);
     const pages = [];
@@ -182,7 +157,6 @@ Page({
       const leftColumn = [];
       const rightColumn = [];
       
-      // 使用 Array.isArray 防止报错
       (Array.isArray(pageWords) ? pageWords : []).forEach((word, index) => {
         const globalIndex = pageIndex * WORDS_PER_PAGE + index + 1;
         const meaning = word && word.meaning ? String(word.meaning) : '';
@@ -191,7 +165,7 @@ Page({
         leftColumn.push({
           no: globalIndex,
           word: wordText,
-          meaning: ''
+          meaning: meaning
         });
         
         rightColumn.push({
@@ -201,7 +175,6 @@ Page({
         });
       });
       
-      // 填充空白行
       for (let i = safeWords.length > pageIndex * WORDS_PER_PAGE ? (pageWords.length || 0) : 0; i < WORDS_PER_PAGE; i++) {
         leftColumn.push({
           no: '',
@@ -228,11 +201,7 @@ Page({
     return pages;
   },
 
-  /**
-   * 分享PDF
-   */
   sharePdf: function() {
-    // 检查是否有错误
     if (this.data.hasError) {
       wx.showToast({
         title: '数据异常，无法分享',
@@ -241,10 +210,8 @@ Page({
       return;
     }
     
-    // 生成文本内容
     const textContent = this.generateTextContent();
     
-    // 复制到剪贴板
     wx.setClipboardData({
       data: textContent,
       success: () => {
@@ -253,22 +220,18 @@ Page({
           icon: 'success'
         });
         
-        // 显示分享选项
         setTimeout(() => {
           wx.showActionSheet({
             itemList: ['发送给朋友', '生成图片分享', '保存到文件'],
             success: (res) => {
               switch (res.tapIndex) {
                 case 0:
-                  // 发送给朋友
                   this.shareToFriend();
                   break;
                 case 1:
-                  // 生成图片分享
                   this.shareAsImage();
                   break;
                 case 2:
-                  // 保存到文件
                   this.saveToFile();
                   break;
               }
@@ -285,35 +248,29 @@ Page({
     });
   },
 
-  /**
-   * 生成文本内容
-   */
   generateTextContent: function() {
     let content = `${this.data.title}\n`;
     content += `导出日期：${this.data.exportDate}\n`;
     content += `共 ${this.data.wordCount} 个单词，${this.data.totalPages} 页\n\n`;
     
-    // 使用 Array.isArray 防止报错
     (Array.isArray(this.data.pages) ? this.data.pages : []).forEach((page, pageIndex) => {
       content += `=== 第${page.pageNum}页 ===\n\n`;
       
-      // 左栏（默写区）- 显示单词，留空中文
-      content += `【默写区】\n`;
-      content += `NO.\tVocabulary\n`;
+      content += `【英译中默写】\n`;
+      content += `NO.\tVocabulary\tMeaning\n`;
       (Array.isArray(page.leftColumn) ? page.leftColumn : []).forEach(item => {
         if (item && item.no) {
-          content += `${item.no}\t${item.word || ''}\n`;
+          content += `${item.no}\t${item.word || ''}\t${'_'.repeat(12)}\n`;
         }
       });
       
       content += `\n`;
       
-      // 右栏（答案区）- 只显示中文意思，不显示英文单词
-      content += `【答案区】\n`;
-      content += `NO.\tMeaning\n`;
+      content += `【中译英默写】\n`;
+      content += `NO.\tVocabulary\tMeaning\n`;
       (Array.isArray(page.rightColumn) ? page.rightColumn : []).forEach(item => {
         if (item && item.no) {
-          content += `${item.no}\t${item.meaning || ''}\n`;
+          content += `${item.no}\t${'_'.repeat(12)}\t${item.meaning || ''}\n`;
         }
       });
       
@@ -325,9 +282,6 @@ Page({
     return content;
   },
 
-  /**
-   * 分享给朋友
-   */
   shareToFriend: function() {
     wx.showToast({
       title: '请手动粘贴分享',
@@ -335,9 +289,6 @@ Page({
     });
   },
 
-  /**
-   * 生成图片分享
-   */
   shareAsImage: function() {
     wx.showToast({
       title: '正在生成图片...',
@@ -353,11 +304,7 @@ Page({
     }, 1000);
   },
 
-  /**
-   * 保存到文件
-   */
   saveToFile: function() {
-    // 检查是否有错误
     if (this.data.hasError) {
       wx.showToast({
         title: '数据异常，无法保存',
@@ -369,7 +316,6 @@ Page({
     const textContent = this.generateTextContent();
     const fileName = pdfGenerator.generateFileName(this.data.type);
     
-    // 保存到本地存储
     try {
       wx.setStorageSync('pdf_content_' + Date.now(), {
         content: textContent,
@@ -390,11 +336,7 @@ Page({
     }
   },
 
-  /**
-   * 复制内容
-   */
   copyContent: function() {
-    // 检查是否有错误
     if (this.data.hasError) {
       wx.showToast({
         title: '数据异常，无法复制',
@@ -422,9 +364,6 @@ Page({
     });
   },
 
-  /**
-   * 返回
-   */
   goBack: function() {
     wx.navigateBack();
   }

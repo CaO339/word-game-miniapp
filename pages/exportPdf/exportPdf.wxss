@@ -101,109 +101,93 @@
   width: 48%;
 }
 
-/* 左栏 - 默写区 */
-.left-column .column-header {
+/* 列通用样式 - 左栏和右栏共用 */
+.column .column-header {
   display: flex;
   padding-bottom: 10rpx;
   border-bottom: 1rpx solid #ddd;
   margin-bottom: 15rpx;
 }
 
-.left-column .col-no {
+.column .col-no {
   width: 60rpx;
   font-size: 20rpx;
   font-weight: bold;
   color: #666;
+  flex-shrink: 0;
 }
 
-.left-column .col-word {
+.column .col-word {
   flex: 1;
   font-size: 20rpx;
   font-weight: bold;
   color: #666;
   text-align: left;
-  padding-left: 20rpx;
+  padding-left: 10rpx;
 }
 
-.left-column .word-list {
+.column .col-meaning {
+  flex: 1;
+  font-size: 20rpx;
+  font-weight: bold;
+  color: #666;
+  text-align: left;
+  padding-left: 10rpx;
+}
+
+.column .word-list {
   display: flex;
   flex-direction: column;
   gap: 12rpx;
 }
 
-.left-column .word-item {
+.column .word-item {
   display: flex;
   align-items: center;
 }
 
-.left-column .item-no {
+.column .item-no {
   width: 60rpx;
   font-size: 22rpx;
   color: #333;
+  flex-shrink: 0;
 }
 
-.left-column .item-word {
+.column .item-word {
   flex: 1;
   font-size: 24rpx;
   color: #333;
   font-weight: 500;
-  padding-left: 20rpx;
+  padding-left: 10rpx;
+  min-width: 0;
 }
 
-.left-column .item-meaning-blank {
-  flex: 1;
-  height: 30rpx;
-  border-bottom: 1rpx dashed #ccc;
-  margin-left: 10rpx;
-}
-
-/* 右栏 - 答案区 */
-.right-column .column-header {
-  display: flex;
-  padding-bottom: 10rpx;
-  border-bottom: 1rpx solid #ddd;
-  margin-bottom: 15rpx;
-}
-
-.right-column .col-no {
-  width: 60rpx;
-  font-size: 20rpx;
-  font-weight: bold;
-  color: #666;
-}
-
-.right-column .col-meaning-header {
-  flex: 1;
-  font-size: 20rpx;
-  font-weight: bold;
-  color: #666;
-  text-align: left;
-  padding-left: 20rpx;
-}
-
-.right-column .word-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12rpx;
-}
-
-.right-column .word-item {
-  display: flex;
-  align-items: center;
-}
-
-.right-column .item-no {
-  width: 60rpx;
-  font-size: 22rpx;
-  color: #333;
-}
-
-.right-column .item-meaning-answer {
+.column .item-meaning {
   flex: 1;
   font-size: 24rpx;
   color: #333;
-  padding-left: 20rpx;
+  padding-left: 10rpx;
   word-break: break-all;
+  min-width: 0;
+}
+
+/* 空白横线 - 固定长度 */
+.column .item-blank-line {
+  flex: 1;
+  height: 32rpx;
+  border-bottom: 2rpx dashed #333;
+  margin-left: 10rpx;
+  min-width: 150rpx;
+}
+
+/* 左栏特殊样式 - 英译中默写区 */
+.left-column .item-blank-line {
+  flex: 1;
+}
+
+/* 右栏特殊样式 - 中译英默写区 */
+.right-column .item-blank-line {
+  flex: 1;
 }
 
 /* 列分隔线 */

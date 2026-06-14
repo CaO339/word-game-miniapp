@@ -32,17 +32,18 @@
           
           <!-- 内容区域 -->
           <view class="page-content">
-            <!-- 左栏（默写区） -->
+            <!-- 左栏（英译中默写区） -->
             <view class="column left-column">
               <view class="column-header">
                 <text class="col-no">NO.</text>
                 <text class="col-word">Vocabulary</text>
+                <text class="col-meaning">Meaning</text>
               </view>
               <view class="word-list">
                 <view class="word-item" wx:for="{{item.leftColumn}}" wx:key="index">
                   <text class="item-no">{{item.no}}</text>
                   <text class="item-word">{{item.word}}</text>
-                  <view class="item-meaning-blank"></view>
+                  <view class="item-blank-line"></view>
                 </view>
               </view>
             </view>
@@ -50,16 +51,18 @@
             <!-- 分隔线 -->
             <view class="column-divider"></view>
             
-            <!-- 右栏（答案区） -->
+            <!-- 右栏（中译英默写区） -->
             <view class="column right-column">
               <view class="column-header">
                 <text class="col-no">NO.</text>
-                <text class="col-meaning-header">Meaning</text>
+                <text class="col-word">Vocabulary</text>
+                <text class="col-meaning">Meaning</text>
               </view>
               <view class="word-list">
                 <view class="word-item" wx:for="{{item.rightColumn}}" wx:key="index">
                   <text class="item-no">{{item.no}}</text>
-                  <text class="item-meaning-answer">{{item.meaning}}</text>
+                  <view class="item-blank-line"></view>
+                  <text class="item-meaning">{{item.meaning}}</text>
                 </view>
               </view>
             </view>
@@ -85,7 +88,8 @@
   <view class="tips-section" wx:if="!hasError">
     <text class="tips-title">💡 提示</text>
     <view class="tips-list">
-      <text class="tip-item">• 左侧为默写区域，右侧为答案区域</text>
+      <text class="tip-item">• 左侧：英译中默写（看英文写中文）</text>
+      <text class="tip-item">• 右侧：中译英默写（看中文写英文）</text>
       <text class="tip-item">• 单词已按字母顺序排序</text>
       <text class="tip-item">• 重复单词已自动去重</text>
       <text class="tip-item">• 每页显示20个单词</text>
