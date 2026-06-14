@@ -21,15 +21,26 @@
         wx:for="{{fixedLibraries}}" 
         wx:key="key" 
         class="library-item"
-        bindtap="selectLibrary"
-        data-key="{{item.key}}"
       >
-        <view class="library-info">
+        <view 
+          class="library-info"
+          bindtap="selectLibrary"
+          data-key="{{item.key}}"
+        >
           <text class="library-name">{{item.name}}</text>
           <text class="library-desc">{{item.description}}</text>
           <text class="library-count">{{item.wordCount}} 个单词</text>
         </view>
-        <view class="library-arrow">→</view>
+        <view class="library-actions">
+          <view 
+            class="action-btn view" 
+            bindtap="goToWordList"
+            data-key="{{item.key}}"
+          >
+            <text>👀</text>
+          </view>
+          <view class="library-arrow" bindtap="selectLibrary" data-key="{{item.key}}">→</view>
+        </view>
       </view>
     </view>
   </view>
@@ -64,21 +75,28 @@
         </view>
         <view class="library-actions">
           <view 
-            class="action-btn edit" 
-            bindtap="editLibraryName"
-            data-key="{{item.key}}"
-            data-name="{{item.name}}"
-          >
-            <text>✏️</text>
-          </view>
-          <view 
-            class="action-btn delete" 
-            bindtap="deleteLibrary"
-            data-key="{{item.key}}"
-            data-name="{{item.name}}"
-          >
-            <text>🗑️</text>
-          </view>
+          class="action-btn view" 
+          bindtap="goToWordList"
+          data-key="{{item.key}}"
+        >
+          <text>👀</text>
+        </view>
+        <view 
+          class="action-btn edit" 
+          bindtap="editLibraryName"
+          data-key="{{item.key}}"
+          data-name="{{item.name}}"
+        >
+          <text>✏️</text>
+        </view>
+        <view 
+          class="action-btn delete" 
+          bindtap="deleteLibrary"
+          data-key="{{item.key}}"
+          data-name="{{item.name}}"
+        >
+          <text>🗑️</text>
+        </view>
         </view>
       </view>
     </view>

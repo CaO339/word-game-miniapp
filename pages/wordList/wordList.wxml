@@ -1,0 +1,74 @@
+<!-- wordList.wxml - 词库单词浏览页面 -->
+<view class="page-container">
+  <!-- 自定义导航栏 -->
+  <view class="navbar">
+    <view class="navbar-left" bindtap="goBack">
+      <text class="back-icon">←</text>
+    </view>
+    <view class="navbar-title">词库单词</view>
+    <view class="navbar-right"></view>
+  </view>
+
+  <!-- 搜索框 -->
+  <view class="search-section">
+    <view class="search-box">
+      <text class="search-icon">🔍</text>
+      <input 
+        class="search-input" 
+        placeholder="搜索单词或释义" 
+        value="{{searchText}}"
+        bindinput="searchWords"
+      />
+    </view>
+  </view>
+
+  <!-- 词库信息 -->
+  <view class="library-info">
+    <text class="library-name">📚 {{libraryName}}</text>
+    <text class="word-count">共 {{totalWords}} 个单词</text>
+  </view>
+
+  <!-- 字母索引 -->
+  <view class="alphabet-index" wx:if="{{alphabetIndex.length > 0}}">
+    <view 
+      class="alphabet-item" 
+      wx:for="{{alphabetIndex}}" 
+      wx:key="*this"
+      bindtap="jumpToLetter"
+      data-letter="{{item}}"
+    >
+      {{item}}
+    </view>
+  </view>
+
+  <!-- 字母提示 -->
+  <view class="letter-toast" wx:if="{{showLetterToast}}">
+    {{currentLetter}}
+  </view>
+
+  <!-- 单词列表 -->
+  <scroll-view class="word-list" scroll-y>
+    <view class="word-empty" wx:if="{{filteredWords.length === 0}}">
+      <text class="empty-icon">📭</text>
+      <text class="empty-text">暂无单词</text>
+    </view>
+    
+    <view 
+      class="word-item" 
+      wx:for="{{filteredWords}}" 
+      wx:key="id"
+      wx:for-item="word"
+    >
+      <view class="word-header">
+        <text class="word-english">{{word.word}}</text>
+        <text class="word-phonetic" wx:if="{{word.phonetic}}">{{word.phonetic}}</text>
+      </view>
+      <view class="word-meaning">
+        <text class="meaning-text">{{word.meaning || word.chinese || word.translation}}</text>
+      </view>
+      <view class="word-part" wx:if="{{word.partOfSpeech}}">
+        <text class="part-tag">{{word.partOfSpeech}}</text>
+      </view>
+    </view>
+  </scroll-view>
+</view>

@@ -55,6 +55,20 @@ Page({
     });
   },
 
+  // 查看词库单词
+  goToWordList: function(e) {
+    const libraryKey = e.currentTarget.dataset.key;
+    const wordMgr = wordManager.getWordManager();
+    
+    // 先切换到该词库
+    wordMgr.switchLibrary(libraryKey);
+    
+    // 跳转到单词浏览页面
+    wx.navigateTo({
+      url: '/pages/wordList/wordList'
+    });
+  },
+
   // 删除自定义词库
   deleteLibrary: function(e) {
     const libraryKey = e.currentTarget.dataset.key;
