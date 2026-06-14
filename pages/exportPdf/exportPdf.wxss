@@ -270,6 +270,132 @@
   gap: 10rpx;
 }
 
+/* 排序选择区域 */
+.sort-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20rpx;
+  margin-bottom: 30rpx;
+}
+
+.sort-label {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.sort-icon {
+  font-size: 32rpx;
+}
+
+.sort-text {
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.sort-btn {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2rpx solid rgba(255, 255, 255, 0.5);
+  border-radius: 50rpx;
+  padding: 15rpx 30rpx;
+  font-size: 26rpx;
+  color: #ffffff;
+}
+
+.sort-value {
+  font-size: 26rpx;
+}
+
+.sort-arrow {
+  font-size: 20rpx;
+  opacity: 0.8;
+}
+
+/* 排序选择面板 */
+.sort-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.sort-panel-content {
+  width: 600rpx;
+  background: #ffffff;
+  border-radius: 20rpx;
+  overflow: hidden;
+}
+
+.sort-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #eee;
+}
+
+.sort-panel-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.sort-panel-close {
+  font-size: 32rpx;
+  color: #999;
+  padding: 10rpx;
+}
+
+.sort-options {
+  padding: 20rpx;
+}
+
+.sort-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 25rpx 20rpx;
+  border-radius: 10rpx;
+  transition: background 0.2s;
+}
+
+.sort-option:active,
+.sort-option.active {
+  background: rgba(102, 126, 234, 0.1);
+}
+
+.option-label {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.option-check {
+  font-size: 28rpx;
+  color: #667eea;
+  font-weight: bold;
+}
+
+/* 排序信息 */
+.page-sort-info {
+  text-align: center;
+  margin-bottom: 15rpx;
+}
+
+.sort-info-text {
+  font-size: 20rpx;
+  color: #999;
+}
+
 /* 错误状态 */
 .error-section {
   background: rgba(255, 255, 255, 0.15);

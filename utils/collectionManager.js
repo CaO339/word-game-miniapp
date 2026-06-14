@@ -7,15 +7,14 @@ const STORAGE_KEY = 'wm_collected_words';
 
 class CollectionManager {
   constructor() {
-    // 内存缓存
     this._cache = null;
   }
 
   /**
-   * 获取收藏单词ID列表
-   * @returns {Array} 收藏的单词ID数组
+   * 获取收藏单词列表（带时间戳）
+   * @returns {Array} 收藏的单词对象数组 [{wordId, collectTime}]
    */
-  getCollectedWordIds() {
+  getCollectedWords() {
     if (this._cache !== null) {
       return this._cache;
     }
@@ -32,13 +31,22 @@ class CollectionManager {
   }
 
   /**
-   * 保存收藏单词ID列表
-   * @param {Array} wordIds 收藏的单词ID数组
+   * 获取收藏单词ID列表（兼容旧格式）
+   * @returns {Array} 收藏的单词ID数组
    */
-  _saveCollectedWordIds(wordIds) {
-    this._cache = wordIds;
+  getCollectedWordIds() {
+    const words = this.getCollectedWords();
+    return words.map(item => item.wordId || item);
+  }
+
+  /**
+   * 保存收藏单词列表
+   * @param {Array} words 收藏的单词对象数组
+   */
+  _saveCollectedWords(words) {
+    this._cache = words;
     try {
-      wx.setStorageSync(STORAGE_KEY, wordIds);
+      wx.setStorageSync(STORAGE_KEY, words);
     } catch (e) {
       console.error('[收藏管理器] 保存收藏列表失败:', e);
     }
@@ -50,8 +58,8 @@ class CollectionManager {
    * @returns {boolean} 是否已收藏
    */
   isCollected(wordId) {
-    const collectedIds = this.getCollectedWordIds();
-    return collectedIds.includes(wordId);
+    const collectedWords = this.getCollectedWords();
+    return collectedWords.some(item => (item.wordId || item) === wordId);
   }
 
   /**
@@ -61,12 +69,15 @@ class CollectionManager {
    */
   collectWord(wordId) {
     if (this.isCollected(wordId)) {
-      return false; // 已经收藏了
+      return false;
     }
     
-    const collectedIds = this.getCollectedWordIds();
-    collectedIds.push(wordId);
-    this._saveCollectedWordIds(collectedIds);
+    const collectedWords = this.getCollectedWords();
+    collectedWords.push({
+      wordId: wordId,
+      collectTime: Date.now()
+    });
+    this._saveCollectedWords(collectedWords);
     return true;
   }
 
@@ -77,17 +88,13 @@ class CollectionManager {
    */
   uncollectWord(wordId) {
     if (!this.isCollected(wordId)) {
-      return false; // 没有收藏
+      return false;
     }
     
-    const collectedIds = this.getCollectedWordIds();
-    const index = collectedIds.indexOf(wordId);
-    if (index > -1) {
-      collectedIds.splice(index, 1);
-      this._saveCollectedWordIds(collectedIds);
-      return true;
-    }
-    return false;
+    const collectedWords = this.getCollectedWords();
+    const filtered = collectedWords.filter(item => (item.wordId || item) !== wordId);
+    this._saveCollectedWords(filtered);
+    return true;
   }
 
   /**
@@ -110,17 +117,28 @@ class CollectionManager {
    * @returns {number} 收藏数量
    */
   getCollectionCount() {
-    return this.getCollectedWordIds().length;
+    return this.getCollectedWords().length;
   }
 
   /**
    * 清空收藏
    */
   clearAll() {
-    this._saveCollectedWordIds([]);
+    this._saveCollectedWords([]);
+  }
+
+  /**
+   * 获取收藏单词详情（包含时间戳）
+   * @returns {Array} [{wordId, collectTime}]
+   */
+  getCollectedWithTime() {
+    const words = this.getCollectedWords();
+    return words.map(item => ({
+      wordId: item.wordId || item,
+      collectTime: item.collectTime || 0
+    }));
   }
 }
 
-// 导出单例
 const collection = new CollectionManager();
 module.exports = collection;

@@ -7,15 +7,14 @@ const STORAGE_KEY = 'wm_mistake_words';
 
 class MistakeManager {
   constructor() {
-    // 内存缓存
     this._cache = null;
   }
 
   /**
-   * 获取错题单词ID列表
-   * @returns {Array} 错题单词ID数组
+   * 获取错题单词列表（带详情）
+   * @returns {Array} 错题单词对象数组 [{wordId, wrongCount, lastWrongTime}]
    */
-  getMistakeWordIds() {
+  getMistakeWords() {
     if (this._cache !== null) {
       return this._cache;
     }
@@ -32,13 +31,22 @@ class MistakeManager {
   }
 
   /**
-   * 保存错题单词ID列表
-   * @param {Array} wordIds 错题单词ID数组
+   * 获取错题单词ID列表（兼容旧格式）
+   * @returns {Array} 错题单词ID数组
    */
-  _saveMistakeWordIds(wordIds) {
-    this._cache = wordIds;
+  getMistakeWordIds() {
+    const words = this.getMistakeWords();
+    return words.map(item => item.wordId || item);
+  }
+
+  /**
+   * 保存错题单词列表
+   * @param {Array} words 错题单词对象数组
+   */
+  _saveMistakeWords(words) {
+    this._cache = words;
     try {
-      wx.setStorageSync(STORAGE_KEY, wordIds);
+      wx.setStorageSync(STORAGE_KEY, words);
     } catch (e) {
       console.error('[错题本管理器] 保存错题列表失败:', e);
     }
@@ -50,23 +58,31 @@ class MistakeManager {
    * @returns {boolean} 是否在错题本中
    */
   isMistake(wordId) {
-    const mistakeIds = this.getMistakeWordIds();
-    return mistakeIds.includes(wordId);
+    const mistakeWords = this.getMistakeWords();
+    return mistakeWords.some(item => (item.wordId || item) === wordId);
   }
 
   /**
-   * 添加错题
+   * 添加错题（增加错误次数）
    * @param {number} wordId 单词ID
    * @returns {boolean} 是否添加成功
    */
   addMistake(wordId) {
-    if (this.isMistake(wordId)) {
-      return false; // 已经在错题本中了
+    const mistakeWords = this.getMistakeWords();
+    const existing = mistakeWords.find(item => (item.wordId || item) === wordId);
+    
+    if (existing) {
+      existing.wrongCount = (existing.wrongCount || 1) + 1;
+      existing.lastWrongTime = Date.now();
+    } else {
+      mistakeWords.push({
+        wordId: wordId,
+        wrongCount: 1,
+        lastWrongTime: Date.now()
+      });
     }
     
-    const mistakeIds = this.getMistakeWordIds();
-    mistakeIds.push(wordId);
-    this._saveMistakeWordIds(mistakeIds);
+    this._saveMistakeWords(mistakeWords);
     return true;
   }
 
@@ -77,17 +93,13 @@ class MistakeManager {
    */
   removeMistake(wordId) {
     if (!this.isMistake(wordId)) {
-      return false; // 不在错题本中
+      return false;
     }
     
-    const mistakeIds = this.getMistakeWordIds();
-    const index = mistakeIds.indexOf(wordId);
-    if (index > -1) {
-      mistakeIds.splice(index, 1);
-      this._saveMistakeWordIds(mistakeIds);
-      return true;
-    }
-    return false;
+    const mistakeWords = this.getMistakeWords();
+    const filtered = mistakeWords.filter(item => (item.wordId || item) !== wordId);
+    this._saveMistakeWords(filtered);
+    return true;
   }
 
   /**
@@ -95,17 +107,40 @@ class MistakeManager {
    * @returns {number} 错题数量
    */
   getMistakeCount() {
-    return this.getMistakeWordIds().length;
+    return this.getMistakeWords().length;
   }
 
   /**
    * 清空错题本
    */
   clearAll() {
-    this._saveMistakeWordIds([]);
+    this._saveMistakeWords([]);
+  }
+
+  /**
+   * 获取错题单词详情（包含错误次数和时间戳）
+   * @returns {Array} [{wordId, wrongCount, lastWrongTime}]
+   */
+  getMistakesWithDetail() {
+    const words = this.getMistakeWords();
+    return words.map(item => ({
+      wordId: item.wordId || item,
+      wrongCount: item.wrongCount || 1,
+      lastWrongTime: item.lastWrongTime || 0
+    }));
+  }
+
+  /**
+   * 获取单词的错误次数
+   * @param {number} wordId 单词ID
+   * @returns {number} 错误次数
+   */
+  getWrongCount(wordId) {
+    const words = this.getMistakeWords();
+    const item = words.find(item => (item.wordId || item) === wordId);
+    return item ? (item.wrongCount || 1) : 0;
   }
 }
 
-// 导出单例
 const mistakes = new MistakeManager();
 module.exports = mistakes;

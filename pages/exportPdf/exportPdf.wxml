@@ -6,6 +6,40 @@
     <text class="subtitle" wx:if="wordCount > 0">共 {{wordCount}} 个单词，{{totalPages}} 页</text>
   </view>
 
+  <!-- 排序选择区域 -->
+  <view class="sort-section" wx:if="wordCount > 0">
+    <view class="sort-label">
+      <text class="sort-icon">🔄</text>
+      <text class="sort-text">排序方式：</text>
+    </view>
+    <button class="sort-btn" bindtap="showSortPanel">
+      <text class="sort-value">{{sortBy === 'alphabet_asc' ? '按字母排序（A-Z）' : sortBy === 'time_desc' ? '按学习时间排序（最新优先）' : sortBy === 'time_asc' ? '按学习时间排序（最早优先）' : sortBy === 'wrongCount_desc' ? '按错误次数排序' : sortBy === 'collectTime_desc' ? '按收藏时间排序（最新优先）' : '选择排序'}}</text>
+      <text class="sort-arrow">▼</text>
+    </button>
+  </view>
+
+  <!-- 排序选择面板 -->
+  <view class="sort-panel" wx:if="{{showSortPanel}}" bindtap="showSortPanel">
+    <view class="sort-panel-content" catchtap="stopPropagation">
+      <view class="sort-panel-header">
+        <text class="sort-panel-title">选择排序方式</text>
+        <text class="sort-panel-close" bindtap="showSortPanel">✕</text>
+      </view>
+      <view class="sort-options">
+        <view 
+          class="sort-option {{sortBy === option.value ? 'active' : ''}}" 
+          wx:for="{{sortOptions}}" 
+          wx:key="value"
+          bindtap="selectSort"
+          data-value="{{option.value}}"
+        >
+          <text class="option-label">{{option.label}}</text>
+          <text class="option-check" wx:if="{{sortBy === option.value}}">✓</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
   <!-- 错误状态 -->
   <view class="error-section" wx:if="{{showError}}">
     <view class="error-icon">⚠️</view>
@@ -28,6 +62,11 @@
           <view class="page-header">
             <text class="page-title">{{title}}</text>
             <text class="page-date">{{exportDate}}</text>
+          </view>
+          
+          <!-- 排序信息 -->
+          <view class="page-sort-info">
+            <text class="sort-info-text">排序方式：{{sortBy === 'alphabet_asc' ? '按字母排序' : sortBy === 'time_desc' ? '按学习时间排序（最新优先）' : sortBy === 'time_asc' ? '按学习时间排序（最早优先）' : sortBy === 'wrongCount_desc' ? '按错误次数排序' : sortBy === 'collectTime_desc' ? '按收藏时间排序（最新优先）' : '未知排序'}}</text>
           </view>
           
           <!-- 内容区域 -->
@@ -90,7 +129,6 @@
     <view class="tips-list">
       <text class="tip-item">• 左侧：英译中默写（看英文写中文）</text>
       <text class="tip-item">• 右侧：中译英默写（看中文写英文）</text>
-      <text class="tip-item">• 单词已按字母顺序排序</text>
       <text class="tip-item">• 重复单词已自动去重</text>
       <text class="tip-item">• 每页显示20个单词</text>
     </view>
