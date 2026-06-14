@@ -15,12 +15,21 @@ class MistakeManager {
    * @returns {Array} 错题单词对象数组 [{wordId, wrongCount, lastWrongTime}]
    */
   getMistakeWords() {
+    console.log('[MistakeManager] getMistakeWords - _cache状态:', this._cache !== null ? '有缓存' : '无缓存');
+    
     if (this._cache !== null) {
+      console.log('[MistakeManager] getMistakeWords - 使用缓存，长度:', this._cache.length);
+      console.log('[MistakeManager] getMistakeWords - 缓存数据:', JSON.stringify(this._cache.slice(0, 3)));
       return this._cache;
     }
     
     try {
       const data = wx.getStorageSync(STORAGE_KEY);
+      console.log('[MistakeManager] getMistakeWords - Storage Key:', STORAGE_KEY);
+      console.log('[MistakeManager] getMistakeWords - Storage数据类型:', typeof data);
+      console.log('[MistakeManager] getMistakeWords - Storage数据长度:', data ? data.length : 0);
+      console.log('[MistakeManager] getMistakeWords - Storage数据:', JSON.stringify(data ? data.slice(0, 3) : null));
+      
       this._cache = data || [];
       return this._cache;
     } catch (e) {
@@ -36,7 +45,18 @@ class MistakeManager {
    */
   getMistakeWordIds() {
     const words = this.getMistakeWords();
-    return words.map(item => item.wordId || item);
+    console.log('[MistakeManager] getMistakeWordIds - 原始数据长度:', words.length);
+    
+    const ids = words.map(item => {
+      const id = item.wordId || item;
+      console.log('[MistakeManager] getMistakeWordIds - 转换:', item, '→', id);
+      return id;
+    });
+    
+    console.log('[MistakeManager] getMistakeWordIds - 转换后ID数组长度:', ids.length);
+    console.log('[MistakeManager] getMistakeWordIds - 转换后ID数组:', JSON.stringify(ids.slice(0, 5)));
+    
+    return ids;
   }
 
   /**

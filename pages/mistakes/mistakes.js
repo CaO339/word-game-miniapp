@@ -29,6 +29,8 @@ Page({
 
   // 加载错题列表
   loadMistakes: function() {
+    console.log('[Mistakes] loadMistakes - 开始加载错题列表');
+    
     // 获取错题的单词ID列表
     const mistakeIds = mistakes.getMistakeWordIds();
     
@@ -41,6 +43,8 @@ Page({
       const word = manager.getWordById(mistakeIds[i]);
       if (word) {
         mistakeWords.push(word);
+      } else {
+        console.warn('[Mistakes] 无法找到单词ID:', mistakeIds[i]);
       }
     }
     

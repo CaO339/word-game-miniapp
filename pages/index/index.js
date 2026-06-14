@@ -95,9 +95,13 @@ Page({
     
     // 获取收藏单词数量
     const collectedCount = collection.getCollectionCount();
+    console.log('[Index] 收藏数量:', collectedCount);
     
     // 获取错题数量
     const mistakeCount = mistakes.getMistakeCount();
+    console.log('[Index] 首页错题数=', mistakeCount);
+    console.log('[Index] 首页错题数组=', mistakes.getMistakeWords());
+    console.log('[Index] 首页错题数组长度=', mistakes.getMistakeWords().length);
     
     // 更新页面数据
     this.setData({
