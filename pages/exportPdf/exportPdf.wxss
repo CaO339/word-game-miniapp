@@ -98,75 +98,112 @@
 /* 列 */
 .column {
   flex: 1;
+  width: 48%;
 }
 
-.column-header {
+/* 左栏 - 默写区 */
+.left-column .column-header {
   display: flex;
   padding-bottom: 10rpx;
   border-bottom: 1rpx solid #ddd;
   margin-bottom: 15rpx;
 }
 
-.col-no {
+.left-column .col-no {
   width: 60rpx;
   font-size: 20rpx;
   font-weight: bold;
   color: #666;
 }
 
-.col-word {
+.left-column .col-word {
   flex: 1;
   font-size: 20rpx;
   font-weight: bold;
   color: #666;
-  text-align: center;
+  text-align: left;
+  padding-left: 20rpx;
 }
 
-.col-meaning {
-  flex: 1;
-  font-size: 20rpx;
-  font-weight: bold;
-  color: #666;
-  text-align: center;
-}
-
-/* 单词列表 */
-.word-list {
+.left-column .word-list {
   display: flex;
   flex-direction: column;
-  gap: 10rpx;
+  gap: 12rpx;
 }
 
-.word-item {
+.left-column .word-item {
   display: flex;
   align-items: center;
 }
 
-.item-no {
+.left-column .item-no {
   width: 60rpx;
   font-size: 22rpx;
   color: #333;
 }
 
-.item-word {
+.left-column .item-word {
   flex: 1;
   font-size: 24rpx;
   color: #333;
   font-weight: 500;
+  padding-left: 20rpx;
 }
 
-.item-meaning-blank {
+.left-column .item-meaning-blank {
   flex: 1;
   height: 30rpx;
   border-bottom: 1rpx dashed #ccc;
   margin-left: 10rpx;
 }
 
-.item-meaning {
+/* 右栏 - 答案区 */
+.right-column .column-header {
+  display: flex;
+  padding-bottom: 10rpx;
+  border-bottom: 1rpx solid #ddd;
+  margin-bottom: 15rpx;
+}
+
+.right-column .col-no {
+  width: 60rpx;
+  font-size: 20rpx;
+  font-weight: bold;
+  color: #666;
+}
+
+.right-column .col-meaning-header {
   flex: 1;
   font-size: 20rpx;
+  font-weight: bold;
   color: #666;
-  text-align: center;
+  text-align: left;
+  padding-left: 20rpx;
+}
+
+.right-column .word-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.right-column .word-item {
+  display: flex;
+  align-items: center;
+}
+
+.right-column .item-no {
+  width: 60rpx;
+  font-size: 22rpx;
+  color: #333;
+}
+
+.right-column .item-meaning-answer {
+  flex: 1;
+  font-size: 24rpx;
+  color: #333;
+  padding-left: 20rpx;
+  word-break: break-all;
 }
 
 /* 列分隔线 */

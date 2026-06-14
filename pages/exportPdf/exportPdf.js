@@ -297,23 +297,23 @@ Page({
     (Array.isArray(this.data.pages) ? this.data.pages : []).forEach((page, pageIndex) => {
       content += `=== 第${page.pageNum}页 ===\n\n`;
       
-      // 左栏（默写区）
+      // 左栏（默写区）- 显示单词，留空中文
       content += `【默写区】\n`;
-      content += `NO.\tVocabulary\tMeaning\n`;
+      content += `NO.\tVocabulary\n`;
       (Array.isArray(page.leftColumn) ? page.leftColumn : []).forEach(item => {
         if (item && item.no) {
-          content += `${item.no}\t${item.word || ''}\t__________\n`;
+          content += `${item.no}\t${item.word || ''}\n`;
         }
       });
       
       content += `\n`;
       
-      // 右栏（答案区）
+      // 右栏（答案区）- 只显示中文意思，不显示英文单词
       content += `【答案区】\n`;
-      content += `NO.\tVocabulary\tMeaning\n`;
+      content += `NO.\tMeaning\n`;
       (Array.isArray(page.rightColumn) ? page.rightColumn : []).forEach(item => {
         if (item && item.no) {
-          content += `${item.no}\t${item.word || ''}\t${item.meaning || ''}\n`;
+          content += `${item.no}\t${item.meaning || ''}\n`;
         }
       });
       

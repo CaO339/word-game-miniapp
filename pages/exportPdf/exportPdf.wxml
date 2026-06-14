@@ -33,11 +33,10 @@
           <!-- 内容区域 -->
           <view class="page-content">
             <!-- 左栏（默写区） -->
-            <view class="column">
+            <view class="column left-column">
               <view class="column-header">
                 <text class="col-no">NO.</text>
                 <text class="col-word">Vocabulary</text>
-                <text class="col-meaning">Meaning</text>
               </view>
               <view class="word-list">
                 <view class="word-item" wx:for="{{item.leftColumn}}" wx:key="index">
@@ -52,17 +51,15 @@
             <view class="column-divider"></view>
             
             <!-- 右栏（答案区） -->
-            <view class="column">
+            <view class="column right-column">
               <view class="column-header">
                 <text class="col-no">NO.</text>
-                <text class="col-word">Vocabulary</text>
-                <text class="col-meaning">Meaning</text>
+                <text class="col-meaning-header">Meaning</text>
               </view>
               <view class="word-list">
                 <view class="word-item" wx:for="{{item.rightColumn}}" wx:key="index">
                   <text class="item-no">{{item.no}}</text>
-                  <text class="item-word">{{item.word}}</text>
-                  <text class="item-meaning">{{item.meaning}}</text>
+                  <text class="item-meaning-answer">{{item.meaning}}</text>
                 </view>
               </view>
             </view>
