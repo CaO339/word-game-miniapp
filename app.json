@@ -8,7 +8,8 @@
     "pages/mistakes/mistakes",
     "pages/library/library",
     "pages/logs/logs",
-    "pages/exportPdf/exportPdf"
+    "pages/exportPdf/exportPdf",
+    "pages/wordList/wordList"
   ],
   "window": {
     "navigationBarTextStyle": "black",
