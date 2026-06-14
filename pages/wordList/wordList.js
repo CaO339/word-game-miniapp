@@ -82,7 +82,22 @@ Page({
       loading: false
     });
     
+    // 关键调试：确认 setData 后的数据状态
     console.log('[WordList] loadWordList - 数据设置完成');
+    console.log('[WordList] this.data.words.length=', this.data.words.length);
+    console.log('[WordList] this.data.filteredWords.length=', this.data.filteredWords.length);
+    console.log('[WordList] this.data.totalWords=', this.data.totalWords);
+    console.log('[WordList] this.data=', JSON.stringify({
+      wordsLength: this.data.words.length,
+      filteredWordsLength: this.data.filteredWords.length,
+      totalWords: this.data.totalWords,
+      alphabetIndexLength: this.data.alphabetIndex.length
+    }));
+    
+    // 打印第一条数据结构
+    if (this.data.filteredWords.length > 0) {
+      console.log('[WordList] filteredWords[0]=', JSON.stringify(this.data.filteredWords[0]));
+    }
   },
 
   /**
