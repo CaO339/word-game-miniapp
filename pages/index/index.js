@@ -266,10 +266,17 @@ Page({
     });
   },
 
-  // 查看词库浏览页面
+  // 查看词库浏览页面（旧方法，保留兼容）
   viewLibrary: function() {
     wx.navigateTo({
       url: '/pages/library/library'
+    });
+  },
+
+  // 浏览词库（新方法，直接进入单词列表）
+  viewWordList: function() {
+    wx.navigateTo({
+      url: '/pages/wordList/wordList'
     });
   }
 });

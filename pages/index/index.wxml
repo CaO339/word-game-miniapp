@@ -180,6 +180,54 @@
     <text class="description">开始你的英语单词学习之旅</text>
   </view>
 
+  <!-- 快捷功能区域 -->
+  <view class="quick-section">
+    <view class="quick-title">快捷功能</view>
+    <view class="quick-grid">
+      <view class="quick-item" bindtap="startStudy">
+        <view class="quick-icon">📖</view>
+        <text class="quick-label">开始学习</text>
+      </view>
+      <view class="quick-item" bindtap="viewWordList">
+        <view class="quick-icon">📚</view>
+        <text class="quick-label">浏览词库</text>
+      </view>
+      <view class="quick-item" bindtap="viewCollection">
+        <view class="quick-icon">❤️</view>
+        <text class="quick-label">收藏夹</text>
+      </view>
+      <view class="quick-item" bindtap="viewMistakes">
+        <view class="quick-icon">❌</view>
+        <text class="quick-label">错题本</text>
+      </view>
+      <view class="quick-item" bindtap="viewStats">
+        <view class="quick-icon">📊</view>
+        <text class="quick-label">学习统计</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 词库浏览入口卡片 -->
+  <view class="library-card" bindtap="viewWordList">
+    <view class="library-card-header">
+      <view class="library-card-icon">📚</view>
+      <view class="library-card-info">
+        <text class="library-card-title">当前词库</text>
+        <text class="library-card-name">{{currentLibrary}}</text>
+      </view>
+    </view>
+    <view class="library-card-body">
+      <view class="library-card-stats">
+        <text class="library-card-count">{{totalWords}}</text>
+        <text class="library-card-label">词</text>
+      </view>
+      <view class="library-card-action">
+        <text class="library-card-btn">浏览全部</text>
+        <text class="library-card-arrow">→</text>
+      </view>
+    </view>
+  </view>
+
   <!-- 按钮区域 -->
   <view class="btn-section">
     <button class="start-btn" bindtap="startStudy">开始学习</button>
