@@ -9,9 +9,6 @@ Page({
     displayWords: [],          // 当前显示的单词列表
     searchText: '',            // 搜索关键词
     filteredWords: [],         // 过滤后的完整单词列表
-    alphabetIndex: [],         // 字母索引
-    currentLetter: '',         // 当前定位的字母
-    showLetterToast: false,    // 是否显示字母提示
     loading: true,             // 是否正在加载
     loadingMore: false,        // 是否正在加载更多
     hasMore: true,             // 是否还有更多数据
@@ -48,8 +45,6 @@ Page({
       return;
     }
     
-    console.log('[WordList] loadWordList - 获取到wordManager:', wordMgr !== null);
-    
     // 使用 getTotalCount() 获取词库总单词数
     const totalCount = wordMgr.getTotalCount();
     console.log('[WordList] loadWordList - getTotalCount返回:', totalCount);
@@ -64,10 +59,6 @@ Page({
     // 确保是数组
     const wordsArray = Array.isArray(allWords) ? allWords : [];
     
-    // 生成字母索引
-    const alphabetIndex = this.generateAlphabetIndex(wordsArray);
-    console.log('[WordList] loadWordList - 字母索引:', alphabetIndex);
-    
     // 分页加载：只加载前100条
     const pageSize = this.data.pageSize;
     const displayWords = wordsArray.slice(0, pageSize);
@@ -81,7 +72,6 @@ Page({
       words: wordsArray,
       filteredWords: wordsArray,
       displayWords: displayWords,
-      alphabetIndex: alphabetIndex,
       loading: false,
       hasMore: hasMore
     });
@@ -110,27 +100,6 @@ Page({
     }
     
     return allWords;
-  },
-
-  // 生成字母索引
-  generateAlphabetIndex: function(words) {
-    if (!Array.isArray(words)) {
-      console.warn('[WordList] generateAlphabetIndex - 输入不是数组:', words);
-      return [];
-    }
-    
-    const letters = new Set();
-    
-    words.forEach(word => {
-      if (word && word.word && word.word.length > 0) {
-        const firstLetter = word.word.charAt(0).toUpperCase();
-        if (/[A-Z]/.test(firstLetter)) {
-          letters.add(firstLetter);
-        }
-      }
-    });
-    
-    return Array.from(letters).sort();
   },
 
   // 搜索单词
@@ -193,43 +162,6 @@ Page({
         hasMore: hasMore
       });
     }, 100);
-  },
-
-  // 点击字母索引
-  jumpToLetter: function(e) {
-    const letter = e.currentTarget.dataset.letter;
-    console.log('[WordList] 跳转到字母:', letter);
-    
-    this.setData({
-      currentLetter: letter,
-      showLetterToast: true
-    });
-    
-    setTimeout(() => {
-      this.setData({ showLetterToast: false });
-    }, 2000);
-    
-    // 滚动到对应字母位置
-    const filteredWords = this.data.filteredWords;
-    if (Array.isArray(filteredWords)) {
-      const index = filteredWords.findIndex(word => 
-        word && word.word && word.word.charAt(0).toUpperCase() === letter
-      );
-      
-      if (index >= 0) {
-        console.log('[WordList] 定位到索引:', index);
-        
-        // 如果目标单词不在当前显示列表中，加载到该位置
-        if (index >= this.data.displayWords.length) {
-          const neededLength = index + this.data.pageSize;
-          const newDisplayWords = filteredWords.slice(0, neededLength);
-          this.setData({
-            displayWords: newDisplayWords,
-            hasMore: newDisplayWords.length < filteredWords.length
-          });
-        }
-      }
-    }
   },
 
   // 返回上一页

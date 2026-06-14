@@ -28,24 +28,6 @@
     <text class="word-count">共 {{totalWords}} 个单词</text>
   </view>
 
-  <!-- 字母索引 -->
-  <view class="alphabet-index" wx:if="{{alphabetIndex.length > 0}}">
-    <view 
-      class="alphabet-item" 
-      wx:for="{{alphabetIndex}}" 
-      wx:key="*this"
-      bindtap="jumpToLetter"
-      data-letter="{{item}}"
-    >
-      {{item}}
-    </view>
-  </view>
-
-  <!-- 字母提示 -->
-  <view class="letter-toast" wx:if="{{showLetterToast}}">
-    {{currentLetter}}
-  </view>
-
   <!-- 单词列表 -->
   <scroll-view 
     class="word-list" 

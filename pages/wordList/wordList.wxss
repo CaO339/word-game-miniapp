@@ -154,6 +154,17 @@
   color: #999;
 }
 
+.letter-header {
+  background: #f5f5f5;
+  padding: 20rpx 30rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
 .word-item {
   background: #fff;
   border-radius: 20rpx;
