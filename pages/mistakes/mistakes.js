@@ -4,6 +4,7 @@
 
 const wordManager = require('../../utils/wordManager.js');
 const mistakeManager = require('../../utils/mistakeManager.js');
+const { safeData } = require('../../utils/pdfGenerator.js');
 
 const manager = wordManager.getWordManager();
 const mistakes = mistakeManager;
@@ -75,12 +76,29 @@ Page({
 
   // 导出PDF
   exportPdf: function() {
+    console.log('[Mistakes] 开始导出PDF');
+    
     // 转换数据格式
-    const words = this.data.mistakeWords.map(item => ({
-      id: item.id,
+    const rawWords = this.data.mistakeWords.map(item => ({
       word: item.english,
       meaning: item.chinese
     }));
+    
+    console.log('[Mistakes] 原始数据:', JSON.stringify(rawWords));
+    
+    // 使用 safeData 进行数据安全转换
+    const words = safeData(rawWords);
+    
+    console.log('[Mistakes] safeData 转换后数据长度:', words.length);
+    
+    // 检查数据是否为空
+    if (words.length === 0) {
+      wx.showToast({
+        title: '暂无可导出的单词',
+        icon: 'none'
+      });
+      return;
+    }
     
     // 跳转到导出页面
     wx.navigateTo({

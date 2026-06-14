@@ -1,6 +1,45 @@
 // PDF生成工具类
 // 使用 jsPDF 库生成 PDF
 
+/**
+ * 数据安全转换函数 - 强制统一数据格式
+ * @param {*} data - 原始数据
+ * @returns {Array} - 标准化后的单词数组
+ */
+const safeData = (data) => {
+  console.log('[safeData] 开始数据转换');
+  console.log('[safeData] 原始数据类型:', typeof data);
+  console.log('[safeData] 是否为数组:', Array.isArray(data));
+  
+  // 确保是数组
+  if (!Array.isArray(data)) {
+    console.log('[safeData] 数据不是数组，返回空数组');
+    return [];
+  }
+  
+  // 转换并过滤
+  const result = data.map(item => {
+    // 确保 item 是对象
+    if (!item || typeof item !== 'object') {
+      return null;
+    }
+    
+    // 统一字段名
+    const word = item.word || item.Vocabulary || item.english || '';
+    const meaning = item.meaning || item.Meaning || item.chinese || item.cn || '';
+    
+    return {
+      word: String(word).trim(),
+      meaning: String(meaning).trim()
+    };
+  }).filter(i => i && i.word); // 过滤无效数据
+  
+  console.log('[safeData] 转换后数据长度:', result.length);
+  console.log('[safeData] 前3条数据结构:', JSON.stringify(result.slice(0, 3)));
+  
+  return result;
+};
+
 class PdfGenerator {
   constructor() {
     // A4纸尺寸（单位：mm）
@@ -35,61 +74,29 @@ class PdfGenerator {
   }
 
   /**
-   * 数据安全检查
+   * 数据安全检查（使用 safeData）
    * @param {Array} words - 单词数组
    * @returns {Object} - { success: boolean, message: string, data: Array }
    */
   validateAndNormalizeData(words) {
-    // 输出调试日志
-    console.log('[PdfGenerator] 原始数据:', JSON.stringify(words));
-    console.log('[PdfGenerator] 原始数据类型:', typeof words);
-    console.log('[PdfGenerator] 原始数据长度:', Array.isArray(words) ? words.length : 'N/A');
+    console.log('[PdfGenerator] 开始数据验证');
     
-    // 检查数据是否存在
-    if (words === null || words === undefined) {
-      console.log('[PdfGenerator] 数据检查失败：数据为 null 或 undefined');
-      return {
-        success: false,
-        message: '暂无数据，无法生成PDF',
-        data: []
-      };
-    }
+    // 使用 safeData 进行强制类型转换
+    const normalizedData = safeData(words);
     
-    // 检查是否为数组
-    if (!Array.isArray(words)) {
-      console.log('[PdfGenerator] 数据检查失败：数据不是数组');
-      return {
-        success: false,
-        message: '暂无数据，无法生成PDF',
-        data: []
-      };
-    }
+    console.log('[PdfGenerator] safeData 转换完成');
     
-    // 检查数组长度
-    if (words.length === 0) {
-      console.log('[PdfGenerator] 数据检查失败：数组为空');
-      return {
-        success: false,
-        message: '暂无数据，无法生成PDF',
-        data: []
-      };
-    }
-    
-    // 数据标准化处理
-    const normalizedData = this.normalizeWordData(words);
-    
-    console.log('[PdfGenerator] 清洗后数据长度:', normalizedData.length);
-    console.log('[PdfGenerator] 前5个数据结构:', JSON.stringify(normalizedData.slice(0, 5)));
-    
-    // 检查标准化后的数据
+    // 检查转换后的数据
     if (normalizedData.length === 0) {
-      console.log('[PdfGenerator] 数据检查失败：标准化后数据为空');
+      console.log('[PdfGenerator] 数据检查失败：转换后数据为空');
       return {
         success: false,
-        message: '暂无有效数据，无法生成PDF',
+        message: '暂无可导出的单词',
         data: []
       };
     }
+    
+    console.log('[PdfGenerator] 数据验证通过，共', normalizedData.length, '个单词');
     
     return {
       success: true,
@@ -99,48 +106,12 @@ class PdfGenerator {
   }
 
   /**
-   * 标准化单词数据
+   * 标准化单词数据（已被 safeData 替代，保留兼容性）
    * @param {Array} words - 原始单词数组
    * @returns {Array} - 标准化后的数组
    */
   normalizeWordData(words) {
-    // 使用 Array.isArray 防止报错
-    return (Array.isArray(words) ? words : []).map(item => {
-      if (!item || typeof item !== 'object') {
-        return null;
-      }
-      
-      // 提取 word 字段（支持多种字段名）
-      let word = '';
-      if (item.word) word = String(item.word).trim();
-      else if (item.english) word = String(item.english).trim();
-      else if (item.Word) word = String(item.Word).trim();
-      else if (item.WORD) word = String(item.WORD).trim();
-      
-      // 提取 meaning 字段（支持多种字段名）
-      let meaning = '';
-      if (item.meaning) {
-        meaning = Array.isArray(item.meaning) ? item.meaning.join('; ') : String(item.meaning).trim();
-      } else if (item.chinese) {
-        meaning = Array.isArray(item.chinese) ? item.chinese.join('; ') : String(item.chinese).trim();
-      } else if (item.cn) {
-        meaning = Array.isArray(item.cn) ? item.cn.join('; ') : String(item.cn).trim();
-      } else if (item.definition) {
-        meaning = Array.isArray(item.definition) ? item.definition.join('; ') : String(item.definition).trim();
-      } else if (item.translation) {
-        meaning = Array.isArray(item.translation) ? item.translation.join('; ') : String(item.translation).trim();
-      }
-      
-      // 验证单词和释义是否有效
-      if (!word || word.length === 0) {
-        return null;
-      }
-      
-      return {
-        word: word,
-        meaning: meaning || ''
-      };
-    }).filter(item => item !== null); // 过滤无效数据
+    return safeData(words);
   }
 
   /**
@@ -150,7 +121,9 @@ class PdfGenerator {
    * @returns {Object} - { success: boolean, message: string, content: string, pageCount: number }
    */
   generateHtmlContent(words, title) {
-    // 数据验证
+    console.log('[PdfGenerator] generateHtmlContent 开始');
+    
+    // 数据验证（使用 safeData）
     const validationResult = this.validateAndNormalizeData(words);
     
     if (!validationResult.success) {
@@ -215,10 +188,12 @@ class PdfGenerator {
     // 左栏单词列表（默写区）
     (Array.isArray(words) ? words : []).forEach((word, index) => {
       const globalIndex = (currentPage - 1) * this.WORDS_PER_PAGE + index + 1;
+      const wordText = word && word.word ? String(word.word) : '';
+      
       html += `
             <div style="display: flex; margin-bottom: 3mm;">
               <span style="width: 15mm; font-size: ${this.FONT_SIZE_SMALL}mm; color: #333;">${globalIndex}</span>
-              <span style="flex: 1; font-size: ${this.FONT_SIZE_NORMAL}mm; color: #333; font-weight: 500;">${word.word}</span>
+              <span style="flex: 1; font-size: ${this.FONT_SIZE_NORMAL}mm; color: #333; font-weight: 500;">${wordText}</span>
               <span style="flex: 1; font-size: ${this.FONT_SIZE_SMALL}mm; color: #999; border-bottom: 1px dashed #ccc; text-align: center;">&nbsp;</span>
             </div>`;
     });
@@ -248,11 +223,14 @@ class PdfGenerator {
     // 右栏单词列表（答案区）
     (Array.isArray(words) ? words : []).forEach((word, index) => {
       const globalIndex = (currentPage - 1) * this.WORDS_PER_PAGE + index + 1;
+      const wordText = word && word.word ? String(word.word) : '';
+      const meaning = word && word.meaning ? String(word.meaning) : '';
+      
       html += `
             <div style="display: flex; margin-bottom: 3mm;">
               <span style="width: 15mm; font-size: ${this.FONT_SIZE_SMALL}mm; color: #333;">${globalIndex}</span>
-              <span style="flex: 1; font-size: ${this.FONT_SIZE_NORMAL}mm; color: #333; font-weight: 500;">${word.word}</span>
-              <span style="flex: 1; font-size: ${this.FONT_SIZE_SMALL}mm; color: #666; text-align: center;">${word.meaning}</span>
+              <span style="flex: 1; font-size: ${this.FONT_SIZE_NORMAL}mm; color: #333; font-weight: 500;">${wordText}</span>
+              <span style="flex: 1; font-size: ${this.FONT_SIZE_SMALL}mm; color: #666; text-align: center;">${meaning}</span>
             </div>`;
     });
     
@@ -292,11 +270,14 @@ class PdfGenerator {
     
     console.log('[PdfGenerator] sortAndDeduplicate - 输入长度:', words.length);
     
+    // 使用 safeData 确保数据格式正确
+    const safeWords = safeData(words);
+    
     // 去重
     const uniqueWords = [];
     const seen = new Set();
     
-    (Array.isArray(words) ? words : []).forEach(word => {
+    safeWords.forEach(word => {
       if (word && word.word) {
         const key = word.word.toLowerCase();
         if (!seen.has(key)) {
@@ -350,6 +331,14 @@ class PdfGenerator {
     }
     return '单词默写本';
   }
+
+  /**
+   * 获取安全数据转换函数
+   * @returns {Function} - safeData 函数
+   */
+  getSafeDataFunction() {
+    return safeData;
+  }
 }
 
 // 导出单例
@@ -364,5 +353,6 @@ function getPdfGenerator() {
 
 module.exports = {
   PdfGenerator,
-  getPdfGenerator
+  getPdfGenerator,
+  safeData
 };

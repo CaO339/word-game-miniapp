@@ -1,5 +1,6 @@
 // PDF导出页面逻辑
-const pdfGenerator = require('../../utils/pdfGenerator.js').getPdfGenerator();
+const { getPdfGenerator, safeData } = require('../../utils/pdfGenerator.js');
+const pdfGenerator = getPdfGenerator();
 
 Page({
   data: {
@@ -36,7 +37,7 @@ Page({
       return;
     }
     
-    // 使用验证后的数据
+    // 使用验证后的数据（已通过 safeData 处理）
     const words = validationResult.data;
     
     try {
@@ -44,7 +45,7 @@ Page({
       const sortedWords = pdfGenerator.sortAndDeduplicate(words);
       
       console.log('[ExportPDF] 排序去重后数据长度:', sortedWords.length);
-      console.log('[ExportPDF] 前5条数据:', JSON.stringify(sortedWords.slice(0, 5)));
+      console.log('[ExportPDF] 前3条数据:', JSON.stringify(sortedWords.slice(0, 3)));
       
       const today = new Date();
       const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
@@ -77,7 +78,7 @@ Page({
   },
 
   /**
-   * 验证输入数据
+   * 验证输入数据（使用 safeData）
    * @param {String} wordsStr - 单词数据JSON字符串
    * @returns {Object} - { success: boolean, message: string, data: Array }
    */
@@ -89,7 +90,7 @@ Page({
       console.log('[ExportPDF] 数据检查失败：输入字符串为空');
       return {
         success: false,
-        message: '暂无数据，无法生成PDF',
+        message: '暂无可导出的单词',
         data: []
       };
     }
@@ -107,46 +108,20 @@ Page({
     }
     
     console.log('[ExportPDF] 解析后数据类型:', typeof parsedWords);
-    console.log('[ExportPDF] 解析后数据长度:', Array.isArray(parsedWords) ? parsedWords.length : 'N/A');
+    console.log('[ExportPDF] 解析后是否为数组:', Array.isArray(parsedWords));
     
-    // 检查数据是否存在
-    if (parsedWords === null || parsedWords === undefined) {
-      console.log('[ExportPDF] 数据检查失败：数据为 null 或 undefined');
+    // 使用 safeData 进行强制类型转换
+    const safeWords = safeData(parsedWords);
+    
+    console.log('[ExportPDF] safeData 转换后数据长度:', safeWords.length);
+    console.log('[ExportPDF] safeData 转换后前3条数据:', JSON.stringify(safeWords.slice(0, 3)));
+    
+    // 检查转换后的数据
+    if (safeWords.length === 0) {
+      console.log('[ExportPDF] 数据检查失败：转换后数据为空');
       return {
         success: false,
-        message: '暂无数据，无法生成PDF',
-        data: []
-      };
-    }
-    
-    // 检查是否为数组
-    if (!Array.isArray(parsedWords)) {
-      console.log('[ExportPDF] 数据检查失败：数据不是数组');
-      return {
-        success: false,
-        message: '暂无数据，无法生成PDF',
-        data: []
-      };
-    }
-    
-    // 检查数组长度
-    if (parsedWords.length === 0) {
-      console.log('[ExportPDF] 数据检查失败：数组为空');
-      return {
-        success: false,
-        message: '暂无数据，无法生成PDF',
-        data: []
-      };
-    }
-    
-    // 使用PDF生成器进行数据标准化
-    const normalizedResult = pdfGenerator.validateAndNormalizeData(parsedWords);
-    
-    if (!normalizedResult.success) {
-      console.log('[ExportPDF] 数据标准化失败:', normalizedResult.message);
-      return {
-        success: false,
-        message: normalizedResult.message,
+        message: '暂无可导出的单词',
         data: []
       };
     }
@@ -154,7 +129,7 @@ Page({
     return {
       success: true,
       message: '数据验证通过',
-      data: normalizedResult.data
+      data: safeWords
     };
   },
 
@@ -164,8 +139,8 @@ Page({
   generatePages: function(words) {
     const WORDS_PER_PAGE = 20;
     
-    // 使用 Array.isArray 防止报错
-    const safeWords = Array.isArray(words) ? words : [];
+    // 使用 safeData 确保数据格式正确
+    const safeWords = safeData(words);
     const totalPages = Math.ceil(safeWords.length / WORDS_PER_PAGE);
     const pages = [];
     
@@ -183,9 +158,7 @@ Page({
       // 使用 Array.isArray 防止报错
       (Array.isArray(pageWords) ? pageWords : []).forEach((word, index) => {
         const globalIndex = pageIndex * WORDS_PER_PAGE + index + 1;
-        const meaning = word && word.meaning 
-          ? (Array.isArray(word.meaning) ? word.meaning.join('; ') : String(word.meaning)) 
-          : '';
+        const meaning = word && word.meaning ? String(word.meaning) : '';
         const wordText = word && word.word ? String(word.word) : '';
         
         leftColumn.push({
@@ -202,7 +175,7 @@ Page({
       });
       
       // 填充空白行
-      for (let i = (Array.isArray(pageWords) ? pageWords.length : 0); i < WORDS_PER_PAGE; i++) {
+      for (let i = safeWords.length > pageIndex * WORDS_PER_PAGE ? (pageWords.length || 0) : 0; i < WORDS_PER_PAGE; i++) {
         leftColumn.push({
           no: '',
           word: '',
