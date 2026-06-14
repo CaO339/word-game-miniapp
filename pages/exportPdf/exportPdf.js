@@ -311,7 +311,22 @@ Page({
   },
 
   showSortPanel: function() {
-    this.setData({ showSortPanel: true });
+    // 切换排序面板显示状态
+    this.setData({ 
+      showSortPanel: !this.data.showSortPanel 
+    });
+    console.log('[ExportPDF] showSortPanel - 切换为:', this.data.showSortPanel);
+  },
+
+  hideSortPanel: function() {
+    this.setData({ 
+      showSortPanel: false 
+    });
+    console.log('[ExportPDF] hideSortPanel - 关闭排序面板');
+  },
+
+  stopPropagation: function() {
+    // 阻止事件冒泡，防止点击面板内容时关闭面板
   },
 
   selectSort: function(e) {
@@ -323,6 +338,7 @@ Page({
       sortBy: sortBy 
     });
     
+    // 根据新的排序方式重新加载数据
     this.loadWords(sortBy);
   },
 
