@@ -133,6 +133,20 @@
   justify-content: center;
 }
 
+.export-btn {
+  width: 400rpx;
+  height: 90rpx;
+  line-height: 90rpx;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+  color: #ffffff;
+  border-radius: 50rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+  border: none;
+  box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.15);
+  margin-bottom: 20rpx;
+}
+
 .back-btn {
   width: 300rpx;
   height: 90rpx;

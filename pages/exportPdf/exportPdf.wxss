@@ -1,0 +1,255 @@
+/* PDF导出页面样式 */
+
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 40rpx;
+  padding-top: 80rpx;
+  box-sizing: border-box;
+}
+
+/* 页面头部 */
+.header {
+  text-align: center;
+  margin-bottom: 40rpx;
+}
+
+.header .title {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #ffffff;
+  display: block;
+  margin-bottom: 10rpx;
+}
+
+.header .subtitle {
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* 预览区域 */
+.preview-section {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+}
+
+.preview-header {
+  margin-bottom: 20rpx;
+}
+
+.preview-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+/* 预览滚动区域 */
+.preview-scroll {
+  max-height: 800rpx;
+  overflow-y: auto;
+}
+
+/* PDF页面预览 */
+.pdf-preview {
+  margin-bottom: 30rpx;
+}
+
+.pdf-preview:last-child {
+  margin-bottom: 0;
+}
+
+.pdf-page {
+  background: #ffffff;
+  border-radius: 10rpx;
+  padding: 30rpx;
+  box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.2);
+}
+
+/* 页面页眉 */
+.page-header {
+  text-align: center;
+  margin-bottom: 20rpx;
+  padding-bottom: 15rpx;
+  border-bottom: 1rpx solid #eee;
+}
+
+.page-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.page-date {
+  font-size: 22rpx;
+  color: #999;
+}
+
+/* 页面内容 */
+.page-content {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+/* 列 */
+.column {
+  flex: 1;
+}
+
+.column-header {
+  display: flex;
+  padding-bottom: 10rpx;
+  border-bottom: 1rpx solid #ddd;
+  margin-bottom: 15rpx;
+}
+
+.col-no {
+  width: 60rpx;
+  font-size: 20rpx;
+  font-weight: bold;
+  color: #666;
+}
+
+.col-word {
+  flex: 1;
+  font-size: 20rpx;
+  font-weight: bold;
+  color: #666;
+  text-align: center;
+}
+
+.col-meaning {
+  flex: 1;
+  font-size: 20rpx;
+  font-weight: bold;
+  color: #666;
+  text-align: center;
+}
+
+/* 单词列表 */
+.word-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+
+.word-item {
+  display: flex;
+  align-items: center;
+}
+
+.item-no {
+  width: 60rpx;
+  font-size: 22rpx;
+  color: #333;
+}
+
+.item-word {
+  flex: 1;
+  font-size: 24rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.item-meaning-blank {
+  flex: 1;
+  height: 30rpx;
+  border-bottom: 1rpx dashed #ccc;
+  margin-left: 10rpx;
+}
+
+.item-meaning {
+  flex: 1;
+  font-size: 20rpx;
+  color: #666;
+  text-align: center;
+}
+
+/* 列分隔线 */
+.column-divider {
+  width: 1rpx;
+  background: #eee;
+  margin: 0 15rpx;
+}
+
+/* 页面页脚 */
+.page-footer {
+  text-align: center;
+  padding-top: 15rpx;
+  border-top: 1rpx solid #eee;
+}
+
+.page-number {
+  font-size: 20rpx;
+  color: #999;
+}
+
+/* 操作按钮区域 */
+.action-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  margin-bottom: 30rpx;
+}
+
+.action-btn {
+  height: 100rpx;
+  line-height: 100rpx;
+  border-radius: 50rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+  border: none;
+  box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.15);
+}
+
+.action-btn.primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+}
+
+.action-btn.secondary {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  border: 2rpx solid rgba(255, 255, 255, 0.5);
+}
+
+.action-btn.outline {
+  background: transparent;
+  color: #ffffff;
+  border: 2rpx solid rgba(255, 255, 255, 0.8);
+}
+
+.action-btn:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+/* 提示信息 */
+.tips-section {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20rpx;
+  padding: 25rpx;
+}
+
+.tips-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #ffffff;
+  display: block;
+  margin-bottom: 15rpx;
+}
+
+.tips-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+
+.tip-item {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+}

@@ -1,0 +1,89 @@
+<!-- PDF导出页面 -->
+<view class="container">
+  <!-- 页面头部 -->
+  <view class="header">
+    <text class="title">{{title}}</text>
+    <text class="subtitle">共 {{wordCount}} 个单词，{{totalPages}} 页</text>
+  </view>
+
+  <!-- 预览区域 -->
+  <view class="preview-section">
+    <view class="preview-header">
+      <text class="preview-title">📄 PDF预览</text>
+    </view>
+    
+    <!-- PDF内容预览 -->
+    <scroll-view class="preview-scroll" scroll-y>
+      <view class="pdf-preview" wx:for="{{pages}}" wx:key="index">
+        <view class="pdf-page">
+          <!-- 页眉 -->
+          <view class="page-header">
+            <text class="page-title">{{title}}</text>
+            <text class="page-date">{{exportDate}}</text>
+          </view>
+          
+          <!-- 内容区域 -->
+          <view class="page-content">
+            <!-- 左栏（默写区） -->
+            <view class="column">
+              <view class="column-header">
+                <text class="col-no">NO.</text>
+                <text class="col-word">Vocabulary</text>
+                <text class="col-meaning">Meaning</text>
+              </view>
+              <view class="word-list">
+                <view class="word-item" wx:for="{{item.leftColumn}}" wx:key="index">
+                  <text class="item-no">{{item.no}}</text>
+                  <text class="item-word">{{item.word}}</text>
+                  <view class="item-meaning-blank"></view>
+                </view>
+              </view>
+            </view>
+            
+            <!-- 分隔线 -->
+            <view class="column-divider"></view>
+            
+            <!-- 右栏（答案区） -->
+            <view class="column">
+              <view class="column-header">
+                <text class="col-no">NO.</text>
+                <text class="col-word">Vocabulary</text>
+                <text class="col-meaning">Meaning</text>
+              </view>
+              <view class="word-list">
+                <view class="word-item" wx:for="{{item.rightColumn}}" wx:key="index">
+                  <text class="item-no">{{item.no}}</text>
+                  <text class="item-word">{{item.word}}</text>
+                  <text class="item-meaning">{{item.meaning}}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+          
+          <!-- 页脚 -->
+          <view class="page-footer">
+            <text class="page-number">第{{item.pageNum}}页 / 共{{totalPages}}页</text>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-section">
+    <button class="action-btn primary" bindtap="sharePdf">📤 分享PDF</button>
+    <button class="action-btn secondary" bindtap="copyContent">📋 复制内容</button>
+    <button class="action-btn outline" bindtap="goBack">返回</button>
+  </view>
+
+  <!-- 提示信息 -->
+  <view class="tips-section">
+    <text class="tips-title">💡 提示</text>
+    <view class="tips-list">
+      <text class="tip-item">• 左侧为默写区域，右侧为答案区域</text>
+      <text class="tip-item">• 单词已按字母顺序排序</text>
+      <text class="tip-item">• 重复单词已自动去重</text>
+      <text class="tip-item">• 每页显示20个单词</text>
+    </view>
+  </view>
+</view>

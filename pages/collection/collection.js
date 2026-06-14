@@ -73,6 +73,21 @@ Page({
     });
   },
 
+  // 导出PDF
+  exportPdf: function() {
+    // 转换数据格式
+    const words = this.data.collectedWords.map(item => ({
+      id: item.id,
+      word: item.english,
+      meaning: item.chinese
+    }));
+    
+    // 跳转到导出页面
+    wx.navigateTo({
+      url: `/pages/exportPdf/exportPdf?type=favorite&words=${encodeURIComponent(JSON.stringify(words))}`
+    });
+  },
+
   // 返回首页
   goHome: function() {
     wx.navigateBack();

@@ -33,8 +33,9 @@
     </view>
   </view>
 
-  <!-- 返回按钮 -->
+  <!-- 操作按钮 -->
   <view class="footer" wx:if="{{!isEmpty}}">
+    <button class="export-btn" bindtap="exportPdf">📄 导出收藏PDF</button>
     <button class="back-btn" bindtap="goHome">返回首页</button>
   </view>
 </view>
