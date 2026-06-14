@@ -49,11 +49,14 @@ Page({
     const totalCount = wordMgr.getTotalCount();
     console.log('[WordList] loadWordList - getTotalCount返回:', totalCount);
     
-    // 使用 getAllWords() 获取单词列表
-    const allWords = wordMgr.getAllWords();
+    // 关键修复：确保词库已加载
+    const allWords = this.ensureLibraryLoaded(wordMgr);
     console.log('[WordList] loadWordList - getAllWords返回类型:', typeof allWords);
     console.log('[WordList] loadWordList - getAllWords返回:', allWords);
     console.log('[WordList] loadWordList - getAllWords长度:', allWords ? allWords.length : 0);
+    
+    // 对比：学习模式词库数量 vs 页面显示词库数量
+    console.log('[WordList] 学习模式词库数量=', allWords ? allWords.length : 0);
     
     const libraryName = wordMgr.getLibraryName();
     console.log('[WordList] loadWordList - 当前词库名称:', libraryName);
@@ -63,6 +66,8 @@ Page({
     
     // 确保是数组
     const wordsArray = Array.isArray(allWords) ? allWords : [];
+    
+    console.log('[WordList] 页面显示词库数量=', wordsArray.length);
     
     // 生成字母索引
     const alphabetIndex = this.generateAlphabetIndex(wordsArray);
@@ -78,6 +83,36 @@ Page({
     });
     
     console.log('[WordList] loadWordList - 数据设置完成');
+  },
+
+  /**
+   * 确保词库已加载
+   * 如果词库未加载，尝试强制加载
+   */
+  ensureLibraryLoaded: function(wordMgr) {
+    let allWords = wordMgr.getAllWords();
+    
+    // 如果当前词库为空，尝试获取词库数据
+    if (!Array.isArray(allWords) || allWords.length === 0) {
+      console.log('[WordList] ensureLibraryLoaded - 当前词库为空，尝试重新加载');
+      
+      // 获取当前词库Key
+      const libraryKey = wordMgr.getLibraryKey();
+      
+      // 尝试从预加载数据或storage获取词库
+      const libraryData = wordManager.getLibraryData(libraryKey);
+      console.log('[WordList] ensureLibraryLoaded - 从getLibraryData获取:', libraryData ? libraryData.length : 0);
+      
+      if (Array.isArray(libraryData) && libraryData.length > 0) {
+        // 如果获取到数据，直接返回
+        return libraryData;
+      }
+      
+      // 如果还是没有数据，返回空数组
+      return [];
+    }
+    
+    return allWords;
   },
 
   // 生成字母索引
