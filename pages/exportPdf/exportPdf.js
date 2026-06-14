@@ -72,6 +72,21 @@ Page({
       });
       
       console.log('[ExportPDF] 页面加载成功，共', sortedWords.length, '个单词，', pages.length, '页');
+      console.log('[ExportPDF] 当前状态 - hasError:', this.data.hasError);
+      console.log('[ExportPDF] 当前状态 - errorMessage:', this.data.errorMessage);
+      console.log('[ExportPDF] 当前状态 - wordCount:', this.data.wordCount);
+      console.log('[ExportPDF] 当前状态 - totalPages:', this.data.totalPages);
+      
+      // 防御性检查：确保数据生成成功后清除所有错误状态
+      if (sortedWords.length > 0 && pages.length > 0) {
+        console.log('[ExportPDF] 执行防御性状态重置');
+        this.setData({
+          hasError: false,
+          errorMessage: ''
+        });
+        console.log('[ExportPDF] 重置后状态 - hasError:', this.data.hasError);
+        console.log('[ExportPDF] 重置后状态 - errorMessage:', this.data.errorMessage);
+      }
     } catch (e) {
       console.error('[ExportPDF] 处理单词数据失败:', e);
       this.setData({
