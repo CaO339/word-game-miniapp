@@ -47,15 +47,21 @@
   </view>
 
   <!-- 单词列表 -->
-  <scroll-view class="word-list" scroll-y>
-    <view class="word-empty" wx:if="{{filteredWords.length === 0}}">
+  <scroll-view 
+    class="word-list" 
+    scroll-y 
+    bindscrolltolower="loadMore"
+    enhanced
+    :show-scrollbar="false"
+  >
+    <view class="word-empty" wx:if="{{displayWords.length === 0 && !loading}}">
       <text class="empty-icon">📭</text>
       <text class="empty-text">暂无单词</text>
     </view>
     
     <view 
       class="word-item" 
-      wx:for="{{filteredWords}}" 
+      wx:for="{{displayWords}}" 
       wx:key="id"
       wx:for-item="word"
     >
@@ -69,6 +75,16 @@
       <view class="word-part" wx:if="{{word.partOfSpeech}}">
         <text class="part-tag">{{word.partOfSpeech}}</text>
       </view>
+    </view>
+
+    <!-- 加载更多提示 -->
+    <view class="load-more" wx:if="{{hasMore}}">
+      <text wx:if="{{loadingMore}}">加载中...</text>
+      <text wx:else>下拉加载更多</text>
+    </view>
+    
+    <view class="load-more" wx:if="{{!hasMore && displayWords.length > 0}}">
+      <text>已加载全部</text>
     </view>
   </scroll-view>
 </view>
