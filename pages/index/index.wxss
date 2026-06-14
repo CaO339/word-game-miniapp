@@ -573,56 +573,6 @@
   opacity: 0.9;
 }
 
-/* 快捷功能区域 */
-.quick-section {
-  width: 90%;
-  max-width: 500rpx;
-  margin-bottom: 30rpx;
-}
-
-.quick-title {
-  font-size: 28rpx;
-  font-weight: bold;
-  color: #ffffff;
-  margin-bottom: 20rpx;
-  text-align: center;
-}
-
-.quick-grid {
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  gap: 20rpx;
-}
-
-.quick-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: calc(33.33% - 14rpx);
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  border-radius: 20rpx;
-  padding: 25rpx 15rpx;
-  transition: all 0.3s ease;
-}
-
-.quick-item:active {
-  transform: scale(0.95);
-  opacity: 0.8;
-}
-
-.quick-icon {
-  font-size: 48rpx;
-  margin-bottom: 12rpx;
-}
-
-.quick-label {
-  font-size: 24rpx;
-  color: #ffffff;
-  text-align: center;
-}
-
 /* 词库浏览入口卡片 */
 .library-card {
   width: 90%;
