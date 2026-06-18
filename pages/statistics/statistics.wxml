@@ -156,19 +156,6 @@
       <text class="weekday">六</text>
     </view>
     
-    <!-- 日历图例（热力图上方） -->
-    <view class="heatmap-legend">
-      <text class="legend-label">少</text>
-      <view class="legend-blocks">
-        <view class="legend-block level-0"></view>
-        <view class="legend-block level-1"></view>
-        <view class="legend-block level-2"></view>
-        <view class="legend-block level-3"></view>
-        <view class="legend-block level-4"></view>
-      </view>
-      <text class="legend-label">多</text>
-    </view>
-    
     <!-- 日历日期网格 -->
     <view class="calendar-grid">
       <view 

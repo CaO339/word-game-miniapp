@@ -396,34 +396,6 @@
   font-weight: bold;
 }
 
-/* 热力图图例（顶部） */
-.heatmap-legend {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 15rpx;
-  margin-bottom: 20rpx;
-  padding: 15rpx;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 15rpx;
-}
-
-.legend-label {
-  font-size: 22rpx;
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.legend-blocks {
-  display: flex;
-  gap: 8rpx;
-}
-
-.legend-block {
-  width: 32rpx;
-  height: 32rpx;
-  border-radius: 6rpx;
-}
-
 /* 热力图颜色等级 */
 .legend-block.level-0,
 .cell-inner.level-0 {
