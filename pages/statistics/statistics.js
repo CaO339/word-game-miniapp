@@ -240,6 +240,34 @@ Page({
     // 获取日历数据
     const calendarData = storage.getMonthStudyData(year, month);
     
+    // 为每个日期添加等级（level）字段，用于热力图颜色显示
+    calendarData.days = calendarData.days.map(day => {
+      if (day.isEmpty) {
+        return day;
+      }
+      
+      const count = day.count || 0;
+      let level = 0;
+      
+      // 根据学习数量确定等级
+      if (count === 0) {
+        level = 0;
+      } else if (count <= 10) {
+        level = 1;
+      } else if (count <= 20) {
+        level = 2;
+      } else if (count <= 40) {
+        level = 3;
+      } else {
+        level = 4;
+      }
+      
+      return {
+        ...day,
+        level: level
+      };
+    });
+    
     console.log('[Statistics] 日历数据:', JSON.stringify(calendarData));
     
     this.setData({
@@ -284,10 +312,20 @@ Page({
    */
   selectDate: function(e) {
     const date = e.currentTarget.dataset.date;
+    const count = parseInt(e.currentTarget.dataset.count) || 0;
     
     if (!date || date === null) {
       return;
     }
+    
+    // 弹出提示显示日期和学习数量
+    wx.showModal({
+      title: date,
+      content: `学习单词：${count}个`,
+      showCancel: false,
+      confirmText: '知道了',
+      confirmColor: '#667eea'
+    });
     
     // 获取该日期的学习信息
     const dayInfo = this.data.calendarData.days.find(item => item.date === date);

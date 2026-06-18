@@ -156,38 +156,58 @@
       <text class="weekday">六</text>
     </view>
     
+    <!-- 日历图例（热力图上方） -->
+    <view class="heatmap-legend">
+      <text class="legend-label">少</text>
+      <view class="legend-blocks">
+        <view class="legend-block level-0"></view>
+        <view class="legend-block level-1"></view>
+        <view class="legend-block level-2"></view>
+        <view class="legend-block level-3"></view>
+        <view class="legend-block level-4"></view>
+      </view>
+      <text class="legend-label">多</text>
+    </view>
+    
     <!-- 日历日期网格 -->
     <view class="calendar-grid">
       <view 
-        class="calendar-day {{item.isEmpty ? 'empty' : ''}} {{item.hasRecord ? 'has-record' : ''}} {{item.count >= 30 ? 'high' : (item.count >= 11 ? 'medium' : (item.count >= 1 ? 'low' : 'none'))}} {{selectedDate === item.date ? 'selected' : ''}}"
+        class="calendar-day {{item.isEmpty ? 'empty' : ''}}"
         wx:for="{{calendarData.days}}"
         wx:key="index"
         bindtap="selectDate"
-        data-date="{{item.date}}">
+        data-date="{{item.date}}"
+        data-count="{{item.count}}">
         <text class="day-text">{{item.day}}</text>
-        <view class="day-indicator">
-          <text class="indicator {{item.count >= 30 ? 'full' : (item.count >= 11 ? 'three-quarter' : (item.count >= 1 ? 'quarter' : 'empty'))}}"></text>
+        <view class="heatmap-cell" wx:if="!item.isEmpty">
+          <view class="cell-inner level-{{item.level}}">
+            <text class="cell-count" wx:if="{{item.count > 0}}">{{item.count}}</text>
+          </view>
         </view>
       </view>
     </view>
     
-    <!-- 图例 -->
+    <!-- 详细图例 -->
     <view class="calendar-legend">
       <view class="legend-item">
-        <text class="indicator empty"></text>
+        <view class="legend-block level-0"></view>
         <text class="legend-text">0词</text>
       </view>
       <view class="legend-item">
-        <text class="indicator quarter"></text>
+        <view class="legend-block level-1"></view>
         <text class="legend-text">1-10词</text>
       </view>
       <view class="legend-item">
-        <text class="indicator three-quarter"></text>
-        <text class="legend-text">11-30词</text>
+        <view class="legend-block level-2"></view>
+        <text class="legend-text">11-20词</text>
       </view>
       <view class="legend-item">
-        <text class="indicator full"></text>
-        <text class="legend-text">30+词</text>
+        <view class="legend-block level-3"></view>
+        <text class="legend-text">21-40词</text>
+      </view>
+      <view class="legend-item">
+        <view class="legend-block level-4"></view>
+        <text class="legend-text">40+词</text>
       </view>
     </view>
     
